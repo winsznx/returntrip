@@ -1,0 +1,20 @@
+{
+  "name": "@returntrip/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Run metadata in SQLite and immutable, hash-addressed run artifacts on disk.",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@returntrip/contracts": "workspace:*"
+  }
+}
