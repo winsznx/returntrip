@@ -5,6 +5,7 @@
     { "path": "packages/storage" },
     { "path": "packages/target-runtime" },
     { "path": "packages/repair-agent" },
-    { "path": "packages/kane-adapter" }
+    { "path": "packages/kane-adapter" },
+    { "path": "packages/artifact-capture" }
   ]
 }

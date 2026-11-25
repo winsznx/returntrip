@@ -1,0 +1,20 @@
+{
+  "name": "@returntrip/artifact-capture",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Loopback reverse proxy that records export responses byte for byte.",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@returntrip/contracts": "workspace:*"
+  }
+}
