@@ -190,9 +190,15 @@ importers:
       '@returntrip/csv-comparator':
         specifier: workspace:*
         version: link:../../packages/csv-comparator
+      '@returntrip/kane-adapter':
+        specifier: workspace:*
+        version: link:../../packages/kane-adapter
       '@returntrip/orchestrator':
         specifier: workspace:*
         version: link:../../packages/orchestrator
+      '@returntrip/repair-agent':
+        specifier: workspace:*
+        version: link:../../packages/repair-agent
       '@returntrip/reporting':
         specifier: workspace:*
         version: link:../../packages/reporting
@@ -228,9 +234,6 @@ importers:
       '@returntrip/contracts':
         specifier: workspace:*
         version: link:../contracts
-      csv-parse:
-        specifier: 7.0.3
-        version: 7.0.3
 
   packages/kane-adapter:
     dependencies:
@@ -668,9 +671,6 @@ packages:
   commander@15.1.0:
     resolution: {integrity: sha512-cgnQ88TRrWcC7pVq46RzJVRMktu3W2RcbnoidnfBsl1bmDCBwJS/udcIZpKoCrbAYYaCqsz1yZCVIgbIaU3ddQ==}
     engines: {node: '>=22.12.0'}
-
-  csv-parse@7.0.3:
-    resolution: {integrity: sha512-YFd3QM/yo17vH91L1IOZuvl09zM0zEEtdfTcOCKWcMdM++MNaQSyp09slXyFCLaPXvHstQFx/xC8myiFHSMUvw==}
 
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
@@ -1163,8 +1163,6 @@ snapshots:
   chai@6.3.0: {}
 
   commander@15.1.0: {}
-
-  csv-parse@7.0.3: {}
 
   detect-libc@2.1.2: {}
 
