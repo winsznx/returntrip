@@ -211,7 +211,10 @@ export async function executeRun(input: StartRunInput): Promise<RunRecord> {
     store.updateRun(run.id, { phase: 'PREPARING' });
     ctx.emit('phase.changed', {
       phase: 'PREPARING',
-      message: 'Starting a fresh copy of the app with the trusted source loaded.',
+      message:
+        loaded.config.application.mode === 'managed'
+          ? 'Starting a fresh copy of the app with the trusted source loaded.'
+          : 'Loading the trusted source into the running app through its seed command.',
     });
     if (loaded.config.application.mode === 'managed') {
       copy = await prepareCopy(ctx);
