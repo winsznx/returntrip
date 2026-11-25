@@ -60,7 +60,11 @@ async function runOnce(
 
   const logDir = join(ctx.workDir, 'kane', `a${ctx.attempt}-${stage}-${tryIndex}`);
   await mkdir(logDir, { recursive: true, mode: 0o700 });
-  const { result, stdoutPath, stderrPath } = await ctx.deps.browser.run({
+  const {
+    result: reported,
+    stdoutPath,
+    stderrPath,
+  } = await ctx.deps.browser.run({
     stage,
     objective,
     url,
@@ -72,6 +76,7 @@ async function runOnce(
     ...(ctx.loaded.paths.variablesFile ? { variablesFile: ctx.loaded.paths.variablesFile } : {}),
   });
 
+  const result = await judgeStage(ctx, stage, reported);
   ctx.chargeCredits(result.creditsUsed);
   ctx.store.recordStage(ctx.runId, ctx.attempt, stage, result);
   const prefix = `${stage}${tryIndex > 0 ? `-retry${tryIndex}` : ''}`;
@@ -124,6 +129,36 @@ interface StepFailure {
   readonly ok: false;
   readonly stage: BrowserStage;
   readonly reason: string;
+}
+
+/**
+ * A stage Kane reports as passed must also pass ReturnTrip's stage policy on Kane's own sealed
+ * evidence: the run finalized, no step failed, and it asserted something (a run that only
+ * clicked proves nothing). A failing verdict turns the stage into a failure, which is retried.
+ * An errored verdict means the policy couldn't be judged; Kane's own result stands and a warning
+ * is recorded.
+ */
+async function judgeStage(
+  ctx: RunContext,
+  stage: BrowserStage,
+  result: BrowserResult,
+): Promise<BrowserResult> {
+  if (result.outcome !== 'passed' || !result.evidencePackPath || !ctx.deps.browser.judge) return result;
+  const verdict = await ctx.deps.browser.judge(result.evidencePackPath);
+  if (verdict.result === 'pass') return { ...result, evidenceVerdict: verdict };
+  if (verdict.result === 'errored') {
+    ctx.emit('warning', {
+      code: 'STAGE_POLICY_ERRORED',
+      message: `Kane could not judge the ${stage} evidence against the stage policy; using its run result.`,
+    });
+    return { ...result, evidenceVerdict: verdict };
+  }
+  return {
+    ...result,
+    evidenceVerdict: verdict,
+    outcome: 'failed',
+    oneLiner: `Kane reported success, but its evidence failed the stage policy (${verdict.failedGates.join(', ')})`,
+  };
 }
 
 type StepOutcome<T> = { readonly ok: true; readonly value: T } | StepFailure;

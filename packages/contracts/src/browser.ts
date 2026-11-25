@@ -57,4 +57,14 @@ export interface BrowserResult {
   /** Path of the sealed evidence pack Kane wrote, when one exists. */
   readonly evidencePackPath: string | null;
   readonly protocolWarnings: readonly string[];
+  /** Kane's own verdict on its sealed evidence pack against ReturnTrip's stage policy, when judged. */
+  readonly evidenceVerdict?: EvidenceVerdict | null;
+}
+
+export interface EvidenceVerdict {
+  readonly policy: string;
+  readonly result: 'pass' | 'fail' | 'errored';
+  readonly failedGates: readonly string[];
+  readonly warnedGates: readonly string[];
+  readonly erroredGates: readonly string[];
 }

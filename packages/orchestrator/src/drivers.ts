@@ -1,7 +1,12 @@
 import { join } from 'node:path';
 
 import { createCaptureProxy } from '@returntrip/artifact-capture';
-import { getKaneBalance, getKaneVersion, runKaneObjective } from '@returntrip/kane-adapter';
+import {
+  getKaneBalance,
+  getKaneVersion,
+  judgeEvidencePack,
+  runKaneObjective,
+} from '@returntrip/kane-adapter';
 import { getClaudeVersion, runClaudeRepair } from '@returntrip/repair-agent';
 
 import type { BrowserDriver, CaptureDriver, EngineDeps, RepairDriver } from './ports.ts';
@@ -12,6 +17,7 @@ export function kaneDriver(options: { headless: boolean; kaneBin?: string }): Br
     name: 'kane-cli',
     version: () => getKaneVersion(bin),
     balance: () => getKaneBalance(bin),
+    judge: (packPath) => judgeEvidencePack({ packPath, ...(bin ? { kaneBin: bin } : {}) }),
     async run(input) {
       const outcome = await runKaneObjective({
         objective: input.objective,

@@ -227,6 +227,22 @@ describe('executeRun with the Ledgerline demo app', { timeout: 120_000 }, () => 
     });
   });
 
+  it('retries a stage whose Kane evidence fails the stage policy even though Kane said passed', async () => {
+    // #given Kane reports success once without having asserted anything
+    const engineDeps = deps({ browser: httpBrowser({ failPolicy: 1 }) });
+
+    // #when
+    const finished = await run(HEALTHY, 'verify', engineDeps);
+    const first = store.listStages(finished.id)[0]?.result;
+
+    // #then
+    expect({
+      outcome: finished.outcome,
+      firstStage: first?.outcome,
+      failedGates: first?.evidenceVerdict?.failedGates,
+    }).toEqual({ outcome: 'VERIFIED', firstStage: 'failed', failedGates: ['asserted-something'] });
+  });
+
   it('gives up after the retry limit and reports an execution failure', async () => {
     // #given a browser whose re-export fails twice, one more than the single allowed retry
     const engineDeps = deps({ browser: httpBrowser({ flaky: { reexport: 2 } }) });

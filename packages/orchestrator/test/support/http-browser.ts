@@ -16,6 +16,8 @@ export function httpBrowser(
     /** Fail this stage only the first N times it runs, like a flaky checker. */
     flaky?: Partial<Record<BrowserStage, number>>;
     creditsPerStage?: number;
+    /** Simulates Kane's evidence verdict: fail the stage policy this many times. */
+    failPolicy?: number;
   } = {},
 ): BrowserDriver {
   const credits = options.creditsPerStage ?? 10;
@@ -23,6 +25,17 @@ export function httpBrowser(
     name: 'http-test-double',
     version: async () => '0.10.9',
     balance: async () => 10_000,
+    async judge() {
+      const failing = (options.failPolicy ?? 0) > 0;
+      if (failing && options.failPolicy !== undefined) options.failPolicy -= 1;
+      return {
+        policy: 'returntrip-stage',
+        result: failing ? 'fail' : 'pass',
+        failedGates: failing ? ['asserted-something'] : [],
+        warnedGates: [],
+        erroredGates: [],
+      };
+    },
     async run(input) {
       const startedAt = new Date().toISOString();
       const url = new URL(input.url);
@@ -79,9 +92,10 @@ export function httpBrowser(
         assertions: [],
         finalState: {},
         testUrl: null,
-        evidencePackPath: null,
+        evidencePackPath: join(input.logDir, 'stage.evidence'),
         protocolWarnings: [],
       };
+      await writeFile(join(input.logDir, 'stage.evidence'), 'test double: no real evidence pack');
       const stdoutPath = join(input.logDir, 'kane.stdout.ndjson');
       await writeFile(stdoutPath, `${JSON.stringify({ type: 'run_end', status: result.outcome })}\n`);
       return { result, stdoutPath, stderrPath: null };

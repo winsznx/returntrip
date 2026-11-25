@@ -12,6 +12,7 @@ export interface StageReport {
   readonly kaneVersion: string | null;
   readonly steps: readonly { readonly index: number; readonly status: string; readonly remark: string }[];
   readonly assertions: BrowserResult['assertions'];
+  readonly evidenceVerdict: BrowserResult['evidenceVerdict'] | null;
 }
 
 export interface AttemptReport {
@@ -90,6 +91,7 @@ function stageReport(stage: BrowserStage, result: BrowserResult): StageReport {
     kaneVersion: result.version,
     steps: result.steps.map((step) => ({ index: step.index, status: step.status, remark: step.remark })),
     assertions: result.assertions,
+    evidenceVerdict: result.evidenceVerdict ?? null,
   };
 }
 

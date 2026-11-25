@@ -1,0 +1,18 @@
+# A Kane browser stage only counts for ReturnTrip when its own sealed evidence shows it finished,
+# passed every step, and actually asserted something (a run that only clicked proves nothing).
+policy: returntrip-stage
+requires:
+  catalog: kane-cli
+  version: ">=1"
+gates:
+  - { id: run-finalized, metric: run.status, equals: finalized, severity: blocking }
+  - { id: no-failed-steps, metric: steps.failed, equals: 0, severity: blocking }
+  - { id: no-failed-tests, metric: totals.failed, equals: 0, severity: blocking }
+  - { id: asserted-something, metric: metrics.tests_without_checks, equals: 0, severity: blocking }
+  - {
+      id: no-heals,
+      metric: metrics.heal.healed_tests,
+      max: 0,
+      severity: warning,
+      message: Kane re-authored a step during this stage,
+    }

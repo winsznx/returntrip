@@ -21,6 +21,7 @@ export {
   kaneArgs,
   runKaneObjective,
 } from './run-objective.ts';
+export { judgeEvidencePack, parseVerdict, STAGE_POLICY_PATH } from './verdict.ts';
 export {
   DEFAULT_ZIP_LIMITS,
   type EvidencePack,

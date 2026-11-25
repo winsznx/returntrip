@@ -12,7 +12,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "policies"
   ],
   "dependencies": {
     "@returntrip/contracts": "workspace:*"

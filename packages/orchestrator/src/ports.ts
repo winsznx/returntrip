@@ -1,10 +1,18 @@
-import type { BrowserResult, BrowserStage, CaptureConfig, RepairAgentResult } from '@returntrip/contracts';
+import type {
+  BrowserResult,
+  BrowserStage,
+  CaptureConfig,
+  EvidenceVerdict,
+  RepairAgentResult,
+} from '@returntrip/contracts';
 
 /** Drives one plain-English browser objective. The real implementation is Kane CLI. */
 export interface BrowserDriver {
   readonly name: string;
   version(): Promise<string | null>;
   balance(): Promise<number | null>;
+  /** Judges a sealed evidence pack against the stage policy, when the driver produces packs. */
+  judge?(packPath: string): Promise<EvidenceVerdict>;
   run(input: {
     readonly stage: BrowserStage;
     readonly objective: string;
