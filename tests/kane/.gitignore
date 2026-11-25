@@ -1,0 +1,5 @@
+# Kane writes evidence packs (account details inside) and replay caches here; only tests are shared.
+.testmuai/*
+!.testmuai/tests/
+.testmuai/tests/*
+!.testmuai/tests/*_test.md

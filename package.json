@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "clean": "tsc -b --clean"
+    "clean": "tsc -b --clean",
+    "verify:viewer": "pnpm --filter @returntrip/dashboard build:public && cd tests/kane && kane-cli testmd run .testmuai/tests/returntrip_viewer_test.md --agent"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.9",
