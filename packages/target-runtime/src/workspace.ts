@@ -1,0 +1,138 @@
+import { cp, lstat, mkdir, mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
+import { join, relative } from 'node:path';
+
+import { sha256 } from './hash.ts';
+import { execArgv, minimalEnv } from './process.ts';
+
+const COPY_EXCLUDES = new Set(['node_modules', '.git', 'dist', '.returntrip', 'coverage']);
+const GIT_ENV = { GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null', GIT_TERMINAL_PROMPT: '0' };
+
+export interface TargetCopy {
+  readonly dir: string;
+  /** git tree id of the copy as it started (after any scenario patch). Repairs are diffed against it. */
+  readonly baseTree: string;
+  readonly scenarioPatchSha256: string | null;
+}
+
+/**
+ * git inside a disposable copy only, with user and system config ignored. Snapshots are tree
+ * objects, never commits, so no author identity is involved.
+ */
+export async function gitInCopy(dir: string, args: readonly string[], stdin?: string): Promise<string> {
+  const result = await execArgv(['git', ...args], {
+    cwd: dir,
+    env: minimalEnv(GIT_ENV),
+    timeoutMs: 60_000,
+    ...(stdin === undefined ? {} : { stdin }),
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `git ${args[0] ?? ''} failed in target copy: ${result.stderr.trim() || result.stdout.trim()}`,
+    );
+  }
+  return result.stdout;
+}
+
+export async function snapshotTree(dir: string): Promise<string> {
+  await gitInCopy(dir, ['add', '--all']);
+  return (await gitInCopy(dir, ['write-tree'])).trim();
+}
+
+/** Unified diff of the working copy against a snapshot, binary-aware, no rename detection. */
+export async function diffAgainst(dir: string, baseTree: string): Promise<string> {
+  await gitInCopy(dir, ['add', '--all']);
+  return gitInCopy(dir, [
+    'diff',
+    '--cached',
+    '--binary',
+    '--no-renames',
+    '--no-color',
+    '--no-ext-diff',
+    baseTree,
+  ]);
+}
+
+/** Changed paths with their old and new modes, for symlink and permission checks. */
+export async function rawChangesAgainst(
+  dir: string,
+  baseTree: string,
+): Promise<{ path: string; oldMode: string; newMode: string; status: string }[]> {
+  await gitInCopy(dir, ['add', '--all']);
+  const raw = await gitInCopy(dir, ['diff', '--cached', '--raw', '--no-renames', '-z', baseTree]);
+  const parts = raw.split('\0').filter((part) => part.length > 0);
+  const changes: { path: string; oldMode: string; newMode: string; status: string }[] = [];
+  for (let index = 0; index + 1 < parts.length; index += 2) {
+    const meta = parts[index] ?? '';
+    const path = parts[index + 1] ?? '';
+    const [oldMode = '', newMode = '', , , status = ''] = meta.replace(/^:/, '').split(' ');
+    changes.push({ path, oldMode, newMode, status });
+  }
+  return changes;
+}
+
+/** Puts the working copy back to a snapshot, discarding every change made since. */
+export async function restoreTree(dir: string, tree: string): Promise<void> {
+  await gitInCopy(dir, ['read-tree', '--reset', '-u', tree]);
+  await gitInCopy(dir, ['clean', '-fdq']);
+}
+
+export async function applyPatch(dir: string, patch: string): Promise<void> {
+  await gitInCopy(dir, ['apply', '--whitespace=nowarn', '-'], patch);
+}
+
+/**
+ * Copies the application into a fresh directory and snapshots it, then optionally applies a
+ * scenario patch. The user's working tree is never modified.
+ */
+export async function prepareTargetCopy(options: {
+  readonly appDir: string;
+  readonly parentDir: string;
+  readonly label: string;
+  readonly scenarioPatch?: string;
+}): Promise<TargetCopy> {
+  await mkdir(options.parentDir, { recursive: true, mode: 0o700 });
+  const dir = await mkdtemp(join(options.parentDir, `${options.label}-`));
+  await cp(options.appDir, dir, {
+    recursive: true,
+    verbatimSymlinks: true,
+    filter: (source) => {
+      const rel = relative(options.appDir, source);
+      return !rel.split(/[\\/]/).some((segment) => COPY_EXCLUDES.has(segment));
+    },
+  });
+  await gitInCopy(dir, ['init', '--quiet']);
+
+  let scenarioPatchSha256: string | null = null;
+  if (options.scenarioPatch) {
+    const patch = await readFile(options.scenarioPatch, 'utf8');
+    scenarioPatchSha256 = sha256(patch);
+    await applyPatch(dir, patch);
+  }
+  return { dir, baseTree: await snapshotTree(dir), scenarioPatchSha256 };
+}
+
+export async function removeTargetCopy(dir: string): Promise<void> {
+  await rm(dir, { recursive: true, force: true });
+}
+
+/** sha256 of every regular file under the given relative paths, for before/after tamper checks. */
+export async function hashTree(root: string, paths: readonly string[]): Promise<Record<string, string>> {
+  const hashes: Record<string, string> = {};
+  const walk = async (path: string): Promise<void> => {
+    const stat = await lstat(path).catch(() => null);
+    if (!stat) return;
+    if (stat.isSymbolicLink()) {
+      hashes[relative(root, path)] = 'symlink';
+      return;
+    }
+    if (stat.isDirectory()) {
+      for (const entry of (await readdir(path)).sort()) {
+        if (!COPY_EXCLUDES.has(entry)) await walk(join(path, entry));
+      }
+      return;
+    }
+    if (stat.isFile()) hashes[relative(root, path)] = sha256(await readFile(path));
+  };
+  for (const path of paths) await walk(join(root, path));
+  return hashes;
+}

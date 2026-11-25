@@ -211,7 +211,19 @@ importers:
         specifier: workspace:*
         version: link:../contracts
 
+  packages/repair-agent:
+    dependencies:
+      '@returntrip/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+
   packages/storage:
+    dependencies:
+      '@returntrip/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+
+  packages/target-runtime:
     dependencies:
       '@returntrip/contracts':
         specifier: workspace:*
