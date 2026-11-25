@@ -29,7 +29,7 @@ export function RunHeader({
     <header className="flex flex-col gap-5 pt-8">
       <div className="flex flex-wrap items-center gap-3">
         <OutcomeBadge outcome={report.outcome} active={active} />
-        <span className="text-[15px] text-muted">{meta.meaning}</span>
+        <span className="min-w-0 basis-full text-[15px] text-muted sm:basis-auto">{meta.meaning}</span>
       </div>
       <h1
         className={
