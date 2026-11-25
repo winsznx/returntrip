@@ -30,20 +30,24 @@ function PublicNav() {
       >
         How it works
       </a>
-      <a
-        href={`${import.meta.env.BASE_URL}#install`}
-        className="hidden min-h-11 items-center text-[15px] text-muted hover:text-text md:inline-flex"
-      >
-        Install
-      </a>
+      {SITE.repoUrl ? (
+        <a
+          href={`${import.meta.env.BASE_URL}#install`}
+          className="hidden min-h-11 items-center text-[15px] text-muted hover:text-text md:inline-flex"
+        >
+          Install
+        </a>
+      ) : null}
       <NavLink to="/runs" className={navClass}>
         Runs
       </NavLink>
-      <a href={SITE.repoUrl} className="btn btn-small" rel="noreferrer" target="_blank">
-        <Icon name="github" size={16} />
-        <span>GitHub</span>
-        <span className="sr-only">(opens in a new tab)</span>
-      </a>
+      {SITE.repoUrl ? (
+        <a href={SITE.repoUrl} className="btn btn-small" rel="noreferrer" target="_blank">
+          <Icon name="github" size={16} />
+          <span>GitHub</span>
+          <span className="sr-only">(opens in a new tab)</span>
+        </a>
+      ) : null}
     </nav>
   );
 }

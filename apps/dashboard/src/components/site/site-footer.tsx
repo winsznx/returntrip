@@ -10,16 +10,20 @@ export function SiteFooter() {
           <Wordmark />
           <p className="max-w-sm text-muted">Prove your app gives back the data it exported.</p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
-            <li>
-              <a className="text-link" href={SITE.repoUrl} rel="noreferrer" target="_blank">
-                Source on GitHub
-              </a>
-            </li>
-            <li>
-              <a className="text-link" href={SITE.demoUrl} rel="noreferrer" target="_blank">
-                Demo video
-              </a>
-            </li>
+            {SITE.repoUrl ? (
+              <li>
+                <a className="text-link" href={SITE.repoUrl} rel="noreferrer" target="_blank">
+                  Source on GitHub
+                </a>
+              </li>
+            ) : null}
+            {SITE.demoUrl ? (
+              <li>
+                <a className="text-link" href={SITE.demoUrl} rel="noreferrer" target="_blank">
+                  Demo video
+                </a>
+              </li>
+            ) : null}
           </ul>
         </div>
         <div className="flex flex-col gap-4 text-[14px] text-muted">

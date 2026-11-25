@@ -53,9 +53,9 @@ async function loadLanding(signal: AbortSignal): Promise<LandingData> {
   return { runs: index.runs, healthy, defect, realApp, realAppClean: picks.realAppClean, patch };
 }
 
-const INSTALL_COMMANDS = [
+const INSTALL_COMMANDS = (repoUrl: string): string[] => [
   'npm install -g @testmuai/kane-cli && kane-cli login --oauth',
-  `git clone ${SITE.repoUrl} && cd returntrip`,
+  `git clone ${repoUrl} && cd returntrip`,
   'pnpm install && pnpm build',
   'node apps/cli/bin/returntrip.js verify --config examples/payment-roundtrip/returntrip.yaml',
 ];
@@ -93,7 +93,7 @@ export function LandingPage() {
       <ClosedLoop run={data.defect} patch={data.patch} />
       {data.realApp ? <RealApp run={data.realApp} clean={data.realAppClean} /> : null}
       <RecordedRuns runs={data.runs} totals={recordedTotals(data.runs)} />
-      <Install />
+      {SITE.repoUrl ? <Install repoUrl={SITE.repoUrl} /> : null}
       <Limits limitations={data.healthy?.report.limitations ?? data.defect?.report.limitations ?? []} />
       <CallToAction />
     </>
@@ -146,10 +146,12 @@ function Hero({ run }: { run: PublicRun | null }) {
             source.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a className="btn btn-primary" href={SITE.demoUrl} rel="noreferrer" target="_blank">
-              <Icon name="play" size={16} />
-              Watch the demo
-            </a>
+            {SITE.demoUrl ? (
+              <a className="btn btn-primary" href={SITE.demoUrl} rel="noreferrer" target="_blank">
+                <Icon name="play" size={16} />
+                Watch the demo
+              </a>
+            ) : null}
             {run ? (
               <Link className="btn" to={`/runs/${run.report.runId}`}>
                 Open the recorded run
@@ -697,8 +699,9 @@ function RecordedRuns({ runs, totals }: { runs: readonly PublicIndexEntry[]; tot
 
 /* ---------- install ---------- */
 
-function Install() {
-  const script = INSTALL_COMMANDS.join('\n');
+function Install({ repoUrl }: { repoUrl: string }) {
+  const commands = INSTALL_COMMANDS(repoUrl);
+  const script = commands.join('\n');
   return (
     <section id="install" aria-labelledby="install-heading" className="shell scroll-mt-20 pt-24 sm:pt-32">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
@@ -718,7 +721,7 @@ function Install() {
             <CopyButton text={script} label="Copy all four commands" />
           </div>
           <ol className="scroll-x flex flex-col gap-3 bg-sunken p-4">
-            {INSTALL_COMMANDS.map((command, index) => (
+            {commands.map((command, index) => (
               <li key={command} className="mono flex gap-3 text-[14px] whitespace-pre">
                 <span className="text-faint select-none" aria-hidden="true">
                   {index + 1}
@@ -761,14 +764,22 @@ function CallToAction() {
           Check what comes back before your users do.
         </h2>
         <div className="flex flex-wrap gap-3">
-          <a className="btn btn-primary" href={SITE.demoUrl} rel="noreferrer" target="_blank">
-            <Icon name="play" size={16} />
-            Watch the demo
-          </a>
-          <a className="btn" href={SITE.repoUrl} rel="noreferrer" target="_blank">
-            <Icon name="github" size={16} />
-            Get the code on GitHub
-          </a>
+          {SITE.demoUrl ? (
+            <a className="btn btn-primary" href={SITE.demoUrl} rel="noreferrer" target="_blank">
+              <Icon name="play" size={16} />
+              Watch the demo
+            </a>
+          ) : null}
+          {SITE.repoUrl ? (
+            <a className="btn" href={SITE.repoUrl} rel="noreferrer" target="_blank">
+              <Icon name="github" size={16} />
+              Get the code on GitHub
+            </a>
+          ) : (
+            <Link className="btn btn-primary" to="/runs">
+              See every recorded run
+            </Link>
+          )}
         </div>
       </div>
     </section>
