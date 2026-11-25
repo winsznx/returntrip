@@ -4,6 +4,7 @@
     { "path": "packages/contracts" },
     { "path": "packages/storage" },
     { "path": "packages/target-runtime" },
-    { "path": "packages/repair-agent" }
+    { "path": "packages/repair-agent" },
+    { "path": "packages/kane-adapter" }
   ]
 }
