@@ -126,3 +126,8 @@ export const RunEventSchema = z.discriminatedUnion('type', [
 export type RunEvent = z.infer<typeof RunEventSchema>;
 export type RunEventType = RunEvent['type'];
 export type RunEventPayload<T extends RunEventType> = Extract<RunEvent, { type: T }>['payload'];
+
+/** What a producer supplies; the store adds the envelope (seq, utc, elapsed). */
+export type RunEventInput = {
+  [K in RunEventType]: { readonly type: K; readonly attempt: number; readonly payload: RunEventPayload<K> };
+}[RunEventType];

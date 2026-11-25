@@ -11,8 +11,8 @@ import {
   type Difference,
   type EdgeSummary,
   type RunEvent,
+  type RunEventInput,
   RunEventSchema,
-  type RunEventType,
   type RunMode,
   type RunOutcome,
   type RunPhase,
@@ -296,12 +296,6 @@ function decodeCursor(cursor: string): [string, string] {
   }
   throw new Error('invalid cursor');
 }
-
-type AppendableEvent<T extends RunEventType = RunEventType> = {
-  readonly type: T;
-  readonly attempt: number;
-  readonly payload: Extract<RunEvent, { type: T }>['payload'];
-};
 
 /**
  * Local persistence for runs. One SQLite file for metadata, and a private directory of immutable
@@ -755,7 +749,7 @@ export class RunStore {
     ).map(toRepair);
   }
 
-  appendEvent<T extends RunEventType>(runId: string, event: AppendableEvent<T>): RunEvent {
+  appendEvent(runId: string, event: RunEventInput): RunEvent {
     const started = this.#runClocks.get(runId) ?? performance.now();
     this.#runClocks.set(runId, started);
     const stored = this.#transaction(() => {
