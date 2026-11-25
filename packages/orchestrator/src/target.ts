@@ -131,11 +131,29 @@ export async function bootTarget(ctx: RunContext, copy: TargetCopy | null): Prom
     });
     const stoppable = running;
     const ownedData = dataDir;
+    const attempt = ctx.attempt;
     return {
       origin: capture.origin,
       upstream,
       capture,
       async stop() {
+        // The proxy's request log (method, path, status, timing; never headers or bodies) is the
+        // record of what the browser actually fetched during this attempt.
+        await ctx.store
+          .writeArtifact({
+            runId: ctx.runId,
+            attempt,
+            kind: 'proxy-log',
+            fileName: 'proxy-requests.json',
+            data: `${JSON.stringify(capture.requestLog(), null, 2)}\n`,
+            mediaType: 'application/json',
+          })
+          .catch((error: unknown) => {
+            ctx.emit('warning', {
+              code: 'PROXY_LOG_FAILED',
+              message: `Could not keep the proxy request log: ${error instanceof Error ? error.message : String(error)}`,
+            });
+          });
         await capture.close();
         await stoppable?.stop();
         if (ownedData) await rm(ownedData, { recursive: true, force: true });
