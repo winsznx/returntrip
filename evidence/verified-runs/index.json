@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "runs": [
+    {
+      "runId": "1eb15f4a-888d-4505-bee0-10b896bf1c61",
+      "recordedAt": "2026-11-25T18:53:03.549Z",
+      "mode": "repair",
+      "outcome": "REPAIRED_VERIFIED",
+      "headline": "Fixed. First run: 1,000 of 1,000 rows came back, but amount changed in 1,000 rows After the patch: 1,000 of 1,000 records came back identical after export, restore and re-export.",
+      "scenario": "sign-flip",
+      "kaneCreditsUsed": 130.548515,
+      "durationMs": 735745
+    },
+    {
+      "runId": "964cd087-8fb1-44f4-b6e9-ed3dba76124d",
+      "recordedAt": "2026-11-25T18:33:28.052Z",
+      "mode": "verify",
+      "outcome": "VERIFIED",
+      "headline": "1,000 of 1,000 records came back identical after export, restore and re-export.",
+      "scenario": null,
+      "kaneCreditsUsed": 76.07809,
+      "durationMs": 331029
+    }
+  ]
+}
