@@ -14,7 +14,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "clean": "tsc -b --clean",
-    "verify:viewer": "pnpm --filter @returntrip/dashboard build:public && cd tests/kane && kane-cli testmd run .testmuai/tests/returntrip_viewer_test.md --agent"
+    "verify:viewer": "pnpm --filter @returntrip/dashboard build:public && cd tests/kane && kane-cli testmd run .testmuai/tests/returntrip_viewer_test.md --agent",
+    "deploy:viewer": "pnpm build && pnpm --filter @returntrip/dashboard build:public && cd apps/dashboard/dist-public && vercel deploy --prod"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.9",
