@@ -1,0 +1,25 @@
+{
+  "name": "@returntrip/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Loopback-only API and event stream for the ReturnTrip dashboard. Same engine as the CLI.",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@returntrip/contracts": "workspace:*",
+    "@returntrip/orchestrator": "workspace:*",
+    "@returntrip/reporting": "workspace:*",
+    "@returntrip/storage": "workspace:*",
+    "fastify": "5.12.8",
+    "zod": "4.6.7"
+  }
+}
