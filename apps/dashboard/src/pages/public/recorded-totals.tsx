@@ -18,8 +18,8 @@ export function RecordedTotalsLine({ totals }: { totals: RecordedTotals }) {
   }
   if (totals.realApp.attempted > 0) {
     facts.push({
-      value: `${totals.realApp.caught} / ${totals.realApp.attempted}`,
-      label: 'real-app runs that caught the data changing',
+      value: `${totals.realApp.caught} + ${totals.realApp.clean} / ${totals.realApp.attempted}`,
+      label: 'real-app runs: bug caught + clean after the fix, of all attempts',
     });
   }
   if (totals.repairs.attempted > 0) {

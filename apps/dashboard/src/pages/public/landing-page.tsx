@@ -33,6 +33,7 @@ interface LandingData {
   readonly healthy: PublicRun | null;
   readonly defect: PublicRun | null;
   readonly realApp: PublicRun | null;
+  readonly realAppClean: PublicIndexEntry | null;
   readonly patch: string | null;
 }
 
@@ -49,7 +50,7 @@ async function loadLanding(signal: AbortSignal): Promise<LandingData> {
     defect && patchFile
       ? await fetchText(evidenceUrl(`${defect.report.runId}/${patchFile.file}`), signal)
       : null;
-  return { runs: index.runs, healthy, defect, realApp, patch };
+  return { runs: index.runs, healthy, defect, realApp, realAppClean: picks.realAppClean, patch };
 }
 
 const INSTALL_COMMANDS = [
@@ -90,7 +91,7 @@ export function LandingPage() {
       <Problem />
       <HowItWorks run={data.healthy} />
       <ClosedLoop run={data.defect} patch={data.patch} />
-      {data.realApp ? <RealApp run={data.realApp} /> : null}
+      {data.realApp ? <RealApp run={data.realApp} clean={data.realAppClean} /> : null}
       <RecordedRuns runs={data.runs} totals={recordedTotals(data.runs)} />
       <Install />
       <Limits limitations={data.healthy?.report.limitations ?? data.defect?.report.limitations ?? []} />
@@ -362,7 +363,7 @@ function AfterRepair({ run }: { run: PublicRun }) {
 
 /* ---------- real app ---------- */
 
-function RealApp({ run }: { run: PublicRun }) {
+function RealApp({ run, clean }: { run: PublicRun; clean: PublicIndexEntry | null }) {
   const shot = restoreShot(run);
   const attempt = run.report.attempts[0];
   const summary = comparisonFor(attempt, 'source_reexport');

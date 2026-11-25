@@ -14,6 +14,8 @@ export interface RecordedPicks {
   readonly defect: PublicIndexEntry | null;
   /** A real app where ReturnTrip caught data changing, when one was recorded. */
   readonly realApp: PublicIndexEntry | null;
+  /** A real-app run that came back clean, such as the same journey against the fixed version. */
+  readonly realAppClean: PublicIndexEntry | null;
 }
 
 export function pickRecordedRuns(runs: readonly PublicIndexEntry[]): RecordedPicks {
@@ -24,7 +26,8 @@ export function pickRecordedRuns(runs: readonly PublicIndexEntry[]): RecordedPic
   );
   const defect = caught.find((run) => run.outcome === 'REPAIRED_VERIFIED') ?? caught[0] ?? null;
   const realApp = runs.find((run) => isRealApp(run) && run.outcome === 'DATA_MISMATCH') ?? null;
-  return { healthy, defect, realApp };
+  const realAppClean = runs.find((run) => isRealApp(run) && run.outcome === 'VERIFIED') ?? null;
+  return { healthy, defect, realApp, realAppClean };
 }
 
 export interface RecordedTotals {
@@ -34,7 +37,7 @@ export interface RecordedTotals {
   readonly defects: { readonly attempted: number; readonly detected: number; readonly missed: number };
   readonly repairs: { readonly attempted: number; readonly verified: number };
   /** Runs against real, unmodified apps, and how many found the data changing. */
-  readonly realApp: { readonly attempted: number; readonly caught: number };
+  readonly realApp: { readonly attempted: number; readonly caught: number; readonly clean: number };
   readonly kaneCredits: number;
   readonly durationMs: number;
 }
@@ -62,6 +65,7 @@ export function recordedTotals(runs: readonly PublicIndexEntry[]): RecordedTotal
     realApp: {
       attempted: realAppRuns.length,
       caught: realAppRuns.filter((run) => run.outcome === 'DATA_MISMATCH').length,
+      clean: realAppRuns.filter((run) => run.outcome === 'VERIFIED').length,
     },
     kaneCredits: runs.reduce((sum, run) => sum + run.kaneCreditsUsed, 0),
     durationMs: runs.reduce((sum, run) => sum + (run.durationMs ?? 0), 0),

@@ -198,7 +198,7 @@ describe('recorded bundles', () => {
     // #then
     expect({ healthy: totals.healthy, realApp: totals.realApp }).toEqual({
       healthy: { attempted: 1, verified: 1 },
-      realApp: { attempted: 1, caught: 1 },
+      realApp: { attempted: 1, caught: 1, clean: 0 },
     });
   });
 
