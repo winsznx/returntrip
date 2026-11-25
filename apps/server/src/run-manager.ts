@@ -1,4 +1,6 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 import type { RunMode } from '@returntrip/contracts';
 import { type EngineDeps, executeRun, type LoadedConfig, loadConfig } from '@returntrip/orchestrator';
@@ -7,6 +9,20 @@ import type { RunRecord, RunStore } from '@returntrip/storage';
 export interface Project {
   readonly id: string;
   readonly loaded: LoadedConfig;
+}
+
+/** A run whose project lock belongs to a live process is still running elsewhere (e.g. the CLI). */
+async function lockHeldByLiveProcess(root: string, project: string): Promise<boolean> {
+  const text = await readFile(join(root, 'locks', `${project}.lock`), 'utf8').catch(() => null);
+  if (!text) return false;
+  const { pid } = JSON.parse(text) as { pid?: unknown };
+  if (typeof pid !== 'number') return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === 'EPERM';
+  }
 }
 
 export function projectId(configPath: string): string {
@@ -48,7 +64,10 @@ export class RunManager {
       const loaded = await loadConfig(path);
       manager.#projects.set(projectId(loaded.configPath), { id: projectId(loaded.configPath), loaded });
     }
-    store.reconcileInterrupted((runId) => manager.#active.has(runId));
+    const owners = new Map<string, boolean>();
+    for (const run of store.activeRuns())
+      owners.set(run.id, await lockHeldByLiveProcess(store.root, run.project));
+    store.reconcileInterrupted((runId) => manager.#active.has(runId) || owners.get(runId) === true);
     return manager;
   }
 
