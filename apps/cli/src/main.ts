@@ -8,6 +8,7 @@ import { init } from './commands/init.ts';
 import { replay } from './commands/replay.ts';
 import { runCommand } from './commands/run.ts';
 import { cancelRun, deleteRun, exportReport, listRuns, showRun } from './commands/runs.ts';
+import { ui } from './commands/ui.ts';
 import { consoleOutput, type Output } from './render.ts';
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
@@ -125,6 +126,15 @@ export function buildProgram(out: Output, setExit: (code: number) => void): Comm
     .action(
       act((id: string, options: Parameters<typeof exportEvidence>[1]) => exportEvidence(id, options, out)),
     );
+
+  program
+    .command('ui')
+    .description('open the local dashboard on 127.0.0.1 for one or more configs')
+    .option('-c, --config <path...>', 'config files to offer as projects', [])
+    .addOption(store())
+    .option('--port <port>', 'loopback port', '4320')
+    .option('--headless', 'run Chrome without a window')
+    .action(act((options: Parameters<typeof ui>[0]) => ui(options, out)));
 
   program
     .command('cancel <id>')

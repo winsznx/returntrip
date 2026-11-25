@@ -29,10 +29,10 @@
       "path": "packages/orchestrator"
     },
     {
-      "path": "apps/cli"
+      "path": "apps/server"
     },
     {
-      "path": "apps/server"
+      "path": "apps/cli"
     }
   ]
 }

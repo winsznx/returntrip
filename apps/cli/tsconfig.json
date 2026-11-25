@@ -26,6 +26,9 @@
     },
     {
       "path": "../../packages/repair-agent"
+    },
+    {
+      "path": "../../apps/server"
     }
   ]
 }

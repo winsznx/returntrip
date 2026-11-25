@@ -29,6 +29,7 @@
     "@returntrip/orchestrator": "workspace:*",
     "@returntrip/repair-agent": "workspace:*",
     "@returntrip/reporting": "workspace:*",
+    "@returntrip/server": "workspace:*",
     "@returntrip/storage": "workspace:*",
     "commander": "15.1.0",
     "picocolors": "1.1.1",
