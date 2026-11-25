@@ -23,3 +23,9 @@ in code instead and are labeled as synthetic.
 `fake-kane.mjs` is a test double, not kane-cli. It replays one of these files to stdout with
 configurable delays and exit code so process handling (cancellation, process-group kill,
 deadlines) can be tested without spending Kane credits.
+
+`sure/sure-44aad3a-family-export.zip` is a real family data export from Sure at commit 44aad3a
+(written by rubyzip), captured by ReturnTrip's proxy on 2026-11-25. It holds only data ReturnTrip
+seeded into a throwaway local instance: 250 public City of Chicago payments and test users
+`@returntrip.test`. Every entry declares 0xFFFFFFFF sizes and carries the real ones in a Zip64
+extra field, which is why it's here.

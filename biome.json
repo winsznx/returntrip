@@ -9,7 +9,8 @@
       "!.returntrip",
       "!**/*.tsbuildinfo",
       "!examples/**/*.yaml",
-      "!evidence"
+      "!evidence",
+      "!**/test/fixtures"
     ]
   },
   "formatter": {

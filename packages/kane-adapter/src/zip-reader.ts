@@ -65,8 +65,8 @@ interface CentralRecord extends ZipEntry {
 /**
  * Opens a ZIP archive (Kane's `.evidence` pack) for reading without extracting it to disk.
  * Supports stored and deflated entries only, and rejects anything a hostile archive could use:
- * traversal or absolute names, backslashes, symlinks, encryption, ZIP64, duplicate names,
- * and entry counts, sizes or compression ratios above `limits`.
+ * traversal or absolute names, backslashes, symlinks, encryption, ZIP64 archives (Zip64 entry
+ * sizes are fine), duplicate names, and entry counts, sizes or compression ratios above `limits`.
  */
 export async function readEvidencePack(path: string, limits: Partial<ZipLimits> = {}): Promise<EvidencePack> {
   return parseZip(await readFile(path), { ...DEFAULT_ZIP_LIMITS, ...limits });
@@ -165,17 +165,22 @@ function readCentralRecord(
   const flags = archive.readUInt16LE(offset + 8);
   const method = archive.readUInt16LE(offset + 10);
   const checksum = archive.readUInt32LE(offset + 16);
-  const compressedSize = archive.readUInt32LE(offset + 20);
-  const size = archive.readUInt32LE(offset + 24);
   const nameLength = archive.readUInt16LE(offset + 28);
   const extraLength = archive.readUInt16LE(offset + 30);
   const commentLength = archive.readUInt16LE(offset + 32);
   const externalAttributes = archive.readUInt32LE(offset + 38);
-  const localHeaderOffset = archive.readUInt32LE(offset + 42);
   const nameStart = offset + CENTRAL_HEADER_SIZE;
   const next = nameStart + nameLength + extraLength + commentLength;
   if (next > centralEnd)
     throw new EvidencePackError('CORRUPT', `central directory entry at ${offset} overruns`);
+  const { size, compressedSize, localHeaderOffset } = resolveZip64Sizes(
+    archive.subarray(nameStart + nameLength, nameStart + nameLength + extraLength),
+    {
+      size: archive.readUInt32LE(offset + 24),
+      compressedSize: archive.readUInt32LE(offset + 20),
+      localHeaderOffset: archive.readUInt32LE(offset + 42),
+    },
+  );
 
   const name = decodeName(archive.subarray(nameStart, nameStart + nameLength), flags);
   assertSafeName(name);
@@ -198,6 +203,51 @@ function readCentralRecord(
     record: { name, size, compressedSize, crc32: checksum, method, localHeaderOffset },
     next,
   };
+}
+
+const ZIP64_EXTRA_ID = 0x0001;
+const ZIP64_MARKER = 0xffffffff;
+
+/**
+ * Some writers (rubyzip, for one) mark every size as 0xFFFFFFFF and put the real values in the
+ * Zip64 extended information extra field, in a fixed order: uncompressed size, compressed size,
+ * local header offset, each present only when its 32-bit field holds the marker.
+ */
+export function resolveZip64Sizes(
+  extra: Buffer,
+  fields: { size: number; compressedSize: number; localHeaderOffset: number },
+): { size: number; compressedSize: number; localHeaderOffset: number } {
+  const needs = [fields.size, fields.compressedSize, fields.localHeaderOffset].some(
+    (v) => v === ZIP64_MARKER,
+  );
+  if (!needs) return fields;
+  for (let at = 0; at + 4 <= extra.length; ) {
+    const id = extra.readUInt16LE(at);
+    const length = extra.readUInt16LE(at + 2);
+    const body = extra.subarray(at + 4, at + 4 + length);
+    if (body.length !== length) break;
+    if (id === ZIP64_EXTRA_ID) {
+      let cursor = 0;
+      const take = (current: number): number => {
+        if (current !== ZIP64_MARKER) return current;
+        if (cursor + 8 > body.length)
+          throw new EvidencePackError('CORRUPT', 'Zip64 extra field is too short');
+        const value = body.readBigUInt64LE(cursor);
+        cursor += 8;
+        if (value > BigInt(Number.MAX_SAFE_INTEGER)) {
+          throw new EvidencePackError('LIMIT_EXCEEDED', 'Zip64 value is larger than this reader supports');
+        }
+        return Number(value);
+      };
+      return {
+        size: take(fields.size),
+        compressedSize: take(fields.compressedSize),
+        localHeaderOffset: take(fields.localHeaderOffset),
+      };
+    }
+    at += 4 + length;
+  }
+  throw new EvidencePackError('CORRUPT', 'entry declares Zip64 sizes but has no Zip64 extra field');
 }
 
 function decodeName(bytes: Buffer, flags: number): string {

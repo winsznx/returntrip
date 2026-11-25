@@ -36,18 +36,24 @@ export function parseVerdict(stdout: string, policy: string): EvidenceVerdict {
     warnedGates: [],
     erroredGates: [],
   };
-  const line = stdout
-    .split('\n')
-    .map((text) => text.trim())
-    .reverse()
-    .find((text) => text.startsWith('{'));
-  if (!line) return errored;
-  let parsed: VerdictJson;
-  try {
-    parsed = JSON.parse(line) as VerdictJson;
-  } catch {
-    return errored;
+  const candidates = [
+    stdout.trim(),
+    ...stdout
+      .split('\n')
+      .map((text) => text.trim())
+      .filter((text) => text.startsWith('{'))
+      .reverse(),
+  ];
+  let parsed: VerdictJson | null = null;
+  for (const candidate of candidates) {
+    try {
+      parsed = JSON.parse(candidate) as VerdictJson;
+      break;
+    } catch {
+      parsed = null;
+    }
   }
+  if (!parsed) return errored;
   const result = parsed.result;
   if (result !== 'pass' && result !== 'fail' && result !== 'errored') return errored;
   const gates = parsed.verdicts?.[0]?.gates ?? [];
