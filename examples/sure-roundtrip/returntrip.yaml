@@ -42,15 +42,15 @@ journey:
   destinationWorkspace: sure-restore
   workspaceUrl: '{origin}/sessions/new?email={workspace}%40returntrip.test'
   export: >-
-    Go to {sourceUrl}. The email field is already filled in. Type returntrip-local-1 into the Password field and click 'Log in'.
+    Go to {sourceUrl}, type returntrip-local-1 into the Password field and click 'Log in'.
     Go to {origin}/family_exports and click 'New Export', then click 'Export data'.
     Wait until the newest export shows 'Complete' (the list refreshes by itself), then click that export's Download icon,
     then verify the newest export still shows 'Complete'.
   createDestination: >-
-    Go to {destinationUrl}. The email field is already filled in. Type returntrip-local-1 into the Password field and click 'Log in'.
+    Go to {destinationUrl}, type returntrip-local-1 into the Password field and click 'Log in'.
     Go to {origin}/transactions and verify that no transactions are listed.
   restore: >-
-    Go to {destinationUrl}. The email field is already filled in. Type returntrip-local-1 into the Password field and click 'Log in'.
+    Go to {destinationUrl}, type returntrip-local-1 into the Password field and click 'Log in'.
     Go to {origin}/imports/new and click 'Import transactions'.
     Upload the file {restoreFile} into the CSV file input and continue to the configuration step.
     Set the Date column to 'date', Amount to 'amount', Currency to 'currency', Account to 'account_name', Name to 'name' and Notes to 'notes'.
@@ -58,7 +58,7 @@ journey:
     Click 'Next step', click 'Next' on each following page, then click 'Publish import'.
     Click 'Check status' until the page shows 'Import successful', then verify it shows 'Import successful'.
   reexport: >-
-    Go to {destinationUrl}. The email field is already filled in. Type returntrip-local-1 into the Password field and click 'Log in'.
+    Go to {destinationUrl}, type returntrip-local-1 into the Password field and click 'Log in'.
     Go to {origin}/family_exports and click 'New Export', then click 'Export data'.
     Wait until the newest export shows 'Complete', then click that export's Download icon,
     then verify the newest export still shows 'Complete'.
