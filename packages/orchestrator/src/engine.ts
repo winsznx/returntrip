@@ -3,11 +3,17 @@ import { join } from 'node:path';
 
 import type { RunMode, RunOutcome } from '@returntrip/contracts';
 import { canonicalContractHash } from '@returntrip/csv-comparator';
-import { buildRunReport, type RunReport, renderMarkdown } from '@returntrip/reporting';
+import {
+  buildRunReport,
+  NO_CONTEXT,
+  type ReportContext,
+  type RunReport,
+  renderMarkdown,
+} from '@returntrip/reporting';
 import type { RunRecord, RunStore } from '@returntrip/storage';
 import { removeTargetCopy, type TargetCopy } from '@returntrip/target-runtime';
 
-import { type LoadedConfig, readPinnedSource } from './config-loader.ts';
+import { type LoadedConfig, loadConfig, readPinnedSource } from './config-loader.ts';
 import { type EngineOptions, RunContext } from './context.ts';
 import { RunStop } from './errors.ts';
 import { type JourneyResult, runJourney } from './journey.ts';
@@ -113,6 +119,23 @@ function verdictFor(
   };
 }
 
+export function reportContextOf(loaded: LoadedConfig): ReportContext {
+  const app = loaded.config.application;
+  return {
+    scenario: scenarioOf(loaded),
+    target: { mode: app.mode, origin: app.mode === 'attached' ? app.origin : null },
+  };
+}
+
+/** Loads the run's own config to describe its target; a run whose config is gone gets no context. */
+export async function reportContextFor(configPath: string): Promise<ReportContext> {
+  try {
+    return reportContextOf(await loadConfig(configPath));
+  } catch {
+    return NO_CONTEXT;
+  }
+}
+
 export function scenarioOf(loaded: LoadedConfig): RunReport['scenario'] {
   const app = loaded.config.application;
   if (app.mode !== 'managed' || !app.scenario) return null;
@@ -124,7 +147,7 @@ export function scenarioOf(loaded: LoadedConfig): RunReport['scenario'] {
 }
 
 async function writeReports(ctx: RunContext): Promise<void> {
-  const report = buildRunReport(ctx.store, ctx.runId, scenarioOf(ctx.loaded));
+  const report = buildRunReport(ctx.store, ctx.runId, reportContextOf(ctx.loaded));
   await ctx.store.writeArtifact({
     runId: ctx.runId,
     attempt: 0,

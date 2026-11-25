@@ -50,6 +50,8 @@ export interface RunReport {
   readonly durationMs: number | null;
   readonly hashes: { readonly config: string; readonly contract: string; readonly source: string };
   readonly baseRevision: string | null;
+  /** managed: ReturnTrip started a copy of the app. attached: a real, separately running app. */
+  readonly target: { readonly mode: 'managed' | 'attached'; readonly origin: string | null } | null;
   readonly scenario: {
     readonly name: string;
     readonly disclosure: string;
@@ -121,11 +123,20 @@ export function describeEvent(event: RunEvent): string | null {
   }
 }
 
+/** What the run was pointed at. Comes from the config, so the caller supplies it. */
+export interface ReportContext {
+  readonly scenario: RunReport['scenario'];
+  readonly target: RunReport['target'];
+}
+
+export const NO_CONTEXT: ReportContext = { scenario: null, target: null };
+
 export function buildRunReport(
   store: RunStore,
   runId: string,
-  scenario: RunReport['scenario'] = null,
+  context: ReportContext = NO_CONTEXT,
 ): RunReport {
+  const { scenario, target } = context;
   const run = store.getRun(runId);
   if (!run) throw new Error(`run ${runId} not found`);
   const stages = store.listStages(runId);
@@ -159,6 +170,7 @@ export function buildRunReport(
     durationMs: run.finishedAt ? Date.parse(run.finishedAt) - Date.parse(run.startedAt) : null,
     hashes: { config: run.configHash, contract: run.contractHash, source: run.sourceHash },
     baseRevision: run.baseRevision,
+    target,
     scenario,
     kane: {
       version: run.kaneVersion ?? kaneVersions[0] ?? null,

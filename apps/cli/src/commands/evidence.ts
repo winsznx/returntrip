@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { promisify } from 'node:util';
 
 import { EXIT_CODES } from '@returntrip/contracts';
-import { loadConfig, scenarioOf } from '@returntrip/orchestrator';
+import { reportContextFor } from '@returntrip/orchestrator';
 import { exportPublicBundle } from '@returntrip/reporting';
 import pc from 'picocolors';
 
@@ -43,12 +43,11 @@ export async function exportEvidence(
       out.info(pc.red('Only finished runs can be exported.'));
       return EXIT_CODES.INVALID_CONFIG;
     }
-    const loaded = await loadConfig(run.configPath).catch(() => null);
     const { dir, run: bundle } = await exportPublicBundle({
       store,
       runId: id,
       outDir: resolve(options.out),
-      scenario: loaded ? scenarioOf(loaded) : null,
+      context: await reportContextFor(run.configPath),
       commit: await currentCommit(process.cwd()),
     });
     out.info(`Wrote ${dir}`);

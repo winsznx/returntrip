@@ -6,9 +6,11 @@ import { COMPARISON_EDGES, type ComparisonEdge, type Difference } from '@returnt
 import { readEvidencePack, summarizeEvidence } from '@returntrip/kane-adapter';
 import type { ArtifactRecord, RunStore } from '@returntrip/storage';
 
-import { buildRunReport, type RunReport } from './report.ts';
+import { buildRunReport, type ReportContext, type RunReport } from './report.ts';
 
 const MAX_DIFFERENCES_PER_EDGE = 200;
+/** Kane screenshots kept per stage try: the last steps, where the outcome is visible. */
+const MAX_SCREENSHOTS_PER_TRY = 4;
 const PUBLIC_KINDS = new Set<ArtifactRecord['kind']>([
   'source',
   'export',
@@ -51,6 +53,9 @@ export interface PublicIndexEntry {
   readonly outcome: string | null;
   readonly headline: string | null;
   readonly scenario: string | null;
+  readonly project: string;
+  /** managed: the demo app ReturnTrip started. attached: a real app running on its own. */
+  readonly targetMode: 'managed' | 'attached' | null;
   readonly kaneCreditsUsed: number;
   readonly durationMs: number | null;
 }
@@ -70,11 +75,11 @@ export async function exportPublicBundle(input: {
   store: RunStore;
   runId: string;
   outDir: string;
-  scenario?: RunReport['scenario'];
+  context?: ReportContext;
   commit?: string | null;
 }): Promise<{ dir: string; run: PublicRun }> {
   const { store, runId } = input;
-  const report = buildRunReport(store, runId, input.scenario ?? null);
+  const report = buildRunReport(store, runId, input.context);
   const dir = join(input.outDir, runId);
   await mkdir(join(dir, 'files'), { recursive: true });
   await mkdir(join(dir, 'screens'), { recursive: true });
@@ -116,11 +121,13 @@ export async function exportPublicBundle(input: {
       const label = tryIndex > 0 ? `${stage}-retry${tryIndex}` : stage;
       const pack = await readEvidencePack(store.artifactPath(artifact));
       const summary = summarizeEvidence(pack);
-      const picks = summary.steps.filter((step) => step.screenshots.length > 0);
+      const withShots = summary.steps.filter((step) => step.screenshots.length > 0);
+      const picks = withShots.slice(-MAX_SCREENSHOTS_PER_TRY);
+      const skipped = withShots.length - picks.length;
       for (const [index, step] of picks.entries()) {
         const shot = step.screenshots.at(-1);
         if (!shot) continue;
-        const file = `screens/a${artifact.attempt}-${label}-${index + 1}.jpg`;
+        const file = `screens/a${artifact.attempt}-${label}-${skipped + index + 1}.jpg`;
         await writeFile(join(dir, file), pack.read(shot));
         screenshots.push({ attempt: artifact.attempt, stage, try: tryIndex, step: step.step, file });
       }
@@ -156,6 +163,8 @@ export async function writeIndex(outDir: string): Promise<PublicIndexEntry[]> {
       outcome: run.report.outcome,
       headline: run.report.headline,
       scenario: run.report.scenario?.name ?? null,
+      project: run.report.project,
+      targetMode: run.report.target?.mode ?? null,
       kaneCreditsUsed: run.report.kane.creditsUsed,
       durationMs: run.report.durationMs,
     });

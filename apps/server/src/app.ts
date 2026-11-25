@@ -3,8 +3,8 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
 
 import { COMPARISON_EDGES, DIFFERENCE_KINDS, type RunEvent } from '@returntrip/contracts';
-import { OUTCOME_TEXT, scenarioOf } from '@returntrip/orchestrator';
-import { buildRunReport, renderMarkdown } from '@returntrip/reporting';
+import { OUTCOME_TEXT, reportContextOf, scenarioOf } from '@returntrip/orchestrator';
+import { buildRunReport, NO_CONTEXT, renderMarkdown } from '@returntrip/reporting';
 import type { RunStore } from '@returntrip/storage';
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { z } from 'zod';
@@ -204,7 +204,7 @@ export async function buildServer(
       run,
       outcomeText: run?.outcome ? OUTCOME_TEXT[run.outcome] : null,
       active: runs.isActive(id),
-      report: buildRunReport(store, id, project ? scenarioOf(project.loaded) : null),
+      report: buildRunReport(store, id, project ? reportContextOf(project.loaded) : NO_CONTEXT),
     };
   });
 

@@ -13,6 +13,8 @@ export {
   describeEvent,
   LIMITATIONS,
   type ManifestEntry,
+  NO_CONTEXT,
+  type ReportContext,
   type RunReport,
   type StageReport,
 } from './report.ts';

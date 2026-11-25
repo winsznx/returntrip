@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
 import { EXIT_CODES } from '@returntrip/contracts';
+import { reportContextFor } from '@returntrip/orchestrator';
 import { buildRunReport, renderMarkdown } from '@returntrip/reporting';
 import type { RunStore } from '@returntrip/storage';
 import pc from 'picocolors';
@@ -53,13 +54,13 @@ export async function listRuns(options: StoreOptions & { limit?: string }, out: 
 }
 
 export async function showRun(id: string, options: StoreOptions, out: Output): Promise<number> {
-  return withStore(options, (store) => {
+  return withStore(options, async (store) => {
     const run = store.getRun(id);
     if (!run) {
       out.info(pc.red(`No run ${id}.`));
       return EXIT_CODES.INVALID_CONFIG;
     }
-    const report = buildRunReport(store, id);
+    const report = buildRunReport(store, id, await reportContextFor(run.configPath));
     if (options.json) {
       out.data(`${JSON.stringify(report, null, 2)}\n`);
       return 0;
@@ -75,11 +76,12 @@ export async function exportReport(
   out: Output,
 ): Promise<number> {
   return withStore(options, async (store) => {
-    if (!store.getRun(id)) {
+    const run = store.getRun(id);
+    if (!run) {
       out.info(pc.red(`No run ${id}.`));
       return EXIT_CODES.INVALID_CONFIG;
     }
-    const report = buildRunReport(store, id);
+    const report = buildRunReport(store, id, await reportContextFor(run.configPath));
     const text =
       options.format === 'markdown' ? renderMarkdown(report) : `${JSON.stringify(report, null, 2)}\n`;
     if (options.out) {

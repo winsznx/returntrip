@@ -11,7 +11,8 @@
       "!examples/**/*.yaml",
       "!evidence",
       "!**/test/fixtures",
-      "!tests/kane/.testmuai"
+      "!tests/kane/.testmuai",
+      "!**/.stack"
     ]
   },
   "formatter": {

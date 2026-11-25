@@ -9,7 +9,7 @@ export {
 } from './config-loader.ts';
 export type { EngineOptions } from './context.ts';
 export { claudeRepairDriver, kaneDriver, proxyCaptureDriver, realDeps } from './drivers.ts';
-export { executeRun, type StartRunInput, scenarioOf } from './engine.ts';
+export { executeRun, reportContextFor, reportContextOf, type StartRunInput, scenarioOf } from './engine.ts';
 export { RunStop } from './errors.ts';
 export { OUTCOME_TEXT } from './messages.ts';
 export type {
