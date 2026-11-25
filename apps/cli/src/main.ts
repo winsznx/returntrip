@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { Command, Option } from 'commander';
 
 import { doctor } from './commands/doctor.ts';
+import { exportEvidence } from './commands/evidence.ts';
 import { init } from './commands/init.ts';
 import { replay } from './commands/replay.ts';
 import { runCommand } from './commands/run.ts';
@@ -112,6 +113,18 @@ export function buildProgram(out: Output, setExit: (code: number) => void): Comm
     .option('--headless', 'run Chrome without a window')
     .option('-y, --yes', 'approve a repair replay without asking')
     .action(act((id: string, options: Parameters<typeof replay>[1]) => replay(id, options, out)));
+
+  program
+    .command('evidence')
+    .description('export a sanitized copy of a finished run for the public viewer')
+    .command('export <id>')
+    .addOption(config())
+    .addOption(store())
+    .requiredOption('-o, --out <dir>', 'bundle directory, e.g. apps/dashboard/public/evidence')
+    .option('--public', 'confirm this bundle is meant to be published')
+    .action(
+      act((id: string, options: Parameters<typeof exportEvidence>[1]) => exportEvidence(id, options, out)),
+    );
 
   program
     .command('cancel <id>')
