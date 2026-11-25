@@ -1,0 +1,30 @@
+diff --git a/src/import/import-payments.ts b/src/import/import-payments.ts
+index 4e56623..12c5386 100644
+--- a/src/import/import-payments.ts
++++ b/src/import/import-payments.ts
+@@ -1,7 +1,6 @@
+ import { CsvParseError, parseCsv } from '../csv/parse.ts';
+ import type { LedgerStore } from '../db.ts';
+ import { isValidCheckDate } from '../domain/check-date.ts';
+-import { parseAmountCents } from '../domain/money.ts';
+ import { type NewPayment, PAYMENT_CSV_COLUMNS } from '../domain/payment.ts';
+ 
+ export type ImportOutcome =
+@@ -80,8 +79,7 @@ function toPayment(cells: readonly string[], rowNumber: number): RowOutcome {
+     vendorName = '',
+   ] = cells;
+ 
+-  const amountCents = parseAmountCents(amount);
+-  if (amountCents === undefined) {
++  if (!/^-?\d+(\.\d{1,2})?$/.test(amount)) {
+     return {
+       ok: false,
+       error: `Row ${rowNumber}: amount "${amount}" is not valid. Use digits with up to two decimal places, like 1234.56.`,
+@@ -94,6 +92,7 @@ function toPayment(cells: readonly string[], rowNumber: number): RowOutcome {
+     };
+   }
+ 
++  const amountCents = BigInt(Number.parseInt(amount, 10)) * 100n;
+   return {
+     ok: true,
+     payment: {

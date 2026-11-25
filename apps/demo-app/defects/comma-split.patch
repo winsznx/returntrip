@@ -1,0 +1,38 @@
+diff --git a/src/import/import-payments.ts b/src/import/import-payments.ts
+index 4e56623..8dfdcb4 100644
+--- a/src/import/import-payments.ts
++++ b/src/import/import-payments.ts
+@@ -1,4 +1,3 @@
+-import { CsvParseError, parseCsv } from '../csv/parse.ts';
+ import type { LedgerStore } from '../db.ts';
+ import { isValidCheckDate } from '../domain/check-date.ts';
+ import { parseAmountCents } from '../domain/money.ts';
+@@ -25,15 +24,10 @@ export function importPayments(store: LedgerStore, workspaceId: number, file: Ui
+     return failure('The file is not UTF-8 text. Save it as "CSV UTF-8" and try again.');
+   }
+ 
+-  let records: string[][];
+-  try {
+-    records = parseCsv(text);
+-  } catch (error) {
+-    if (error instanceof CsvParseError) {
+-      return failure(`The file is not valid CSV: ${error.message}.`);
+-    }
+-    throw error;
+-  }
++  const records = text
++    .split(/\r?\n/)
++    .map((line) => line.split(',').map((cell) => cell.replace(/^"|"$/g, '')))
++    .filter((cells) => cells.length >= PAYMENT_CSV_COLUMNS.length);
+ 
+   const [header, ...rows] = records;
+   if (header === undefined) {
+@@ -65,7 +59,7 @@ export function importPayments(store: LedgerStore, workspaceId: number, file: Ui
+ }
+ 
+ function toPayment(cells: readonly string[], rowNumber: number): RowOutcome {
+-  if (cells.length !== PAYMENT_CSV_COLUMNS.length) {
++  if (cells.length < PAYMENT_CSV_COLUMNS.length) {
+     return {
+       ok: false,
+       error: `Row ${rowNumber} has ${cells.length} fields; expected ${PAYMENT_CSV_COLUMNS.length}.`,

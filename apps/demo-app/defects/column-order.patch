@@ -1,0 +1,16 @@
+diff --git a/src/import/import-payments.ts b/src/import/import-payments.ts
+index 4e56623..2bb4583 100644
+--- a/src/import/import-payments.ts
++++ b/src/import/import-payments.ts
+@@ -75,9 +75,9 @@ function toPayment(cells: readonly string[], rowNumber: number): RowOutcome {
+     voucherNumber = '',
+     amount = '',
+     checkDate = '',
+-    departmentName = '',
+-    contractNumber = '',
+     vendorName = '',
++    contractNumber = '',
++    departmentName = '',
+   ] = cells;
+ 
+   const amountCents = parseAmountCents(amount);

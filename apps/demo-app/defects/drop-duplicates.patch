@@ -1,0 +1,26 @@
+diff --git a/src/import/import-payments.ts b/src/import/import-payments.ts
+index 4e56623..745fd15 100644
+--- a/src/import/import-payments.ts
++++ b/src/import/import-payments.ts
+@@ -1,3 +1,4 @@
++import { createHash } from 'node:crypto';
+ import { CsvParseError, parseCsv } from '../csv/parse.ts';
+ import type { LedgerStore } from '../db.ts';
+ import { isValidCheckDate } from '../domain/check-date.ts';
+@@ -45,10 +46,16 @@ export function importPayments(store: LedgerStore, workspaceId: number, file: Ui
+   }
+ 
+   const payments: NewPayment[] = [];
++  const seen = new Set<string>();
+   for (const [index, cells] of rows.entries()) {
+     if (isBlankLine(cells)) {
+       continue;
+     }
++    const fingerprint = createHash('sha1').update(cells.join('\u001f')).digest('hex');
++    if (seen.has(fingerprint)) {
++      continue;
++    }
++    seen.add(fingerprint);
+     // Spreadsheet numbering: the header is row 1, so the first payment is row 2.
+     const row = toPayment(cells, index + 2);
+     if (!row.ok) {
