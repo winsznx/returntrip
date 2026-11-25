@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/contracts"
+    },
+    {
+      "path": "../../packages/csv-comparator"
+    },
+    {
+      "path": "../../packages/orchestrator"
+    },
+    {
+      "path": "../../packages/reporting"
+    },
+    {
+      "path": "../../packages/storage"
+    },
+    {
+      "path": "../../packages/kane-adapter"
+    },
+    {
+      "path": "../../packages/repair-agent"
+    }
+  ]
+}

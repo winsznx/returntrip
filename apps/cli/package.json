@@ -1,0 +1,37 @@
+{
+  "name": "returntrip",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Prove your app gives back the data it exported: Kane CLI drives export, restore and re-export, ReturnTrip compares every record and can hand real failures to Claude Code to fix.",
+  "license": "MIT",
+  "bin": {
+    "returntrip": "./bin/returntrip.js"
+  },
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@returntrip/contracts": "workspace:*",
+    "@returntrip/csv-comparator": "workspace:*",
+    "@returntrip/kane-adapter": "workspace:*",
+    "@returntrip/orchestrator": "workspace:*",
+    "@returntrip/repair-agent": "workspace:*",
+    "@returntrip/reporting": "workspace:*",
+    "@returntrip/storage": "workspace:*",
+    "commander": "15.1.0",
+    "picocolors": "1.1.1",
+    "yaml": "2.9.1"
+  }
+}

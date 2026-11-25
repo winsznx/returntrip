@@ -1,8 +1,15 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/contracts packages/csv-comparator packages/storage packages/target-runtime packages/repair-agent packages/kane-adapter packages/artifact-capture" },
+    { "path": "packages/contracts" },
+    { "path": "packages/csv-comparator" },
+    { "path": "packages/storage" },
+    { "path": "packages/target-runtime" },
+    { "path": "packages/repair-agent" },
+    { "path": "packages/kane-adapter" },
+    { "path": "packages/artifact-capture" },
     { "path": "packages/reporting" },
-    { "path": "packages/orchestrator" }
+    { "path": "packages/orchestrator" },
+    { "path": "apps/cli" }
   ]
 }
