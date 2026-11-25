@@ -187,7 +187,15 @@ export const CaptureSchema = z.strictObject({
     .min(1)
     .max(256 * 1024 * 1024)
     .default(10 * 1024 * 1024),
+  /**
+   * Restore upload route. When set, the proxy hashes the uploaded file part so lineage is
+   * proven from bytes: what the browser uploaded must equal what the export produced.
+   */
+  restoreRoute: z.string().startsWith('/').includes(':workspace').optional(),
+  restoreMethod: z.enum(['POST', 'PUT']).default('POST'),
+  restoreFileField: z.string().min(1).default('file'),
 });
+export type CaptureConfig = z.output<typeof CaptureSchema>;
 
 export const LimitsSchema = z.strictObject({
   browserRunTimeoutMs: z.number().int().min(10_000).max(1_800_000).default(240_000),
