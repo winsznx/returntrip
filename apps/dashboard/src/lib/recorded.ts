@@ -1,6 +1,8 @@
 import type { PublicIndexEntry } from './types.ts';
 
 const DETECTED = new Set(['DATA_MISMATCH', 'REPAIRED_VERIFIED', 'REPAIR_UNRESOLVED']);
+/** The recreated defect that matches the real bug the site opens with (Sure PR #4754). */
+const FEATURED_SCENARIO = 'sign-flip';
 
 /** Runs against a real app ReturnTrip didn't start (attached mode), such as Sure. */
 function isRealApp(run: PublicIndexEntry): boolean {
@@ -24,7 +26,9 @@ export function pickRecordedRuns(runs: readonly PublicIndexEntry[]): RecordedPic
   const caught = runs.filter(
     (run) => run.scenario !== null && run.outcome !== null && DETECTED.has(run.outcome),
   );
-  const defect = caught.find((run) => run.outcome === 'REPAIRED_VERIFIED') ?? caught[0] ?? null;
+  const repaired = caught.filter((run) => run.outcome === 'REPAIRED_VERIFIED');
+  const defect =
+    repaired.find((run) => run.scenario === FEATURED_SCENARIO) ?? repaired[0] ?? caught[0] ?? null;
   const realApp = runs.find((run) => isRealApp(run) && run.outcome === 'DATA_MISMATCH') ?? null;
   const realAppClean = runs.find((run) => isRealApp(run) && run.outcome === 'VERIFIED') ?? null;
   return { healthy, defect, realApp, realAppClean };

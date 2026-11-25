@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { parseCsv } from '../src/lib/csv.ts';
 import { groupDifferences } from '../src/lib/differences.ts';
 import { packTryIndex, recordedSource } from '../src/lib/evidence.ts';
-import { recordedTotals } from '../src/lib/recorded.ts';
+import { pickRecordedRuns, recordedTotals } from '../src/lib/recorded.ts';
 import { describeEdge, recordCounts } from '../src/lib/run-model.ts';
 import type { Difference, EdgeSummary, PublicIndexEntry, PublicRun } from '../src/lib/types.ts';
 
@@ -175,6 +175,29 @@ describe('recorded bundles', () => {
     expect(totals.defects).toEqual({ attempted: 3, detected: 1, missed: 1 });
     expect(totals.repairs).toEqual({ attempted: 1, verified: 1 });
     expect(totals.kaneCredits).toBe(40);
+  });
+
+  it('features the sign-flip repair even when a newer repair exists', () => {
+    // #given a newer column-order repair listed before the sign-flip repair
+    const base = {
+      recordedAt: '2026-11-25T18:00:00.000Z',
+      mode: 'repair',
+      headline: null,
+      kaneCreditsUsed: 10,
+      durationMs: 1000,
+      project: 'p',
+      targetMode: 'managed' as const,
+    };
+    const runs: PublicIndexEntry[] = [
+      { ...base, runId: 'newer', outcome: 'REPAIRED_VERIFIED', scenario: 'column-order' },
+      { ...base, runId: 'anchor', outcome: 'REPAIRED_VERIFIED', scenario: 'sign-flip' },
+    ];
+
+    // #when
+    const picks = pickRecordedRuns(runs);
+
+    // #then
+    expect(picks.defect?.runId).toBe('anchor');
   });
 
   it('counts a real attached app separately from the healthy demo baseline', () => {
