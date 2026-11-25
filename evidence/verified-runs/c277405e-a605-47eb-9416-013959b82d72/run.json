@@ -1,0 +1,944 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-25T19:06:10.822Z",
+  "commit": "e7fb2867a0af4671f2e2541f466398f55edac20f",
+  "report": {
+    "schemaVersion": 1,
+    "runId": "c277405e-a605-47eb-9416-013959b82d72",
+    "project": "chicago-drop-duplicates",
+    "mode": "verify",
+    "outcome": "DATA_MISMATCH",
+    "headline": "8 rows missing, 992 of 1,000 preserved",
+    "failureCode": null,
+    "startedAt": "2026-11-25T19:06:10.822Z",
+    "finishedAt": "2026-11-25T19:10:57.969Z",
+    "durationMs": 287147,
+    "hashes": {
+      "config": "c2c3c729255f239a252bbe124be4cc7f2336b8c63cbcc72e82dbe39ee3d3242e",
+      "contract": "203d5e65a854d72c1a195e9e4b3f95703643a475f6a0fa2997d1732f8cc15240",
+      "source": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50"
+    },
+    "baseRevision": "350a453415beb632d946ad1f8aa61dd853424315",
+    "target": {
+      "mode": "managed",
+      "origin": null
+    },
+    "scenario": {
+      "name": "drop-duplicates",
+      "disclosure": "Recreated defect on a controlled demo app",
+      "reference": null
+    },
+    "kane": {
+      "version": "0.10.9",
+      "creditsUsed": 66.01633249999999,
+      "creditsCap": 1500
+    },
+    "agent": {
+      "versions": [],
+      "models": [],
+      "usd": 0
+    },
+    "attempts": [
+      {
+        "number": 1,
+        "kind": "initial",
+        "outcome": "mismatch",
+        "destination": "restore-1-e19805",
+        "patchSha256": null,
+        "startedAt": "2026-11-25T19:06:13.152Z",
+        "finishedAt": "2026-11-25T19:10:57.956Z",
+        "stages": [
+          {
+            "stage": "export",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the payments CSV on the Chicago payments page",
+            "creditsUsed": 17.522885000000002,
+            "durationMs": 75745,
+            "vendorDurationSec": 50.6,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:49935/w/chicago"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "analyze: the page shows '1,000 records'"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "assert: the page shows '1,000 records'"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Clicking Export CSV to download the payments CSV"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "analyze: the page still shows '1,000 records'"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "assert: the page still shows '1,000 records'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "records_count_initial",
+                "condition": "the page shows '1,000 records'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              },
+              {
+                "name": "records_count_after_export",
+                "condition": "the page still shows '1,000 records'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": null
+          },
+          {
+            "stage": "create-destination",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "created workspace restore-1-e19805 on the workspace site",
+            "creditsUsed": 16.9899675,
+            "durationMs": 79013,
+            "vendorDurationSec": 40.6,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:49935/"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "wait: queued plan (2 steps): type \"Workspace name\"; click \"Create workspace\""
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "type: Type \"restore-1-e19805\" into \"Workspace name\""
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Click \"Create workspace\""
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "analyze: the page shows '0 records'"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "assert: the page shows '0 records'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "zero_records_visible",
+                "condition": "the page shows '0 records'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": null
+          },
+          {
+            "stage": "restore",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "imported a CSV file on the restore workspace page",
+            "creditsUsed": 22.630909999999997,
+            "durationMs": 70613,
+            "vendorDurationSec": 42.1,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:49935/w/restore-1-e19805"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "analyze: the page shows '0 records'"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "assert: the page shows '0 records'"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Clicking Import button"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "analyze: the page shows 'Import successful'"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "assert: the page shows 'Import successful'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "zero_records_visible",
+                "condition": "the page shows '0 records'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              },
+              {
+                "name": "import_successful_visible",
+                "condition": "the page shows 'Import successful'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": null
+          },
+          {
+            "stage": "reexport",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the payments CSV on the payments page",
+            "creditsUsed": 8.87257,
+            "durationMs": 58870,
+            "vendorDurationSec": 30.6,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:49935/w/restore-1-e19805"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "click: Clicking Export CSV to download the payments CSV"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "analyze: the 'Export CSV' link is shown on the page"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "assert: the page still shows the 'Export CSV' link"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "export_csv_link_visible",
+                "condition": "the 'Export CSV' link is shown on the page",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": null
+          }
+        ],
+        "comparisons": [
+          {
+            "edge": "export_reexport",
+            "isEquivalent": false,
+            "expectedRows": 1000,
+            "observedRows": 992,
+            "matchedIdenticalOccurrences": 992,
+            "missingKeyCount": 0,
+            "unexpectedKeyCount": 0,
+            "missingOccurrences": 8,
+            "excessOccurrences": 0,
+            "duplicateKeyCount": 0,
+            "changedKeyCount": 0,
+            "changedFieldCount": 0,
+            "schemaErrorCount": 0,
+            "orderMismatch": false,
+            "preservationRate": 0.992,
+            "changedFields": []
+          },
+          {
+            "edge": "source_export",
+            "isEquivalent": true,
+            "expectedRows": 1000,
+            "observedRows": 1000,
+            "matchedIdenticalOccurrences": 1000,
+            "missingKeyCount": 0,
+            "unexpectedKeyCount": 0,
+            "missingOccurrences": 0,
+            "excessOccurrences": 0,
+            "duplicateKeyCount": 0,
+            "changedKeyCount": 0,
+            "changedFieldCount": 0,
+            "schemaErrorCount": 0,
+            "orderMismatch": false,
+            "preservationRate": 1,
+            "changedFields": []
+          },
+          {
+            "edge": "source_reexport",
+            "isEquivalent": false,
+            "expectedRows": 1000,
+            "observedRows": 992,
+            "matchedIdenticalOccurrences": 992,
+            "missingKeyCount": 0,
+            "unexpectedKeyCount": 0,
+            "missingOccurrences": 8,
+            "excessOccurrences": 0,
+            "duplicateKeyCount": 0,
+            "changedKeyCount": 0,
+            "changedFieldCount": 0,
+            "schemaErrorCount": 0,
+            "orderMismatch": false,
+            "preservationRate": 0.992,
+            "changedFields": []
+          }
+        ]
+      }
+    ],
+    "repairs": [],
+    "timeline": [
+      {
+        "utc": "2026-11-25T19:06:10.824Z",
+        "elapsedMs": 2,
+        "text": "Checking the config, the trusted source, Kane and the budget."
+      },
+      {
+        "utc": "2026-11-25T19:06:13.047Z",
+        "elapsedMs": 2225,
+        "text": "Starting a fresh copy of the app with the trusted source loaded."
+      },
+      {
+        "utc": "2026-11-25T19:06:13.526Z",
+        "elapsedMs": 2703,
+        "text": "Kane is opening the source workspace and clicking Export."
+      },
+      {
+        "utc": "2026-11-25T19:07:29.300Z",
+        "elapsedMs": 78480,
+        "text": "Kane export: passed, downloaded the payments CSV on the Chicago payments page"
+      },
+      {
+        "utc": "2026-11-25T19:07:29.306Z",
+        "elapsedMs": 78487,
+        "text": "Captured export (72291 bytes, sha256 743b5c404270)"
+      },
+      {
+        "utc": "2026-11-25T19:07:29.308Z",
+        "elapsedMs": 78489,
+        "text": "Kane is creating an empty workspace to restore into."
+      },
+      {
+        "utc": "2026-11-25T19:08:48.343Z",
+        "elapsedMs": 157525,
+        "text": "Kane create-destination: passed, created workspace restore-1-e19805 on the workspace site"
+      },
+      {
+        "utc": "2026-11-25T19:08:48.344Z",
+        "elapsedMs": 157526,
+        "text": "Kane is uploading the exported file into the empty workspace."
+      },
+      {
+        "utc": "2026-11-25T19:09:58.997Z",
+        "elapsedMs": 228179,
+        "text": "Kane restore: passed, imported a CSV file on the restore workspace page"
+      },
+      {
+        "utc": "2026-11-25T19:09:59.008Z",
+        "elapsedMs": 228190,
+        "text": "Kane is exporting the restored workspace."
+      },
+      {
+        "utc": "2026-11-25T19:10:57.904Z",
+        "elapsedMs": 287087,
+        "text": "Kane reexport: passed, downloaded the payments CSV on the payments page"
+      },
+      {
+        "utc": "2026-11-25T19:10:57.913Z",
+        "elapsedMs": 287095,
+        "text": "Captured reexport (71620 bytes, sha256 5e9ef424a1af)"
+      },
+      {
+        "utc": "2026-11-25T19:10:57.914Z",
+        "elapsedMs": 287096,
+        "text": "Comparing every record against the trusted source."
+      },
+      {
+        "utc": "2026-11-25T19:10:57.934Z",
+        "elapsedMs": 287116,
+        "text": "source to export: All 1,000 of 1,000 rows came back unchanged"
+      },
+      {
+        "utc": "2026-11-25T19:10:57.936Z",
+        "elapsedMs": 287118,
+        "text": "export to reexport: 8 rows missing, 992 of 1,000 preserved"
+      },
+      {
+        "utc": "2026-11-25T19:10:57.936Z",
+        "elapsedMs": 287119,
+        "text": "source to reexport: 8 rows missing, 992 of 1,000 preserved"
+      },
+      {
+        "utc": "2026-11-25T19:10:57.968Z",
+        "elapsedMs": 287151,
+        "text": "DATA_MISMATCH: 8 rows missing, 992 of 1,000 preserved"
+      }
+    ],
+    "limitations": [
+      "It proves the declared fields survive one CSV export, restore and re-export on a test copy of the app. It does not certify backups or fields outside the contract.",
+      "Kane uploads the restore file to TestMu AI cloud storage before setting it on the file input. Use public or test data only.",
+      "Kane drives the browser and reports its own pass or fail. ReturnTrip decides data equality with deterministic code and never trusts a browser success toast.",
+      "Controlled defects are recreated on a demo app and labelled as such. They are not a blind benchmark."
+    ],
+    "manifest": [
+      {
+        "id": "53744d3f-07a0-44e5-b4a1-8dad7747889b",
+        "attempt": 0,
+        "kind": "source",
+        "path": "a0/source.csv",
+        "sha256": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50",
+        "byteLength": 70988,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "de569848-22bb-4a7c-85f9-c46c3f08e084",
+        "attempt": 0,
+        "kind": "report-json",
+        "path": "a0/report.json",
+        "sha256": "5607c7485de1fdec343985e928319fffc47d3350c9b142ca346278e4d01e4c52",
+        "byteLength": 18157,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "f0f99fde-7dc7-4f84-b0a1-76ebc4356fa7",
+        "attempt": 0,
+        "kind": "report-markdown",
+        "path": "a0/report.md",
+        "sha256": "a352fa618f4729d7d4e132f943f4b304c810edb789cab1a129b1e94f4ef3046c",
+        "byteLength": 4652,
+        "mediaType": "text/markdown"
+      },
+      {
+        "id": "a24b112f-aa69-43bb-88f3-fc817cadb83b",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/export.kane.ndjson",
+        "sha256": "d42ecc80cc2e10a3fb25c231dcc17651b28be8be842aec2df9339819bb6ecde2",
+        "byteLength": 5658,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "87cf5c3f-2020-4362-824c-0e3de19e7652",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/export.kane.stderr.log",
+        "sha256": "650b768a0b47b8d11d723fb4b987a0369d1baa6582d419bd613abf95eebb1f69",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "5583ae6d-5cbc-4780-956d-21eb981608db",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/export.evidence.zip",
+        "sha256": "4e0067f317ad340d165394ecdab8e7c44189211acf8f5824c024366190fbca66",
+        "byteLength": 1046478,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "09c365d8-5d42-4340-b8a8-682639cce82f",
+        "attempt": 1,
+        "kind": "export",
+        "path": "a1/export.csv",
+        "sha256": "743b5c404270656e57d7e70358a3096b8b39ca24fe8c343950606698e4039ccf",
+        "byteLength": 72291,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "9217e97e-91d2-4a56-a861-ae2dcd6a36ae",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/create-destination.kane.ndjson",
+        "sha256": "da28fd0646df0b64b20486f5c44380a5272bd3636b289187bdb85ceb2525d7cf",
+        "byteLength": 4657,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "6dbc1ff5-c740-46b5-ad6a-e3dcc6509a68",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/create-destination.kane.stderr.log",
+        "sha256": "54df4e3546df2628e1d4577ce7e314dd21b014dde8372ece978752c98600c573",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "13392660-8e07-48be-92f0-9443d50445f5",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/create-destination.evidence.zip",
+        "sha256": "482d2742ce7ad5832f91781676e9ea5415aea9f601a544564b4e0a8dc7aeb6ab",
+        "byteLength": 527458,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "9a684393-b4d7-4f21-8396-aac322dec673",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/restore.kane.ndjson",
+        "sha256": "409001cbee1e7236758bacbc5e65b632e9afc108b3d2272cdb5c527762a0449f",
+        "byteLength": 5631,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "58a4e319-43bc-4089-aad5-124cd8b37414",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/restore.kane.stderr.log",
+        "sha256": "c803d1f023fd4964c5171fba3026043e11b2cfd881f5ad44b067b51480789e49",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "5b4658b4-242f-4bab-99ad-e55cfaf45090",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/restore.evidence.zip",
+        "sha256": "d29ac8495d257d9f32886b527539031c4ef6d0c113a0ddc9b0ea8285ffea21b9",
+        "byteLength": 515914,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "e261c73e-c776-4f8d-b59a-d606d87e038d",
+        "attempt": 1,
+        "kind": "restore-upload",
+        "path": "a1/restore-upload.json",
+        "sha256": "1e0f00c1f25b1c6cfa9bf47de9ea9182264799649e833d1c5d9736fc2b40925b",
+        "byteLength": 242,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "f734efd5-388f-4bf5-b3d0-2a2a3af127d3",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/reexport.kane.ndjson",
+        "sha256": "9887987e2115d880813194f85c3ad60ba1c19162fdf9c2a3c4428475624ce53d",
+        "byteLength": 4291,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "a8420c92-fe74-4e41-a767-6a0cd4a12980",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/reexport.kane.stderr.log",
+        "sha256": "a8d16197fbe8cec7e413e17b671c4d06ca3399dc48c09481da12f9dd45f4458f",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "18abf8ba-b85c-46cc-8d25-6b44dc176cfe",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/reexport.evidence.zip",
+        "sha256": "a0bc3990ba72d34ec27d3a30291d6fd95372e09deffc5301e4ea070c192efdb1",
+        "byteLength": 833594,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "d88610ab-fd72-48f6-b13d-898e3bb927d4",
+        "attempt": 1,
+        "kind": "reexport",
+        "path": "a1/reexport.csv",
+        "sha256": "5e9ef424a1aff1909ad289277b89ff2ac5fb701c445ce94856131eac73978b83",
+        "byteLength": 71620,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "da1ff21e-d194-42fb-8634-ad9306033e3e",
+        "attempt": 1,
+        "kind": "comparison",
+        "path": "a1/comparison.json",
+        "sha256": "7d9fd76841d2e4ed5fbaafacb0571b086340efabc8445d68d6f3d9f3a774f54b",
+        "byteLength": 10186,
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "differences": {
+    "1": {
+      "export_reexport": {
+        "total": 6,
+        "items": [
+          {
+            "id": "2c609c277a92bbb2",
+            "edge": "export_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PV38253800429\",\"210.16\",\"2025-06-20\",null,\"DV\",\"PEOPLES GAS\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              328,
+              329
+            ],
+            "observedRowRefs": [
+              323
+            ],
+            "message": "row [\"PV38253800429\",\"210.16\",\"2025-06-20\",null,\"DV\",\"PEOPLES GAS\"] appears 2 times in first export (rows 328, 329) and 1 time in export after restore (row 323)"
+          },
+          {
+            "id": "f6af2c4c9bf3f0b9",
+            "edge": "export_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PV88248801913\",\"204498.54\",\"2025-01-29\",null,\"DV\",\"USALCO LLC\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              357,
+              358
+            ],
+            "observedRowRefs": [
+              351
+            ],
+            "message": "row [\"PV88248801913\",\"204498.54\",\"2025-01-29\",null,\"DV\",\"USALCO LLC\"] appears 2 times in first export (rows 357, 358) and 1 time in export after restore (row 351)"
+          },
+          {
+            "id": "742087396cc5c38a",
+            "edge": "export_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI24CI304355\",\"162000.00\",\"2025-01-07\",\"PLANNING & DEVELOPMENT\",\"3718\",\"SOMERCOR 504, INC.\"]",
+            "expectedCount": 3,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              191,
+              192,
+              193
+            ],
+            "observedRowRefs": [
+              191
+            ],
+            "message": "row [\"PVCI24CI304355\",\"162000.00\",\"2025-01-07\",\"PLANNING & DEVELOPMENT\",\"3718\",\"SOMERCOR 504, INC.\"] appears 3 times in first export (rows 191, 192, 193) and 1 time in export after restore (row 191)"
+          },
+          {
+            "id": "720430cbc5fe7697",
+            "edge": "export_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI25CI402542\",\"350.00\",\"2025-08-29\",\"CHICAGO FIRE DEPARTMENT\",\"32900\",\"AIR ONE EQUIPMENT INC\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              232,
+              233
+            ],
+            "observedRowRefs": [
+              230
+            ],
+            "message": "row [\"PVCI25CI402542\",\"350.00\",\"2025-08-29\",\"CHICAGO FIRE DEPARTMENT\",\"32900\",\"AIR ONE EQUIPMENT INC\"] appears 2 times in first export (rows 232, 233) and 1 time in export after restore (row 230)"
+          },
+          {
+            "id": "33fa18716791ef9e",
+            "edge": "export_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI25CI702656\",\"163143.00\",\"2025-09-18\",\"OFFICE OF PUBLIC SAFETY ADMINISTRATION\",\"305137\",\"RON SMITH & ASSOCIATES, INC.\"]",
+            "expectedCount": 3,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              247,
+              248,
+              249
+            ],
+            "observedRowRefs": [
+              244
+            ],
+            "message": "row [\"PVCI25CI702656\",\"163143.00\",\"2025-09-18\",\"OFFICE OF PUBLIC SAFETY ADMINISTRATION\",\"305137\",\"RON SMITH & ASSOCIATES, INC.\"] appears 3 times in first export (rows 247, 248, 249) and 1 time in export after restore (row 244)"
+          },
+          {
+            "id": "c6d010a68a31a260",
+            "edge": "export_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI26CI101636\",\"22094.90\",\"2026-07-28\",\"DEPT OF GENERAL SERVICES\",\"167490\",\"HERC RENTALS INC\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              740,
+              741
+            ],
+            "observedRowRefs": [
+              733
+            ],
+            "message": "row [\"PVCI26CI101636\",\"22094.90\",\"2026-07-28\",\"DEPT OF GENERAL SERVICES\",\"167490\",\"HERC RENTALS INC\"] appears 2 times in first export (rows 740, 741) and 1 time in export after restore (row 733)"
+          }
+        ]
+      },
+      "source_reexport": {
+        "total": 6,
+        "items": [
+          {
+            "id": "b8b8545741ddbf9c",
+            "edge": "source_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PV38253800429\",\"210.16\",\"2025-06-20\",null,\"DV\",\"PEOPLES GAS\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              328,
+              329
+            ],
+            "observedRowRefs": [
+              323
+            ],
+            "message": "row [\"PV38253800429\",\"210.16\",\"2025-06-20\",null,\"DV\",\"PEOPLES GAS\"] appears 2 times in trusted source (rows 328, 329) and 1 time in export after restore (row 323)"
+          },
+          {
+            "id": "98dc841830b71867",
+            "edge": "source_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PV88248801913\",\"204498.54\",\"2025-01-29\",null,\"DV\",\"USALCO LLC\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              357,
+              358
+            ],
+            "observedRowRefs": [
+              351
+            ],
+            "message": "row [\"PV88248801913\",\"204498.54\",\"2025-01-29\",null,\"DV\",\"USALCO LLC\"] appears 2 times in trusted source (rows 357, 358) and 1 time in export after restore (row 351)"
+          },
+          {
+            "id": "10fecd1904bec3ab",
+            "edge": "source_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI24CI304355\",\"162000.00\",\"2025-01-07\",\"PLANNING & DEVELOPMENT\",\"3718\",\"SOMERCOR 504, INC.\"]",
+            "expectedCount": 3,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              191,
+              192,
+              193
+            ],
+            "observedRowRefs": [
+              191
+            ],
+            "message": "row [\"PVCI24CI304355\",\"162000.00\",\"2025-01-07\",\"PLANNING & DEVELOPMENT\",\"3718\",\"SOMERCOR 504, INC.\"] appears 3 times in trusted source (rows 191, 192, 193) and 1 time in export after restore (row 191)"
+          },
+          {
+            "id": "086d654f9c5d657c",
+            "edge": "source_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI25CI402542\",\"350.00\",\"2025-08-29\",\"CHICAGO FIRE DEPARTMENT\",\"32900\",\"AIR ONE EQUIPMENT INC\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              232,
+              233
+            ],
+            "observedRowRefs": [
+              230
+            ],
+            "message": "row [\"PVCI25CI402542\",\"350.00\",\"2025-08-29\",\"CHICAGO FIRE DEPARTMENT\",\"32900\",\"AIR ONE EQUIPMENT INC\"] appears 2 times in trusted source (rows 232, 233) and 1 time in export after restore (row 230)"
+          },
+          {
+            "id": "eb7220d46b181e79",
+            "edge": "source_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI25CI702656\",\"163143.00\",\"2025-09-18\",\"OFFICE OF PUBLIC SAFETY ADMINISTRATION\",\"305137\",\"RON SMITH & ASSOCIATES, INC.\"]",
+            "expectedCount": 3,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              247,
+              248,
+              249
+            ],
+            "observedRowRefs": [
+              244
+            ],
+            "message": "row [\"PVCI25CI702656\",\"163143.00\",\"2025-09-18\",\"OFFICE OF PUBLIC SAFETY ADMINISTRATION\",\"305137\",\"RON SMITH & ASSOCIATES, INC.\"] appears 3 times in trusted source (rows 247, 248, 249) and 1 time in export after restore (row 244)"
+          },
+          {
+            "id": "62bf632d5b17aba9",
+            "edge": "source_reexport",
+            "kind": "MISSING_OCCURRENCE",
+            "expectedCanonical": "[\"PVCI26CI101636\",\"22094.90\",\"2026-07-28\",\"DEPT OF GENERAL SERVICES\",\"167490\",\"HERC RENTALS INC\"]",
+            "expectedCount": 2,
+            "observedCount": 1,
+            "expectedRowRefs": [
+              740,
+              741
+            ],
+            "observedRowRefs": [
+              733
+            ],
+            "message": "row [\"PVCI26CI101636\",\"22094.90\",\"2026-07-28\",\"DEPT OF GENERAL SERVICES\",\"167490\",\"HERC RENTALS INC\"] appears 2 times in trusted source (rows 740, 741) and 1 time in export after restore (row 733)"
+          }
+        ]
+      }
+    }
+  },
+  "files": [
+    {
+      "kind": "source",
+      "attempt": 0,
+      "file": "files/a0-source.csv",
+      "sha256": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50",
+      "byteLength": 70988
+    },
+    {
+      "kind": "export",
+      "attempt": 1,
+      "file": "files/a1-export.csv",
+      "sha256": "743b5c404270656e57d7e70358a3096b8b39ca24fe8c343950606698e4039ccf",
+      "byteLength": 72291
+    },
+    {
+      "kind": "restore-upload",
+      "attempt": 1,
+      "file": "files/a1-restore-upload.json",
+      "sha256": "1e0f00c1f25b1c6cfa9bf47de9ea9182264799649e833d1c5d9736fc2b40925b",
+      "byteLength": 242
+    },
+    {
+      "kind": "reexport",
+      "attempt": 1,
+      "file": "files/a1-reexport.csv",
+      "sha256": "5e9ef424a1aff1909ad289277b89ff2ac5fb701c445ce94856131eac73978b83",
+      "byteLength": 71620
+    }
+  ],
+  "screenshots": [
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-export-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-export-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-export-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-export-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-create-destination-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-create-destination-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-create-destination-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-create-destination-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-restore-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-restore-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-restore-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-restore-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "1-0-1",
+      "file": "screens/a1-reexport-1.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "2-0-2",
+      "file": "screens/a1-reexport-2.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-reexport-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-reexport-4.jpg"
+    }
+  ]
+}

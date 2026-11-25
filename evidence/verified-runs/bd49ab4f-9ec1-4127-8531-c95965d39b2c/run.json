@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-25T19:20:54.891Z",
+  "commit": "e7fb2867a0af4671f2e2541f466398f55edac20f",
+  "report": {
+    "schemaVersion": 1,
+    "runId": "bd49ab4f-9ec1-4127-8531-c95965d39b2c",
+    "project": "chicago-payments",
+    "mode": "verify",
+    "outcome": "VERIFIED",
+    "headline": "1,000 of 1,000 records came back identical after export, restore and re-export.",
+    "failureCode": null,
+    "startedAt": "2026-11-25T19:20:54.891Z",
+    "finishedAt": "2026-11-25T19:26:33.893Z",
+    "durationMs": 339002,
+    "hashes": {
+      "config": "0da49adfd00d6ec5aeb25e92f62218b7c35e9bf91cdb6ffd2ded0ffcf8a3e57b",
+      "contract": "203d5e65a854d72c1a195e9e4b3f95703643a475f6a0fa2997d1732f8cc15240",
+      "source": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50"
+    },
+    "baseRevision": "98ff4112372ebe816aece9ab0ec7a96adae6f408",
+    "target": {
+      "mode": "managed",
+      "origin": null
+    },
+    "scenario": null,
+    "kane": {
+      "version": "0.10.9",
+      "creditsUsed": 68.692245,
+      "creditsCap": 600
+    },
+    "agent": {
+      "versions": [],
+      "models": [],
+      "usd": 0
+    },
+    "attempts": [
+      {
+        "number": 1,
+        "kind": "initial",
+        "outcome": "equivalent",
+        "destination": "restore-1-2f1642",
+        "patchSha256": null,
+        "startedAt": "2026-11-25T19:20:57.502Z",
+        "finishedAt": "2026-11-25T19:26:33.881Z",
+        "stages": [
+          {
+            "stage": "export",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the payments CSV on the Chicago payments page",
+            "creditsUsed": 18.3583525,
+            "durationMs": 82150,
+            "vendorDurationSec": 54.5,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:51851/w/chicago"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "analyze: the page shows '1,000 records'"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "assert: the page shows '1,000 records'"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Clicking Export CSV to download the payments CSV"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "analyze: the page still shows '1,000 records'"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "assert: the page still shows '1,000 records'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "records_count_initial_check",
+                "condition": "the page shows '1,000 records'",
+                "expected": "1,000 records",
+                "observed": "1,000 records",
+                "operator": "equals"
+              },
+              {
+                "name": "records_count_after_export_check",
+                "condition": "the page still shows '1,000 records'",
+                "expected": "1,000 records",
+                "observed": "1,000 records",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          },
+          {
+            "stage": "create-destination",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "created a workspace on the local workspace site",
+            "creditsUsed": 18.7882825,
+            "durationMs": 103125,
+            "vendorDurationSec": 69.2,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:51851/"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "type: Typing workspace name in the New workspace form field"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "click: Clicking Create workspace"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "wait: PRIMARY: wait for the workspace Payments heading to load"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "analyze: the page shows '0 records'"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "assert: the page shows '0 records'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "zero_records_visible",
+                "condition": "the page shows '0 records'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          },
+          {
+            "stage": "restore",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "imported CSV records on the restore page",
+            "creditsUsed": 22.687589999999997,
+            "durationMs": 77670,
+            "vendorDurationSec": 48.8,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:51851/w/restore-1-2f1642"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "analyze: the page shows '0 records'"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "assert: the page shows '0 records'"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Clicking the Import button to add payments from a file"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "analyze: the page shows 'Import successful'"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "assert: the page shows 'Import successful'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "zero_records_visible",
+                "condition": "the page shows '0 records'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              },
+              {
+                "name": "import_successful_visible",
+                "condition": "the page shows 'Import successful'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          },
+          {
+            "stage": "reexport",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the payments CSV on the payments page",
+            "creditsUsed": 8.85802,
+            "durationMs": 60372,
+            "vendorDurationSec": 28.6,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:51851/w/restore-1-2f1642"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "click: Clicking Export CSV to download the payments CSV"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "analyze: the page shows the 'Export CSV' link"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "assert: the page still shows the 'Export CSV' link"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "export_csv_link_visible",
+                "condition": "the page shows the 'Export CSV' link",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          }
+        ],
+        "comparisons": [
+          {
+            "edge": "export_reexport",
+            "isEquivalent": true,
+            "expectedRows": 1000,
+            "observedRows": 1000,
+            "matchedIdenticalOccurrences": 1000,
+            "missingKeyCount": 0,
+            "unexpectedKeyCount": 0,
+            "missingOccurrences": 0,
+            "excessOccurrences": 0,
+            "duplicateKeyCount": 0,
+            "changedKeyCount": 0,
+            "changedFieldCount": 0,
+            "schemaErrorCount": 0,
+            "orderMismatch": false,
+            "preservationRate": 1,
+            "changedFields": []
+          },
+          {
+            "edge": "source_export",
+            "isEquivalent": true,
+            "expectedRows": 1000,
+            "observedRows": 1000,
+            "matchedIdenticalOccurrences": 1000,
+            "missingKeyCount": 0,
+            "unexpectedKeyCount": 0,
+            "missingOccurrences": 0,
+            "excessOccurrences": 0,
+            "duplicateKeyCount": 0,
+            "changedKeyCount": 0,
+            "changedFieldCount": 0,
+            "schemaErrorCount": 0,
+            "orderMismatch": false,
+            "preservationRate": 1,
+            "changedFields": []
+          },
+          {
+            "edge": "source_reexport",
+            "isEquivalent": true,
+            "expectedRows": 1000,
+            "observedRows": 1000,
+            "matchedIdenticalOccurrences": 1000,
+            "missingKeyCount": 0,
+            "unexpectedKeyCount": 0,
+            "missingOccurrences": 0,
+            "excessOccurrences": 0,
+            "duplicateKeyCount": 0,
+            "changedKeyCount": 0,
+            "changedFieldCount": 0,
+            "schemaErrorCount": 0,
+            "orderMismatch": false,
+            "preservationRate": 1,
+            "changedFields": []
+          }
+        ]
+      }
+    ],
+    "repairs": [],
+    "timeline": [
+      {
+        "utc": "2026-11-25T19:20:54.894Z",
+        "elapsedMs": 3,
+        "text": "Checking the config, the trusted source, Kane and the budget."
+      },
+      {
+        "utc": "2026-11-25T19:20:57.407Z",
+        "elapsedMs": 2516,
+        "text": "Starting a fresh copy of the app with the trusted source loaded."
+      },
+      {
+        "utc": "2026-11-25T19:20:57.876Z",
+        "elapsedMs": 2985,
+        "text": "Kane is opening the source workspace and clicking Export."
+      },
+      {
+        "utc": "2026-11-25T19:22:21.357Z",
+        "elapsedMs": 86467,
+        "text": "Kane export: passed, downloaded the payments CSV on the Chicago payments page"
+      },
+      {
+        "utc": "2026-11-25T19:22:21.365Z",
+        "elapsedMs": 86474,
+        "text": "Captured export (72291 bytes, sha256 743b5c404270)"
+      },
+      {
+        "utc": "2026-11-25T19:22:21.366Z",
+        "elapsedMs": 86475,
+        "text": "Kane is creating an empty workspace to restore into."
+      },
+      {
+        "utc": "2026-11-25T19:24:05.964Z",
+        "elapsedMs": 191067,
+        "text": "Kane create-destination: passed, created a workspace on the local workspace site"
+      },
+      {
+        "utc": "2026-11-25T19:24:05.965Z",
+        "elapsedMs": 191068,
+        "text": "Kane is uploading the exported file into the empty workspace."
+      },
+      {
+        "utc": "2026-11-25T19:25:30.823Z",
+        "elapsedMs": 275927,
+        "text": "Kane restore: passed, imported CSV records on the restore page"
+      },
+      {
+        "utc": "2026-11-25T19:25:30.829Z",
+        "elapsedMs": 275932,
+        "text": "Kane is exporting the restored workspace."
+      },
+      {
+        "utc": "2026-11-25T19:26:33.828Z",
+        "elapsedMs": 338932,
+        "text": "Kane reexport: passed, downloaded the payments CSV on the payments page"
+      },
+      {
+        "utc": "2026-11-25T19:26:33.836Z",
+        "elapsedMs": 338939,
+        "text": "Captured reexport (72291 bytes, sha256 743b5c404270)"
+      },
+      {
+        "utc": "2026-11-25T19:26:33.836Z",
+        "elapsedMs": 338940,
+        "text": "Comparing every record against the trusted source."
+      },
+      {
+        "utc": "2026-11-25T19:26:33.858Z",
+        "elapsedMs": 338962,
+        "text": "source to export: All 1,000 of 1,000 rows came back unchanged"
+      },
+      {
+        "utc": "2026-11-25T19:26:33.859Z",
+        "elapsedMs": 338963,
+        "text": "export to reexport: All 1,000 of 1,000 rows came back unchanged"
+      },
+      {
+        "utc": "2026-11-25T19:26:33.859Z",
+        "elapsedMs": 338963,
+        "text": "source to reexport: All 1,000 of 1,000 rows came back unchanged"
+      },
+      {
+        "utc": "2026-11-25T19:26:33.892Z",
+        "elapsedMs": 338996,
+        "text": "VERIFIED: 1,000 of 1,000 records came back identical after export, restore and re-export."
+      }
+    ],
+    "limitations": [
+      "It proves the declared fields survive one CSV export, restore and re-export on a test copy of the app. It does not certify backups or fields outside the contract.",
+      "Kane uploads the restore file to TestMu AI cloud storage before setting it on the file input. Use public or test data only.",
+      "Kane drives the browser and reports its own pass or fail. ReturnTrip decides data equality with deterministic code and never trusts a browser success toast.",
+      "Controlled defects are recreated on a demo app and labelled as such. They are not a blind benchmark."
+    ],
+    "manifest": [
+      {
+        "id": "4fc09bbe-b590-46c1-bebc-513dc02873a6",
+        "attempt": 0,
+        "kind": "source",
+        "path": "a0/source.csv",
+        "sha256": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50",
+        "byteLength": 70988,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "111b9ae0-92ed-41ef-8d9f-3031185a7a87",
+        "attempt": 0,
+        "kind": "report-json",
+        "path": "a0/report.json",
+        "sha256": "a99d2867b8e6414e1c3bbc2434d741660dc9ba6f86ba553b2db9f14cbe8cf9c7",
+        "byteLength": 19247,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "39f05908-5015-4c62-90a9-e67bae7f29f3",
+        "attempt": 0,
+        "kind": "report-markdown",
+        "path": "a0/report.md",
+        "sha256": "7ed20cd4f71193f1577e974bf7afe13bb0225beeba36dff7f82e17b42add3627",
+        "byteLength": 4707,
+        "mediaType": "text/markdown"
+      },
+      {
+        "id": "7eadb685-fd4a-454a-9303-8743edd01a1a",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/export.kane.ndjson",
+        "sha256": "d097658f4bf9bbbdd771275bacd45beb318b2560e96545d856dae8e655142d0d",
+        "byteLength": 5720,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "0aeb8aca-81a5-4dc0-a6b0-38a7dea9e1d6",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/export.kane.stderr.log",
+        "sha256": "1f1474af1b262cefc12f8afa24d2e4960c715e62534779850c44ac26b99dfd42",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "274fd502-cb44-428f-b391-a882406cf29a",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/export.evidence.zip",
+        "sha256": "9885679fb835342bd9fac04353fa0fe4a6b681eb17ec109bc91c6b4826fcdc11",
+        "byteLength": 1046789,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "1402ef90-da6b-4878-a43d-190b246f991a",
+        "attempt": 1,
+        "kind": "export",
+        "path": "a1/export.csv",
+        "sha256": "743b5c404270656e57d7e70358a3096b8b39ca24fe8c343950606698e4039ccf",
+        "byteLength": 72291,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "950c145b-94ec-45d5-874b-946d5cd8295c",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/create-destination.kane.ndjson",
+        "sha256": "2399dd20759f1db8499c67b9b419f5cccd2d371a46ba7da611fb2097c4b4aa06",
+        "byteLength": 4393,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "0fdff732-4d58-48dd-8387-561ca6df6973",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/create-destination.kane.stderr.log",
+        "sha256": "99c4ba5779ca46d54f82968c9b799e159755c2b21c9447e81070ea0fe8a3fad3",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "96a249b2-03da-4e16-b7ec-4a682272998d",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/create-destination.evidence.zip",
+        "sha256": "08afe68adda3e501ae0828cda29a2b37b6cca7770c00ef73b04126d8fe6d0997",
+        "byteLength": 530653,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "0233de01-3570-45f9-a3ce-2696e38b429e",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/restore.kane.ndjson",
+        "sha256": "e72ba96bbf0fd879eca1d77204552f84bdd19795841e48800d1a8d976d670032",
+        "byteLength": 5610,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "ed94cae7-e35f-4c65-a17f-c33b478bfba5",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/restore.kane.stderr.log",
+        "sha256": "294214e6f7486428d8c866e452ab80c15e22b4405e9621f8990e6ff0e6843e6b",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "341fba01-bb6e-4395-a002-5c5fee256e1c",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/restore.evidence.zip",
+        "sha256": "c27bddf231e2bfe5531f37921c248487da68755a6f90113a3d2611ebd143285f",
+        "byteLength": 514844,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "e2043d2d-3e3b-412a-9f9b-a0f7f831349d",
+        "attempt": 1,
+        "kind": "restore-upload",
+        "path": "a1/restore-upload.json",
+        "sha256": "1e0f00c1f25b1c6cfa9bf47de9ea9182264799649e833d1c5d9736fc2b40925b",
+        "byteLength": 242,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "f7ed1712-8c7f-4490-b090-00ab03747810",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/reexport.kane.ndjson",
+        "sha256": "2cb053e0927287595d15f86b1c96875bf6ecfd09dfe1ace9ef9d7c2f39956f9e",
+        "byteLength": 4145,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "ad214db1-1fe2-4d97-826d-09b219567f1e",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/reexport.kane.stderr.log",
+        "sha256": "fc406d87b8b7173608ae7a561d0590fcdae69f3eae292eaf8d7374a928b37ae6",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "de93707d-628f-459b-8160-3c1fce7bfb9e",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/reexport.evidence.zip",
+        "sha256": "f9ca2a880be4bc18c7c036158d0998d9cad7070b24c89226842fe60576bdc78e",
+        "byteLength": 831490,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "e48f8409-0f3e-4000-b1b3-28fe5d60c454",
+        "attempt": 1,
+        "kind": "reexport",
+        "path": "a1/reexport.csv",
+        "sha256": "743b5c404270656e57d7e70358a3096b8b39ca24fe8c343950606698e4039ccf",
+        "byteLength": 72291,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "67cc6289-c75d-4171-a4c2-56b834f115ba",
+        "attempt": 1,
+        "kind": "comparison",
+        "path": "a1/comparison.json",
+        "sha256": "9f5f89ca2a809d898416b443a37b8fbd85cd6c250517627f1fa139c850097c67",
+        "byteLength": 1782,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "15efff8d-1475-42ea-be80-2862bae205fd",
+        "attempt": 1,
+        "kind": "proxy-log",
+        "path": "a1/proxy-requests.json",
+        "sha256": "038d9a15a0a67e7f7117f40ade12548734f0dae8349145079223ad2b9e63caaa",
+        "byteLength": 4008,
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "differences": {
+    "1": {}
+  },
+  "files": [
+    {
+      "kind": "source",
+      "attempt": 0,
+      "file": "files/a0-source.csv",
+      "sha256": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50",
+      "byteLength": 70988
+    },
+    {
+      "kind": "export",
+      "attempt": 1,
+      "file": "files/a1-export.csv",
+      "sha256": "743b5c404270656e57d7e70358a3096b8b39ca24fe8c343950606698e4039ccf",
+      "byteLength": 72291
+    },
+    {
+      "kind": "restore-upload",
+      "attempt": 1,
+      "file": "files/a1-restore-upload.json",
+      "sha256": "1e0f00c1f25b1c6cfa9bf47de9ea9182264799649e833d1c5d9736fc2b40925b",
+      "byteLength": 242
+    },
+    {
+      "kind": "reexport",
+      "attempt": 1,
+      "file": "files/a1-reexport.csv",
+      "sha256": "743b5c404270656e57d7e70358a3096b8b39ca24fe8c343950606698e4039ccf",
+      "byteLength": 72291
+    }
+  ],
+  "screenshots": [
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-export-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-export-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-export-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-export-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-create-destination-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-create-destination-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-create-destination-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-create-destination-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-restore-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-restore-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-restore-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-restore-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "1-0-1",
+      "file": "screens/a1-reexport-1.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "2-0-2",
+      "file": "screens/a1-reexport-2.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-reexport-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "reexport",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-reexport-4.jpg"
+    }
+  ]
+}

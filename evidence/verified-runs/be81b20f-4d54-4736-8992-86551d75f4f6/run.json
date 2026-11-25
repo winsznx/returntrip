@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-25T19:14:31.851Z",
+  "commit": "e7fb2867a0af4671f2e2541f466398f55edac20f",
+  "report": {
+    "schemaVersion": 1,
+    "runId": "be81b20f-4d54-4736-8992-86551d75f4f6",
+    "project": "sure-pre-4754",
+    "mode": "verify",
+    "outcome": "EXECUTION_FAILED",
+    "headline": "Kane could not finish the create-destination step: The supplied account password was rejected, so the run could not reach Transactions.",
+    "failureCode": "BROWSER_CREATE_DESTINATION",
+    "startedAt": "2026-11-25T19:14:31.851Z",
+    "finishedAt": "2026-11-25T19:18:11.880Z",
+    "durationMs": 220029,
+    "hashes": {
+      "config": "216d7dc6e9d3893c0e53ef2ddc7754b7b5e64755fc9e5be00f0465c005f9c662",
+      "contract": "3f2c5b1c717305df0460d69153acf6cda4f2e29fd1065a256b4f6221e36cd4f7",
+      "source": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4"
+    },
+    "baseRevision": null,
+    "target": {
+      "mode": "attached",
+      "origin": "http://127.0.0.1:3300"
+    },
+    "scenario": null,
+    "kane": {
+      "version": "0.10.9",
+      "creditsUsed": 48.685365000000004,
+      "creditsCap": 800
+    },
+    "agent": {
+      "versions": [],
+      "models": [],
+      "usd": 0
+    },
+    "attempts": [
+      {
+        "number": 1,
+        "kind": "initial",
+        "outcome": null,
+        "destination": null,
+        "patchSha256": null,
+        "startedAt": "2026-11-25T19:14:34.280Z",
+        "finishedAt": null,
+        "stages": [
+          {
+            "stage": "export",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the newest completed export on the family exports page",
+            "creditsUsed": 29.77132,
+            "durationMs": 123836,
+            "vendorDurationSec": 92.8,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:50985/sessions/new?email=sure-source%40returntrip.t"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "type: Typing password into the Password field"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "click: Clicking Log in button"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "wait: Waiting after successful login confirmation"
+              },
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:50985/family_exports"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "click: Clicking New Export"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "click: Clicking Export data button"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "wait: PRIMARY: wait until the newest export shows 'Complete'"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "click: Clicking Download icon for the newest export zip file"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "analyze: the newest export still shows 'Complete'"
+              },
+              {
+                "index": 8,
+                "status": "done",
+                "remark": "assert: the newest export still shows 'Complete'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "newest_export_complete_check",
+                "condition": "the newest export still shows 'Complete'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          },
+          {
+            "stage": "create-destination",
+            "outcome": "failed",
+            "reasonCode": "assertion_error.step_not_achievable",
+            "oneLiner": "The supplied account password was rejected, so the run could not reach Transactions.",
+            "creditsUsed": 18.914045,
+            "durationMs": 86612,
+            "vendorDurationSec": 61.9,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:50985/sessions/new?email=restore-1-5878da%40returnt"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "wait: queued plan (2 steps): type \"Password*\"; click \"Log in\""
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "type: Type \"{{global.sure_password}}\" into \"Password*\""
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Click \"Log in\""
+              },
+              {
+                "index": 9,
+                "status": "failed",
+                "remark": "agent_info: Transactions redirects to login, which displays Invalid email or password, so th"
+              }
+            ],
+            "assertions": [],
+            "evidenceVerdict": null
+          }
+        ],
+        "comparisons": []
+      }
+    ],
+    "repairs": [],
+    "timeline": [
+      {
+        "utc": "2026-11-25T19:14:31.854Z",
+        "elapsedMs": 2,
+        "text": "Checking the config, the trusted source, Kane and the budget."
+      },
+      {
+        "utc": "2026-11-25T19:14:34.280Z",
+        "elapsedMs": 2428,
+        "text": "Loading the trusted source into the running app through its seed command."
+      },
+      {
+        "utc": "2026-11-25T19:14:39.190Z",
+        "elapsedMs": 7338,
+        "text": "Kane is opening the source workspace and clicking Export."
+      },
+      {
+        "utc": "2026-11-25T19:16:45.214Z",
+        "elapsedMs": 133363,
+        "text": "Kane export: passed, downloaded the newest completed export on the family exports page"
+      },
+      {
+        "utc": "2026-11-25T19:16:45.226Z",
+        "elapsedMs": 133375,
+        "text": "Captured export (19097 bytes, sha256 b4367068f39e)"
+      },
+      {
+        "utc": "2026-11-25T19:16:45.227Z",
+        "elapsedMs": 133376,
+        "text": "Kane is creating an empty workspace to restore into."
+      },
+      {
+        "utc": "2026-11-25T19:18:11.870Z",
+        "elapsedMs": 220019,
+        "text": "Kane create-destination: failed, The supplied account password was rejected, so the run could not reach Transactions."
+      },
+      {
+        "utc": "2026-11-25T19:18:11.879Z",
+        "elapsedMs": 220028,
+        "text": "EXECUTION_FAILED: Kane could not finish the create-destination step: The supplied account password was rejected, so the run could not reach Transactions."
+      }
+    ],
+    "limitations": [
+      "It proves the declared fields survive one CSV export, restore and re-export on a test copy of the app. It does not certify backups or fields outside the contract.",
+      "Kane uploads the restore file to TestMu AI cloud storage before setting it on the file input. Use public or test data only.",
+      "Kane drives the browser and reports its own pass or fail. ReturnTrip decides data equality with deterministic code and never trusts a browser success toast.",
+      "Controlled defects are recreated on a demo app and labelled as such. They are not a blind benchmark."
+    ],
+    "manifest": [
+      {
+        "id": "1d6a6cd9-67d2-40a5-a1a8-bde3d7cbd1f3",
+        "attempt": 0,
+        "kind": "source",
+        "path": "a0/source.csv",
+        "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4",
+        "byteLength": 18373,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "42ecd809-6d4a-4b70-9a84-281f8b975f92",
+        "attempt": 0,
+        "kind": "report-json",
+        "path": "a0/report.json",
+        "sha256": "1101dc08752f2984dc09b2ff5e2d4c9d86157580db51e03fb1190728b0a92b54",
+        "byteLength": 10406,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "93f9bf78-68ec-4daf-b780-23d624f96f95",
+        "attempt": 0,
+        "kind": "report-markdown",
+        "path": "a0/report.md",
+        "sha256": "39ac73137c3961dfb2f1e65a0918b7cab71b49d173f7d2e2a8a82cac8da82413",
+        "byteLength": 3132,
+        "mediaType": "text/markdown"
+      },
+      {
+        "id": "9b7f339d-1e40-4052-9504-a2a18dd85342",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/export.kane.ndjson",
+        "sha256": "3127dc3876d2757bf693e63d11e1f269cb6e4f630a539e2d04098d143b263585",
+        "byteLength": 6450,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "f405a754-adc1-4db0-bc53-7e092d0f5656",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/export.kane.stderr.log",
+        "sha256": "8d737039b0af8bd8c723ba1647d9855f0ca378670eb82b52f538a06af2d74353",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "89f34a50-4284-4174-823e-a80478f1dbe9",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/export.evidence.zip",
+        "sha256": "8a05afcc70f588445844fae447fd44f3f37a149a2a372a99172918630a848e62",
+        "byteLength": 1066535,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "b73e5cca-91f5-4fa4-b73a-52554f988576",
+        "attempt": 1,
+        "kind": "archive",
+        "path": "a1/export.zip",
+        "sha256": "c6074d891d707f3aa1629ad9dafb83f2b62148786d0eba936a1293a746aced57",
+        "byteLength": 93849,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "d86d2275-2ced-4f16-b89f-c11dfa2e9205",
+        "attempt": 1,
+        "kind": "export",
+        "path": "a1/export.csv",
+        "sha256": "b4367068f39e42784019a7698227f3e56d2b446fb1f98410fe7a219efffd45d9",
+        "byteLength": 19097,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "f3f857fe-2b49-444d-ad9e-5228e3a3cabc",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/create-destination.kane.ndjson",
+        "sha256": "85405a20779c0155f9b7ba843a163125db9e399be8524a1797e13f1eeeda21ff",
+        "byteLength": 5610,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "3131e651-a5b5-4843-8ac6-8d7755452beb",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/create-destination.kane.stderr.log",
+        "sha256": "9b57ff620e7dd938b36ee7d16c0713f7d70d899a9942db9590f099a64cfa0da6",
+        "byteLength": 304,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "5905a88b-6bb7-497f-a30e-6313a10c0146",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/create-destination.evidence.zip",
+        "sha256": "99dea548e154e12615d5d7c17049af65af040207d654841f95815e0db2717ab8",
+        "byteLength": 299587,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "ab4487e1-5753-4d49-908c-ffaa0ef130f3",
+        "attempt": 1,
+        "kind": "proxy-log",
+        "path": "a1/proxy-requests.json",
+        "sha256": "ff441719c0611a0067d3a5f4303c8d19265b700d2b5acda0057de07a3a54246c",
+        "byteLength": 100650,
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "differences": {
+    "1": {}
+  },
+  "files": [
+    {
+      "kind": "source",
+      "attempt": 0,
+      "file": "files/a0-source.csv",
+      "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4",
+      "byteLength": 18373
+    },
+    {
+      "kind": "export",
+      "attempt": 1,
+      "file": "files/a1-export.csv",
+      "sha256": "b4367068f39e42784019a7698227f3e56d2b446fb1f98410fe7a219efffd45d9",
+      "byteLength": 19097
+    }
+  ],
+  "screenshots": [
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "7-1-4",
+      "file": "screens/a1-export-7.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "8-1-5",
+      "file": "screens/a1-export-8.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "9-1-6",
+      "file": "screens/a1-export-9.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "10-1-7",
+      "file": "screens/a1-export-10.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "2-0-2",
+      "file": "screens/a1-create-destination-2.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "3-0-3",
+      "file": "screens/a1-create-destination-3.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-create-destination-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "5-0-8",
+      "file": "screens/a1-create-destination-5.jpg"
+    }
+  ]
+}

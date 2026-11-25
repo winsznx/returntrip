@@ -2,14 +2,100 @@
   "schemaVersion": 1,
   "runs": [
     {
+      "runId": "bd49ab4f-9ec1-4127-8531-c95965d39b2c",
+      "recordedAt": "2026-11-25T19:20:54.891Z",
+      "mode": "verify",
+      "outcome": "VERIFIED",
+      "headline": "1,000 of 1,000 records came back identical after export, restore and re-export.",
+      "scenario": null,
+      "project": "chicago-payments",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 68.692245,
+      "durationMs": 339002
+    },
+    {
       "runId": "97207718-c99c-4b37-a221-2d8a2549b100",
       "recordedAt": "2026-11-25T19:19:52.455Z",
       "mode": "verify",
       "outcome": "DATA_MISMATCH",
       "headline": "250 of 250 rows came back, but amount changed in 250 rows",
       "scenario": null,
+      "project": "sure-pre-4754",
+      "targetMode": "attached",
       "kaneCreditsUsed": 119.40247,
       "durationMs": 585176
+    },
+    {
+      "runId": "be81b20f-4d54-4736-8992-86551d75f4f6",
+      "recordedAt": "2026-11-25T19:14:31.851Z",
+      "mode": "verify",
+      "outcome": "EXECUTION_FAILED",
+      "headline": "Kane could not finish the create-destination step: The supplied account password was rejected, so the run could not reach Transactions.",
+      "scenario": null,
+      "project": "sure-pre-4754",
+      "targetMode": "attached",
+      "kaneCreditsUsed": 48.685365000000004,
+      "durationMs": 220029
+    },
+    {
+      "runId": "8af09014-7956-4331-9c86-ca7103227802",
+      "recordedAt": "2026-11-25T19:11:17.583Z",
+      "mode": "verify",
+      "outcome": "EXECUTION_FAILED",
+      "headline": "The export archive did not contain a readable transactions.csv: entry \"version.txt\" expands to 4294967295 bytes, limit 20971520",
+      "scenario": null,
+      "project": "sure-pre-4754",
+      "targetMode": "attached",
+      "kaneCreditsUsed": 28.0899625,
+      "durationMs": 116265
+    },
+    {
+      "runId": "3484183d-d9f5-4a08-a1f6-d65ff8f1c6df",
+      "recordedAt": "2026-11-25T19:06:34.105Z",
+      "mode": "verify",
+      "outcome": "DATA_MISMATCH",
+      "headline": "1,000 of 1,000 rows came back, but amount changed in 600 rows",
+      "scenario": "cents-truncation",
+      "project": "chicago-cents-truncation",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 63.39661,
+      "durationMs": 304619
+    },
+    {
+      "runId": "c277405e-a605-47eb-9416-013959b82d72",
+      "recordedAt": "2026-11-25T19:06:10.822Z",
+      "mode": "verify",
+      "outcome": "DATA_MISMATCH",
+      "headline": "8 rows missing, 992 of 1,000 preserved",
+      "scenario": "drop-duplicates",
+      "project": "chicago-drop-duplicates",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 66.01633249999999,
+      "durationMs": 287147
+    },
+    {
+      "runId": "39f624c3-e4f6-425b-8f27-d342070764bd",
+      "recordedAt": "2026-11-25T18:59:40.983Z",
+      "mode": "verify",
+      "outcome": "DATA_MISMATCH",
+      "headline": "1,000 of 1,000 rows came back, but vendor_name changed in 263 rows",
+      "scenario": "comma-split",
+      "project": "chicago-comma-split",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 87.19063249999999,
+      "durationMs": 406582
+    },
+    {
+      "runId": "3e15cc67-a47d-4cc5-a027-1322023d1286",
+      "recordedAt": "2026-11-25T18:53:21.101Z",
+      "mode": "verify",
+      "outcome": "DATA_MISMATCH",
+      "headline": "1,000 of 1,000 rows came back, but department_name changed in 1,000 rows and vendor_name in 1,000 rows",
+      "scenario": "column-order",
+      "project": "chicago-column-order",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 64.42099,
+      "durationMs": 366471
     },
     {
       "runId": "1eb15f4a-888d-4505-bee0-10b896bf1c61",
@@ -18,8 +104,22 @@
       "outcome": "REPAIRED_VERIFIED",
       "headline": "Fixed. First run: 1,000 of 1,000 rows came back, but amount changed in 1,000 rows After the patch: 1,000 of 1,000 records came back identical after export, restore and re-export.",
       "scenario": "sign-flip",
+      "project": "chicago-sign-flip",
+      "targetMode": "managed",
       "kaneCreditsUsed": 130.548515,
       "durationMs": 735745
+    },
+    {
+      "runId": "a1be12e0-47d4-4ef2-b038-aa3e3d5d0a78",
+      "recordedAt": "2026-11-25T18:39:06.849Z",
+      "mode": "repair",
+      "outcome": "EXECUTION_FAILED",
+      "headline": "Kane could not finish the create-destination step: The workspace was created and its page visibly shows “0 records,” but the automated checkpoint did not recognize that completed state.",
+      "scenario": "sign-flip",
+      "project": "chicago-sign-flip",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 106.5948225,
+      "durationMs": 703123
     },
     {
       "runId": "964cd087-8fb1-44f4-b6e9-ed3dba76124d",
@@ -28,6 +128,8 @@
       "outcome": "VERIFIED",
       "headline": "1,000 of 1,000 records came back identical after export, restore and re-export.",
       "scenario": null,
+      "project": "chicago-payments",
+      "targetMode": "managed",
       "kaneCreditsUsed": 76.07809,
       "durationMs": 331029
     }

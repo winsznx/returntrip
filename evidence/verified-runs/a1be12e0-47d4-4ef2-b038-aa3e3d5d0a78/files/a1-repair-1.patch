@@ -1,0 +1,14 @@
+diff --git a/src/import/import-payments.ts b/src/import/import-payments.ts
+index 0a6622d..4e56623 100644
+--- a/src/import/import-payments.ts
++++ b/src/import/import-payments.ts
+@@ -98,8 +98,7 @@ function toPayment(cells: readonly string[], rowNumber: number): RowOutcome {
+     ok: true,
+     payment: {
+       voucherNumber: emptyToNull(voucherNumber),
+-      // Ledger convention: incomes are positive, payments out are negative.
+-      amountCents: -amountCents,
++      amountCents,
+       checkDate,
+       departmentName: emptyToNull(departmentName),
+       contractNumber,

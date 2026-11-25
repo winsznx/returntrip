@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-25T19:11:17.583Z",
+  "commit": "e7fb2867a0af4671f2e2541f466398f55edac20f",
+  "report": {
+    "schemaVersion": 1,
+    "runId": "8af09014-7956-4331-9c86-ca7103227802",
+    "project": "sure-pre-4754",
+    "mode": "verify",
+    "outcome": "EXECUTION_FAILED",
+    "headline": "The export archive did not contain a readable transactions.csv: entry \"version.txt\" expands to 4294967295 bytes, limit 20971520",
+    "failureCode": "ARCHIVE_UNREADABLE",
+    "startedAt": "2026-11-25T19:11:17.583Z",
+    "finishedAt": "2026-11-25T19:13:13.848Z",
+    "durationMs": 116265,
+    "hashes": {
+      "config": "216d7dc6e9d3893c0e53ef2ddc7754b7b5e64755fc9e5be00f0465c005f9c662",
+      "contract": "3f2c5b1c717305df0460d69153acf6cda4f2e29fd1065a256b4f6221e36cd4f7",
+      "source": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4"
+    },
+    "baseRevision": null,
+    "target": {
+      "mode": "attached",
+      "origin": "http://127.0.0.1:3300"
+    },
+    "scenario": null,
+    "kane": {
+      "version": "0.10.9",
+      "creditsUsed": 28.0899625,
+      "creditsCap": 800
+    },
+    "agent": {
+      "versions": [],
+      "models": [],
+      "usd": 0
+    },
+    "attempts": [
+      {
+        "number": 1,
+        "kind": "initial",
+        "outcome": null,
+        "destination": null,
+        "patchSha256": null,
+        "startedAt": "2026-11-25T19:11:20.193Z",
+        "finishedAt": null,
+        "stages": [
+          {
+            "stage": "export",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the newest completed export on the family exports page",
+            "creditsUsed": 28.0899625,
+            "durationMs": 107540,
+            "vendorDurationSec": 86.7,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:50757/sessions/new?email=sure-source%40returntrip.t"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "wait: queued plan (2 steps): type \"Password*\"; click \"Log in\""
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "type: Type \"{{global.sure_password}}\" into \"Password*\""
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Click \"Log in\""
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "wait: Waiting successful login confirmed by the dashboard welcome heading"
+              },
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:50757/family_exports"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "click: Clicking New Export link"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "click: Clicking Export data"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "wait: PRIMARY: wait until the newest export shows 'Complete'"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "click: Clicking Download for the newest export"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "analyze: the newest export still shows 'Complete'"
+              },
+              {
+                "index": 8,
+                "status": "done",
+                "remark": "assert: the newest export still shows 'Complete'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "newest_export_complete_check",
+                "condition": "the newest export still shows 'Complete'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          }
+        ],
+        "comparisons": []
+      }
+    ],
+    "repairs": [],
+    "timeline": [
+      {
+        "utc": "2026-11-25T19:11:17.587Z",
+        "elapsedMs": 3,
+        "text": "Checking the config, the trusted source, Kane and the budget."
+      },
+      {
+        "utc": "2026-11-25T19:11:20.193Z",
+        "elapsedMs": 2609,
+        "text": "Starting a fresh copy of the app with the trusted source loaded."
+      },
+      {
+        "utc": "2026-11-25T19:11:24.920Z",
+        "elapsedMs": 7336,
+        "text": "Kane is opening the source workspace and clicking Export."
+      },
+      {
+        "utc": "2026-11-25T19:13:13.835Z",
+        "elapsedMs": 116251,
+        "text": "Kane export: passed, downloaded the newest completed export on the family exports page"
+      },
+      {
+        "utc": "2026-11-25T19:13:13.848Z",
+        "elapsedMs": 116264,
+        "text": "EXECUTION_FAILED: The export archive did not contain a readable transactions.csv: entry \"version.txt\" expands to 4294967295 bytes, limit 20971520"
+      }
+    ],
+    "limitations": [
+      "It proves the declared fields survive one CSV export, restore and re-export on a test copy of the app. It does not certify backups or fields outside the contract.",
+      "Kane uploads the restore file to TestMu AI cloud storage before setting it on the file input. Use public or test data only.",
+      "Kane drives the browser and reports its own pass or fail. ReturnTrip decides data equality with deterministic code and never trusts a browser success toast.",
+      "Controlled defects are recreated on a demo app and labelled as such. They are not a blind benchmark."
+    ],
+    "manifest": [
+      {
+        "id": "33c08535-399b-45ea-b20b-2cb2ff645d3e",
+        "attempt": 0,
+        "kind": "source",
+        "path": "a0/source.csv",
+        "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4",
+        "byteLength": 18373,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "85c2ada3-290f-4da8-8b00-53d419894d77",
+        "attempt": 0,
+        "kind": "report-json",
+        "path": "a0/report.json",
+        "sha256": "a80d5da9822a65750e89c2e2a85ab16c8b2bb5ce4af447bcbefc87fbe136c140",
+        "byteLength": 7426,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "0c29c455-2d30-4cc8-8f18-f51e2c3dc7aa",
+        "attempt": 0,
+        "kind": "report-markdown",
+        "path": "a0/report.md",
+        "sha256": "d5419c0baebfb5c0010158f7567c7cfdd455ffde813c8f3ab5b9f860e2ffa1a2",
+        "byteLength": 2370,
+        "mediaType": "text/markdown"
+      },
+      {
+        "id": "4742ea33-a1ef-4152-bcb0-66b97bd66d04",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/export.kane.ndjson",
+        "sha256": "1baa72bcd3bdfa7d0aca4507be91458488d1aae299faf9d5c747879423a30478",
+        "byteLength": 6659,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "f5669ca6-9e22-476f-8ebd-3bdbdaad3576",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/export.kane.stderr.log",
+        "sha256": "1de95ecf829a4865c0a1f796184d8bc229a59c7284b888689426d83ac559ae52",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "0a599790-c0ce-44a8-81f7-3019c48d034a",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/export.evidence.zip",
+        "sha256": "9fd16de7075e067ebf76d8d9fb6d31d3b8509b6b38d7a60735b5c26c29df9d5c",
+        "byteLength": 1082818,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "97228c73-2dd9-425c-8fe9-d1341339be3f",
+        "attempt": 1,
+        "kind": "archive",
+        "path": "a1/export.zip",
+        "sha256": "04d1ef6dfc8ad6253d268fc3ff0c91c3c1a68cd4dfb3bcf3a8b444be028faab5",
+        "byteLength": 93618,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "806087c0-7991-410c-85f8-77be12b6dd1e",
+        "attempt": 1,
+        "kind": "proxy-log",
+        "path": "a1/proxy-requests.json",
+        "sha256": "fcab3ba0c72f656d163bbdb7797f2eb9c0306fe9e9b0bca81029658284c17999",
+        "byteLength": 54304,
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "differences": {
+    "1": {}
+  },
+  "files": [
+    {
+      "kind": "source",
+      "attempt": 0,
+      "file": "files/a0-source.csv",
+      "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4",
+      "byteLength": 18373
+    }
+  ],
+  "screenshots": [
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "8-1-4",
+      "file": "screens/a1-export-8.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "9-1-5",
+      "file": "screens/a1-export-9.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "10-1-6",
+      "file": "screens/a1-export-10.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "11-1-7",
+      "file": "screens/a1-export-11.jpg"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-11-25T18:33:28.052Z",
-  "commit": "e3a61d78ef99c1362d2afd372beeb4fd517d41c5",
+  "commit": "e7fb2867a0af4671f2e2541f466398f55edac20f",
   "report": {
     "schemaVersion": 1,
     "runId": "964cd087-8fb1-44f4-b6e9-ed3dba76124d",
@@ -19,6 +19,10 @@
       "source": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50"
     },
     "baseRevision": "98ff4112372ebe816aece9ab0ec7a96adae6f408",
+    "target": {
+      "mode": "managed",
+      "origin": null
+    },
     "scenario": null,
     "kane": {
       "version": "0.10.9",
@@ -612,20 +616,6 @@
       "attempt": 1,
       "stage": "export",
       "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a1-export-1.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "export",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a1-export-2.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "export",
-      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-export-3.jpg"
     },
@@ -654,13 +644,6 @@
       "attempt": 1,
       "stage": "create-destination",
       "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a1-create-destination-1.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "create-destination",
-      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-create-destination-2.jpg"
     },
@@ -684,20 +667,6 @@
       "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-create-destination-5.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "restore",
-      "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a1-restore-1.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "restore",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a1-restore-2.jpg"
     },
     {
       "attempt": 1,

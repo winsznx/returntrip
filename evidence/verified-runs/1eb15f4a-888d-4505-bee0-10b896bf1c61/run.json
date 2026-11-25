@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-11-25T18:53:03.549Z",
-  "commit": "e3a61d78ef99c1362d2afd372beeb4fd517d41c5",
+  "commit": "e7fb2867a0af4671f2e2541f466398f55edac20f",
   "report": {
     "schemaVersion": 1,
     "runId": "1eb15f4a-888d-4505-bee0-10b896bf1c61",
@@ -19,6 +19,10 @@
       "source": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50"
     },
     "baseRevision": "7e497ba4945e34ef8ac7e146340ba4a141cb2bb1",
+    "target": {
+      "mode": "managed",
+      "origin": null
+    },
     "scenario": {
       "name": "sign-flip",
       "disclosure": "Recreated defect on a controlled demo app",
@@ -8040,20 +8044,6 @@
       "attempt": 1,
       "stage": "export",
       "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a1-export-1.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "export",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a1-export-2.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "export",
-      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-export-3.jpg"
     },
@@ -8082,27 +8072,6 @@
       "attempt": 1,
       "stage": "create-destination",
       "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a1-create-destination-1.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "create-destination",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a1-create-destination-2.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "create-destination",
-      "try": 0,
-      "step": "3-0-3",
-      "file": "screens/a1-create-destination-3.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "create-destination",
-      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-create-destination-4.jpg"
     },
@@ -8126,20 +8095,6 @@
       "try": 0,
       "step": "7-0-7",
       "file": "screens/a1-create-destination-7.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "restore",
-      "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a1-restore-1.jpg"
-    },
-    {
-      "attempt": 1,
-      "stage": "restore",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a1-restore-2.jpg"
     },
     {
       "attempt": 1,
@@ -8201,20 +8156,6 @@
       "attempt": 2,
       "stage": "export",
       "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a2-export-1.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "export",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a2-export-2.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "export",
-      "try": 0,
       "step": "3-0-3",
       "file": "screens/a2-export-3.jpg"
     },
@@ -8243,20 +8184,6 @@
       "attempt": 2,
       "stage": "create-destination",
       "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a2-create-destination-1.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "create-destination",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a2-create-destination-2.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "create-destination",
-      "try": 0,
       "step": "3-0-3",
       "file": "screens/a2-create-destination-3.jpg"
     },
@@ -8280,27 +8207,6 @@
       "try": 0,
       "step": "6-0-6",
       "file": "screens/a2-create-destination-6.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "restore",
-      "try": 0,
-      "step": "1-0-1",
-      "file": "screens/a2-restore-1.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "restore",
-      "try": 0,
-      "step": "2-0-2",
-      "file": "screens/a2-restore-2.jpg"
-    },
-    {
-      "attempt": 2,
-      "stage": "restore",
-      "try": 0,
-      "step": "3-0-3",
-      "file": "screens/a2-restore-3.jpg"
     },
     {
       "attempt": 2,
