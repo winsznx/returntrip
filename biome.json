@@ -8,7 +8,8 @@
       "!internal",
       "!.returntrip",
       "!**/*.tsbuildinfo",
-      "!examples/**/*.yaml"
+      "!examples/**/*.yaml",
+      "!evidence"
     ]
   },
   "formatter": {
