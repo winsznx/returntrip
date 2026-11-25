@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/contracts packages/csv-comparator packages/storage packages/target-runtime packages/repair-agent packages/kane-adapter packages/artifact-capture" },
-    { "path": "packages/reporting" }
+    { "path": "packages/reporting" },
+    { "path": "packages/orchestrator" }
   ]
 }

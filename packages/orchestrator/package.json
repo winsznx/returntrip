@@ -1,0 +1,29 @@
+{
+  "name": "@returntrip/orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runs the export, restore, re-export journey, compares the artifacts and drives bounded repair.",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@returntrip/artifact-capture": "workspace:*",
+    "@returntrip/contracts": "workspace:*",
+    "@returntrip/csv-comparator": "workspace:*",
+    "@returntrip/kane-adapter": "workspace:*",
+    "@returntrip/repair-agent": "workspace:*",
+    "@returntrip/reporting": "workspace:*",
+    "@returntrip/storage": "workspace:*",
+    "@returntrip/target-runtime": "workspace:*",
+    "yaml": "2.9.1",
+    "zod": "4.6.7"
+  }
+}

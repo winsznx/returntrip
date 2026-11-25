@@ -1,0 +1,87 @@
+# ReturnTrip config, schema version 1.
+# Scenario: comma-split. Kane CLI exports the Chicago payments workspace, restores the file into a new empty
+# workspace, exports again, and ReturnTrip compares all three against the trusted source.
+schemaVersion: 1
+project: chicago-comma-split
+
+application:
+  mode: managed
+  directory: ../../../apps/demo-app
+  lifecycle:
+    seed: [node, src/seed.ts, --data-dir, '{dataDir}', --workspace, '{sourceWorkspace}', --name, Chicago payments, --csv, '{sourceCsv}']
+    start: [node, src/server.ts]
+    env:
+      PORT: '{port}'
+      DATA_DIR: '{dataDir}'
+    healthPath: /health
+    startupTimeoutMs: 30000
+  repairPaths: [src/import, src/export, src/csv, src/domain]
+  protectedPaths: [src/seed.ts, src/db.ts]
+  scenario:
+    name: comma-split
+    patch: ../../../apps/demo-app/defects/comma-split.patch
+    disclosure: Recreated defect on a controlled demo app
+
+source:
+  kind: manifestCsv
+  path: ../source.csv
+  sha256: 106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50
+  provenance: ../provenance.json
+
+contract:
+  version: 1
+  encoding: utf8
+  delimiter: ','
+  identity:
+    mode: multiset
+  order: ignore
+  extraColumns: reject
+  fields:
+    - { name: voucher_number, type: string, nullable: true, nullMarkers: [''] }
+    - { name: amount, type: decimal, scale: 2 }
+    - { name: check_date, type: date, formats: [MM/DD/YYYY, YYYY] }
+    - { name: department_name, type: string, nullable: true, nullMarkers: [''] }
+    - { name: contract_number, type: string }
+    - { name: vendor_name, type: string }
+
+journey:
+  sourceWorkspace: chicago
+  workspaceUrl: '{origin}/w/{workspace}'
+  export: >-
+    Go to {sourceUrl}. Verify the page shows '{expectedRowsGrouped} records'.
+    Click the 'Export CSV' link to download the payments CSV,
+    then verify the page still shows '{expectedRowsGrouped} records'.
+  createDestination: >-
+    Go to {origin}/. Type '{destinationName}' into the 'Workspace name' field and click 'Create workspace',
+    then verify the page shows '0 records'.
+  restore: >-
+    Go to {destinationUrl}. Verify the page shows '0 records'.
+    Upload the file {restoreFile} into the 'CSV file' file input and click the 'Import' button,
+    then verify the page shows 'Import successful'.
+  reexport: >-
+    Go to {destinationUrl}. Click the 'Export CSV' link to download the payments CSV,
+    then verify the page still shows the 'Export CSV' link.
+
+capture:
+  mode: responseProxy
+  route: /w/:workspace/export.csv
+  method: GET
+  contentTypes: [text/csv]
+  restoreRoute: /w/:workspace/import
+  restoreFileField: file
+
+limits:
+  browserRunTimeoutMs: 300000
+  overallTimeoutMs: 3600000
+  maxRepairAttempts: 3
+  maxInfraRetriesPerStage: 1
+  maxRows: 50000
+  maxKaneCredits: 1500
+
+repair:
+  enabled: true
+  agent: claude-code
+  maxChangedFiles: 5
+  maxChangedLines: 120
+  agentTimeoutMs: 900000
+  maxAgentBudgetUsd: 5
