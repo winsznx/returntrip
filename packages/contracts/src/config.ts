@@ -127,11 +127,23 @@ export const LifecycleSchema = z.strictObject({
   /** Loads the trusted source into the source workspace, independent of the importer under test. */
   seed: Argv.optional(),
   start: Argv,
-  stop: Argv.optional(),
   env: z.record(z.string().regex(/^[A-Z][A-Z0-9_]*$/), z.string()).default({}),
   healthPath: z.string().startsWith('/').default('/health'),
   startupTimeoutMs: z.number().int().min(1_000).max(600_000).default(60_000),
 });
+
+/**
+ * A controlled defect applied to the disposable copy before the run. Lives outside the repair
+ * scope, so the agent can't fix a scenario by deleting it.
+ */
+export const ScenarioSchema = z.strictObject({
+  name: z.string().regex(/^[a-z0-9][a-z0-9-]{0,62}$/),
+  patch: z.string().min(1),
+  /** Shown wherever the run is displayed, e.g. "Recreated defect on a controlled demo app". */
+  disclosure: z.string().min(10).max(200),
+  reference: z.url().optional(),
+});
+export type ScenarioConfig = z.output<typeof ScenarioSchema>;
 
 export const ApplicationSchema = z.discriminatedUnion('mode', [
   z.strictObject({
@@ -140,6 +152,7 @@ export const ApplicationSchema = z.discriminatedUnion('mode', [
     lifecycle: LifecycleSchema,
     repairPaths: z.array(RelativePath).min(1),
     protectedPaths: z.array(RelativePath).default([]),
+    scenario: ScenarioSchema.optional(),
   }),
   z.strictObject({
     mode: z.literal('attached'),
