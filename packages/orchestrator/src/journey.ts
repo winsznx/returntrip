@@ -129,6 +129,8 @@ interface StepFailure {
   readonly ok: false;
   readonly stage: BrowserStage;
   readonly reason: string;
+  /** False when repeating the unit could double-apply something, e.g. an upload already sent. */
+  readonly retryable?: boolean;
 }
 
 /**
@@ -181,7 +183,7 @@ async function withRetries<T>(
   for (let tryIndex = 0; ; tryIndex += 1) {
     const outcome = await unit(tryIndex);
     if (outcome.ok) return outcome.value;
-    if (tryIndex >= retries) {
+    if (tryIndex >= retries || outcome.retryable === false) {
       throw new RunStop(
         'EXECUTION_FAILED',
         `BROWSER_${outcome.stage.toUpperCase().replace('-', '_')}`,
@@ -392,7 +394,8 @@ export async function runJourney(
     ctx,
     'restore into a new empty workspace',
     async (tryIndex) => {
-      const destination = `restore-${ctx.attempt}-${randomBytes(3).toString('hex')}`;
+      const destination =
+        journey.destinationWorkspace ?? `restore-${ctx.attempt}-${randomBytes(3).toString('hex')}`;
       const values = {
         ...base,
         destinationName: destination,
@@ -429,7 +432,9 @@ export async function runJourney(
       browser.restore = result;
       if (result.outcome !== 'passed') {
         restoreWait?.cancel();
-        return browserFailure('restore', result);
+        // A generated destination is thrown away on retry. A seeded one is reused, so once the
+        // restore step has run, a retry could import the same rows twice.
+        return { ...browserFailure('restore', result), retryable: !journey.destinationWorkspace };
       }
       await verifyLineage(
         ctx,
@@ -438,9 +443,6 @@ export async function runJourney(
       );
       return { ok: true, value: { destination, destinationUrl: values.destinationUrl } };
     },
-    // A seeded destination can't be swapped for a fresh one, so a half-finished restore there
-    // must not be retried.
-    journey.destinationWorkspace ? 0 : ctx.config.limits.maxBrowserRetries,
   );
   const destination = restored.destination;
   ctx.store.updateRun(ctx.runId, { phase: 'RESTORED' });

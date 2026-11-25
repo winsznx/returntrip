@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -254,6 +254,54 @@ describe('executeRun with the Ledgerline demo app', { timeout: 120_000 }, () => 
     expect({ outcome: finished.outcome, code: finished.failureCode }).toEqual({
       outcome: 'EXECUTION_FAILED',
       code: 'BROWSER_REEXPORT',
+    });
+  });
+
+  describe('with a destination the seed prepared', () => {
+    const SEEDED = join(EXAMPLES, `.seeded-${process.pid}.yaml`);
+
+    beforeEach(async () => {
+      const healthy = await readFile(HEALTHY, 'utf8');
+      await writeFile(
+        SEEDED,
+        healthy.replace(
+          '  sourceWorkspace: chicago\n',
+          '  sourceWorkspace: chicago\n  destinationWorkspace: restore-seeded\n',
+        ),
+      );
+    });
+
+    afterEach(async () => {
+      await rm(SEEDED, { force: true });
+    });
+
+    it('restores into the named destination instead of generating one', async () => {
+      // #given a config whose journey names its destination
+
+      // #when
+      const finished = await run(SEEDED, 'verify');
+      const destinations = store.listAttempts(finished.id).map((attempt) => attempt.destination);
+
+      // #then
+      expect({ outcome: finished.outcome, destinations }).toEqual({
+        outcome: 'VERIFIED',
+        destinations: ['restore-seeded'],
+      });
+    });
+
+    it('never retries a failed restore into a seeded destination, which could import twice', async () => {
+      // #given a restore step that fails once
+      const engineDeps = deps({ browser: httpBrowser({ flaky: { restore: 1 } }) });
+
+      // #when
+      const finished = await run(SEEDED, 'verify', engineDeps);
+      const restores = store.listStages(finished.id).filter((stage) => stage.stage === 'restore');
+
+      // #then
+      expect({ outcome: finished.outcome, restores: restores.length }).toEqual({
+        outcome: 'EXECUTION_FAILED',
+        restores: 1,
+      });
     });
   });
 
