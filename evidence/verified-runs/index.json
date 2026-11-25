@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "runs": [
     {
+      "runId": "97207718-c99c-4b37-a221-2d8a2549b100",
+      "recordedAt": "2026-11-25T19:19:52.455Z",
+      "mode": "verify",
+      "outcome": "DATA_MISMATCH",
+      "headline": "250 of 250 rows came back, but amount changed in 250 rows",
+      "scenario": null,
+      "kaneCreditsUsed": 119.40247,
+      "durationMs": 585176
+    },
+    {
       "runId": "1eb15f4a-888d-4505-bee0-10b896bf1c61",
       "recordedAt": "2026-11-25T18:53:03.549Z",
       "mode": "repair",
