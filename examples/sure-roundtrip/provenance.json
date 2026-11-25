@@ -1,0 +1,11 @@
+{
+  "derivedFrom": "../payment-roundtrip/source.csv (City of Chicago Payments, see its provenance.json)",
+  "derivedFromSha256": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50",
+  "selection": "First 250 payments whose check_date is a full MM/DD/YYYY date, in file order. Year-only rolled-up rows are skipped because Sure needs a calendar date.",
+  "transformation": "Written in Sure's transactions.csv export layout: date as YYYY-MM-DD, account_name 'Everyday Checking', amount as published (positive = money out, Sure's stored convention), name = vendor_name, empty category and tags, notes = rt-NNNN so every row has a unique key, currency USD.",
+  "output": {
+    "file": "source.csv",
+    "rows": 250,
+    "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4"
+  }
+}

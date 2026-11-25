@@ -1,0 +1,5 @@
+# Mounts this example read-only inside Sure's web container so the seed can read source.csv.
+services:
+  web:
+    volumes:
+      - ..:/returntrip:ro
