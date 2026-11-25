@@ -1,0 +1,49 @@
+export const RUN_OUTCOMES = [
+  'VERIFIED',
+  'REPAIRED_VERIFIED',
+  'DATA_MISMATCH',
+  'REPAIR_UNRESOLVED',
+  'EXECUTION_FAILED',
+  'INCONCLUSIVE',
+  'INVALID_CONFIG',
+  'BUDGET_EXCEEDED',
+  'CANCELED',
+] as const;
+
+export type RunOutcome = (typeof RUN_OUTCOMES)[number];
+
+export const EXIT_CODES: Readonly<Record<RunOutcome, number>> = {
+  VERIFIED: 0,
+  REPAIRED_VERIFIED: 0,
+  DATA_MISMATCH: 2,
+  REPAIR_UNRESOLVED: 3,
+  EXECUTION_FAILED: 4,
+  INCONCLUSIVE: 5,
+  INVALID_CONFIG: 6,
+  BUDGET_EXCEEDED: 7,
+  CANCELED: 130,
+};
+
+export const RUN_PHASES = [
+  'CREATED',
+  'PREFLIGHT',
+  'PREPARING',
+  'SOURCE_READY',
+  'EXPORTING',
+  'EXPORT_CAPTURED',
+  'DESTINATION_READY',
+  'RESTORING',
+  'RESTORED',
+  'REEXPORTING',
+  'REEXPORT_CAPTURED',
+  'COMPARING',
+  'REPAIRING',
+  'PATCH_VALIDATION',
+  'REBUILDING',
+  'REPORTING',
+  'FINISHED',
+] as const;
+
+export type RunPhase = (typeof RUN_PHASES)[number];
+
+export type RunMode = 'verify' | 'repair';
