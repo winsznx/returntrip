@@ -243,6 +243,9 @@ describe('validatePatch', () => {
     await writeFile(join(app, 'src', 'import', 'fixtures', 'golden.csv'), 'a\n1\n');
     await writeFile(join(app, 'src', 'export', 'write.ts'), 'export const x = 1;\n');
     await writeFile(join(app, 'test', 'import.test.ts'), 'expect(1).toBe(1);\n');
+    await writeFile(join(app, '.gitignore'), '.env.local\nsrc/import/generated/\n');
+    await writeFile(join(app, '.env.local'), 'SIGN=-1\n');
+    await writeFile(join(app, 'src', 'import', 'rules.sql'), '-- keep\nselect 1;\n');
     const copy = await prepareTargetCopy({ appDir: app, parentDir: join(parent, 'copies'), label: 't' });
     dir = copy.dir;
     baseTree = copy.baseTree;
@@ -344,6 +347,50 @@ describe('validatePatch', () => {
 
     // #then
     expect(validation.rejection?.code).toBe('TOO_LARGE');
+  });
+
+  it('sees an edit to a file the app itself git-ignores', async () => {
+    // #given an agent that changes behaviour through an ignored env file
+    await writeFile(join(dir, '.env.local'), 'SIGN=1\n');
+
+    // #when
+    const { validation } = await validatePatch(dir, baseTree, POLICY);
+
+    // #then
+    expect(validation.rejection?.code).toBe('OUTSIDE_ALLOWED_PATHS');
+  });
+
+  it('sees new files in an ignored directory inside an allowed path', async () => {
+    // #given
+    await mkdir(join(dir, 'src', 'import', 'generated'), { recursive: true });
+    await writeFile(join(dir, 'src', 'import', 'generated', 'sign.ts'), 'export const sign = 1;\n');
+
+    // #when
+    const { validation } = await validatePatch(dir, baseTree, POLICY);
+
+    // #then
+    expect(validation.files).toEqual(['src/import/generated/sign.ts']);
+  });
+
+  it('keeps git metadata outside the copy, where the agent cannot edit it', async () => {
+    // #given a prepared copy
+
+    // #when
+    const insideGit = await readFile(join(dir, '.git', 'config'), 'utf8').catch(() => null);
+
+    // #then
+    expect(insideGit).toBeNull();
+  });
+
+  it('counts removed lines that look like diff headers', async () => {
+    // #given an edit removing a SQL comment, which appears in the diff as a line starting ---
+    await writeFile(join(dir, 'src', 'import', 'rules.sql'), 'select 1;\n');
+
+    // #when
+    const { validation } = await validatePatch(dir, baseTree, POLICY);
+
+    // #then
+    expect(validation.linesChanged).toBe(1);
   });
 
   it('rejects resubmitting a patch that already failed', async () => {

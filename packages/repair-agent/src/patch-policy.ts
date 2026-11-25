@@ -1,5 +1,5 @@
 import type { PatchRejectionCode, PatchValidation } from '@returntrip/contracts';
-import { diffAgainst, rawChangesAgainst, sha256 } from '@returntrip/target-runtime';
+import { changedLinesAgainst, diffAgainst, rawChangesAgainst, sha256 } from '@returntrip/target-runtime';
 
 export interface PatchPolicy {
   readonly allowedPaths: readonly string[];
@@ -111,7 +111,8 @@ export async function validatePatch(
       );
     }
   }
-  if (/^GIT binary patch$|^Binary files /m.test(patch))
+  const counted = await changedLinesAgainst(dir, baseTree);
+  if (counted.binary || /^GIT binary patch$|^Binary files /m.test(patch))
     return reject('BINARY', 'binary changes are not allowed', files, patch);
   if (files.length > policy.maxChangedFiles) {
     return reject(
@@ -121,7 +122,7 @@ export async function validatePatch(
       patch,
     );
   }
-  const linesChanged = countChangedLines(patch);
+  const linesChanged = counted.lines;
   if (linesChanged > policy.maxChangedLines) {
     return reject(
       'TOO_LARGE',

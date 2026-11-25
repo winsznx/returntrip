@@ -4,7 +4,9 @@ export { fillArgv, fillPlaceholders, type PlaceholderValues, placeholdersIn } fr
 export { type ExecOptions, type ExecResult, execArgv, killTree, minimalEnv } from './process.ts';
 export {
   applyPatch,
+  changedLinesAgainst,
   diffAgainst,
+  gitDirFor,
   gitInCopy,
   hashTree,
   prepareTargetCopy,
