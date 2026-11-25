@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "runs": [
     {
+      "runId": "12c63506-f4e6-452f-ada3-a4fd808314fe",
+      "recordedAt": "2026-11-25T19:59:47.652Z",
+      "mode": "verify",
+      "outcome": "DATA_MISMATCH",
+      "headline": "250 of 250 rows came back, but amount changed in 250 rows",
+      "scenario": null,
+      "project": "sure-44aad3a",
+      "targetMode": "attached",
+      "kaneCreditsUsed": 96.64049499999999,
+      "durationMs": 531763
+    },
+    {
+      "runId": "9cc7ce04-d74a-459a-891d-7814b1dc8e9d",
+      "recordedAt": "2026-11-25T19:50:42.909Z",
+      "mode": "verify",
+      "outcome": "VERIFIED",
+      "headline": "250 of 250 records came back identical after export, restore and re-export.",
+      "scenario": null,
+      "project": "sure-cd5ad7e",
+      "targetMode": "attached",
+      "kaneCreditsUsed": 107.77891249999999,
+      "durationMs": 514181
+    },
+    {
+      "runId": "1eb076c1-35bf-420c-8abc-f2343e835e68",
+      "recordedAt": "2026-11-25T19:40:39.646Z",
+      "mode": "verify",
+      "outcome": "VERIFIED",
+      "headline": "250 of 250 records came back identical after export, restore and re-export.",
+      "scenario": null,
+      "project": "sure-pre-4754",
+      "targetMode": null,
+      "kaneCreditsUsed": 111.0271975,
+      "durationMs": 533881
+    },
+    {
+      "runId": "9a6a0333-020b-47a9-bf6f-c5a3eade126c",
+      "recordedAt": "2026-11-25T19:35:03.355Z",
+      "mode": "verify",
+      "outcome": "EXECUTION_FAILED",
+      "headline": "Kane could not finish the restore step: Login succeeded, but the test then checked for an email field that only exists on the sign-in page.",
+      "scenario": null,
+      "project": "sure-pre-4754",
+      "targetMode": null,
+      "kaneCreditsUsed": 75.9138775,
+      "durationMs": 322055
+    },
+    {
       "runId": "bd49ab4f-9ec1-4127-8531-c95965d39b2c",
       "recordedAt": "2026-11-25T19:20:54.891Z",
       "mode": "verify",
@@ -21,7 +69,7 @@
       "headline": "250 of 250 rows came back, but amount changed in 250 rows",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": "attached",
+      "targetMode": null,
       "kaneCreditsUsed": 119.40247,
       "durationMs": 585176
     },
@@ -33,7 +81,7 @@
       "headline": "Kane could not finish the create-destination step: The supplied account password was rejected, so the run could not reach Transactions.",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": "attached",
+      "targetMode": null,
       "kaneCreditsUsed": 48.685365000000004,
       "durationMs": 220029
     },
@@ -45,7 +93,7 @@
       "headline": "The export archive did not contain a readable transactions.csv: entry \"version.txt\" expands to 4294967295 bytes, limit 20971520",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": "attached",
+      "targetMode": null,
       "kaneCreditsUsed": 28.0899625,
       "durationMs": 116265
     },

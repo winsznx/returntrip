@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-25T19:35:03.355Z",
+  "commit": "dc86ee7632c913a60d5ccfb98c976936758b885e",
+  "report": {
+    "schemaVersion": 1,
+    "runId": "9a6a0333-020b-47a9-bf6f-c5a3eade126c",
+    "project": "sure-pre-4754",
+    "mode": "verify",
+    "outcome": "EXECUTION_FAILED",
+    "headline": "Kane could not finish the restore step: Login succeeded, but the test then checked for an email field that only exists on the sign-in page.",
+    "failureCode": "BROWSER_RESTORE",
+    "startedAt": "2026-11-25T19:35:03.355Z",
+    "finishedAt": "2026-11-25T19:40:25.410Z",
+    "durationMs": 322055,
+    "hashes": {
+      "config": "c7eba084132fca5ceca6e4f17a7dd3b5ae5a69aaac523205b70c25ab4c4f7504",
+      "contract": "3f2c5b1c717305df0460d69153acf6cda4f2e29fd1065a256b4f6221e36cd4f7",
+      "source": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4"
+    },
+    "baseRevision": null,
+    "target": null,
+    "scenario": null,
+    "kane": {
+      "version": "0.10.9",
+      "creditsUsed": 75.9138775,
+      "creditsCap": 800
+    },
+    "agent": {
+      "versions": [],
+      "models": [],
+      "usd": 0
+    },
+    "attempts": [
+      {
+        "number": 1,
+        "kind": "initial",
+        "outcome": null,
+        "destination": "sure-restore",
+        "patchSha256": null,
+        "startedAt": "2026-11-25T19:35:08.860Z",
+        "finishedAt": null,
+        "stages": [
+          {
+            "stage": "export",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "downloaded the newest completed export on the family exports page",
+            "creditsUsed": 28.711197499999997,
+            "durationMs": 123136,
+            "vendorDurationSec": 96.3,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:52844/sessions/new?email=sure-source%40returntrip.t"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "wait: queued plan (2 steps): type \"Password*\"; click \"Log in\""
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "type: Type \"returntrip-local-1\" into \"Password*\""
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Click \"Log in\""
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "wait: Waiting confirm successful login"
+              },
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:52844/family_exports"
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "click: Clicking New Export in Exports section"
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "click: Clicking Export data button"
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "wait: PRIMARY: wait until the newest export shows 'Complete'"
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "click: Clicking Download link for the newest export file"
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "analyze: the newest export still shows 'Complete'"
+              },
+              {
+                "index": 8,
+                "status": "done",
+                "remark": "assert: the newest export still shows 'Complete'"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "newest_export_complete_check",
+                "condition": "the newest export still shows 'Complete'",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          },
+          {
+            "stage": "create-destination",
+            "outcome": "passed",
+            "reasonCode": "success.complete",
+            "oneLiner": "reviewed transactions on the local site",
+            "creditsUsed": 24.456215000000004,
+            "durationMs": 102152,
+            "vendorDurationSec": 70.7,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:52844/sessions/new?email=sure-restore%40returntrip."
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "analyze: The email field is already filled in."
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "assert: The email field is already filled in."
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "wait: queued plan (2 steps): type \"Password*\"; click \"Log in\""
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "type: Type \"returntrip-local-1\" into \"Password*\""
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "click: Click \"Log in\""
+              },
+              {
+                "index": 8,
+                "status": "done",
+                "remark": "wait: PRIMARY: confirm the logged-in home page after clicking 'Log in'"
+              },
+              {
+                "index": 9,
+                "status": "done",
+                "remark": "navigate: PRIMARY: Go to http://127.0.0.1:52844/transactions"
+              },
+              {
+                "index": 10,
+                "status": "done",
+                "remark": "wait: PRIMARY: wait for the Transactions heading to be visible"
+              },
+              {
+                "index": 11,
+                "status": "done",
+                "remark": "analyze: no transactions are listed"
+              },
+              {
+                "index": 12,
+                "status": "done",
+                "remark": "assert: no transactions are listed"
+              }
+            ],
+            "assertions": [
+              {
+                "name": "email_field_filled_check",
+                "condition": "The email field is already filled in.",
+                "expected": "true",
+                "observed": "true",
+                "operator": "equals"
+              },
+              {
+                "name": "transactions_listed_check",
+                "condition": "no transactions are listed",
+                "expected": "false",
+                "observed": "false",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": {
+              "policy": "returntrip-stage",
+              "result": "pass",
+              "failedGates": [],
+              "warnedGates": [],
+              "erroredGates": []
+            }
+          },
+          {
+            "stage": "restore",
+            "outcome": "failed",
+            "reasonCode": "assertion_error.final_verification",
+            "oneLiner": "Login succeeded, but the test then checked for an email field that only exists on the sign-in page.",
+            "creditsUsed": 22.746464999999997,
+            "durationMs": 83678,
+            "vendorDurationSec": 66,
+            "kaneVersion": "0.10.9",
+            "steps": [
+              {
+                "index": 2,
+                "status": "done",
+                "remark": "navigate: Navigate to http://127.0.0.1:52844/sessions/new?email=sure-restore%40returntrip."
+              },
+              {
+                "index": 3,
+                "status": "done",
+                "remark": "wait: queued plan (2 steps): type \"Password*\"; click \"Log in\""
+              },
+              {
+                "index": 4,
+                "status": "done",
+                "remark": "type: Type \"returntrip-local-1\" into \"Password*\""
+              },
+              {
+                "index": 5,
+                "status": "done",
+                "remark": "click: Click \"Log in\""
+              },
+              {
+                "index": 6,
+                "status": "done",
+                "remark": "wait: PRIMARY: confirm successful Log in by the authenticated dashboard heading; role="
+              },
+              {
+                "index": 7,
+                "status": "done",
+                "remark": "analyze: The email field is filled in."
+              },
+              {
+                "index": 8,
+                "status": "failed",
+                "remark": "assert: The email field is already filled in."
+              }
+            ],
+            "assertions": [
+              {
+                "name": "email_field_filled_check",
+                "condition": "The email field is filled in.",
+                "expected": "true",
+                "observed": "false",
+                "operator": "equals"
+              }
+            ],
+            "evidenceVerdict": null
+          }
+        ],
+        "comparisons": []
+      }
+    ],
+    "repairs": [],
+    "timeline": [
+      {
+        "utc": "2026-11-25T19:35:03.358Z",
+        "elapsedMs": 3,
+        "text": "Checking the config, the trusted source, Kane and the budget."
+      },
+      {
+        "utc": "2026-11-25T19:35:08.860Z",
+        "elapsedMs": 5505,
+        "text": "Loading the trusted source into the running app through its seed command."
+      },
+      {
+        "utc": "2026-11-25T19:35:13.435Z",
+        "elapsedMs": 10079,
+        "text": "Kane is opening the source workspace and clicking Export."
+      },
+      {
+        "utc": "2026-11-25T19:37:18.211Z",
+        "elapsedMs": 134857,
+        "text": "Kane export: passed, downloaded the newest completed export on the family exports page"
+      },
+      {
+        "utc": "2026-11-25T19:37:18.224Z",
+        "elapsedMs": 134869,
+        "text": "Captured export (19097 bytes, sha256 6abe60f02aca)"
+      },
+      {
+        "utc": "2026-11-25T19:37:18.226Z",
+        "elapsedMs": 134871,
+        "text": "Kane is creating an empty workspace to restore into."
+      },
+      {
+        "utc": "2026-11-25T19:39:01.681Z",
+        "elapsedMs": 238327,
+        "text": "Kane create-destination: passed, reviewed transactions on the local site"
+      },
+      {
+        "utc": "2026-11-25T19:39:01.682Z",
+        "elapsedMs": 238328,
+        "text": "Kane is uploading the exported file into the empty workspace."
+      },
+      {
+        "utc": "2026-11-25T19:40:25.383Z",
+        "elapsedMs": 322024,
+        "text": "Kane restore: failed, Login succeeded, but the test then checked for an email field that only exists on the sign-in page."
+      },
+      {
+        "utc": "2026-11-25T19:40:25.396Z",
+        "elapsedMs": 322037,
+        "text": "EXECUTION_FAILED: Kane could not finish the restore step: Login succeeded, but the test then checked for an email field that only exists on the sign-in page."
+      }
+    ],
+    "limitations": [
+      "It proves the declared fields survive one CSV export, restore and re-export on a test copy of the app. It does not certify backups or fields outside the contract.",
+      "Kane uploads the restore file to TestMu AI cloud storage before setting it on the file input. Use public or test data only.",
+      "Kane drives the browser and reports its own pass or fail. ReturnTrip decides data equality with deterministic code and never trusts a browser success toast.",
+      "Controlled defects are recreated on a demo app and labelled as such. They are not a blind benchmark."
+    ],
+    "manifest": [
+      {
+        "id": "59c2df15-7e52-4609-a86b-4cc862b7a783",
+        "attempt": 0,
+        "kind": "source",
+        "path": "a0/source.csv",
+        "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4",
+        "byteLength": 18373,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "ea7a02cb-d629-48e3-84b6-bc8de9c061b2",
+        "attempt": 0,
+        "kind": "report-json",
+        "path": "a0/report.json",
+        "sha256": "e13320d4b64945fd7200951b0a99d768d987f76882895db56b4bce665b50d015",
+        "byteLength": 15367,
+        "mediaType": "application/json"
+      },
+      {
+        "id": "92701696-4a38-4557-a27a-e3709e06bd83",
+        "attempt": 0,
+        "kind": "report-markdown",
+        "path": "a0/report.md",
+        "sha256": "0d1095c00c341a1c6af16e901551e8fbe42303795ed032a8c763c64e9e4e8953",
+        "byteLength": 3643,
+        "mediaType": "text/markdown"
+      },
+      {
+        "id": "d56c9108-6b0d-42d5-a8a8-fc6c3cb67b63",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/export.kane.ndjson",
+        "sha256": "60e7fe31b23db37744b85f3df663049a71438d22115c9e452dc61e8400ee43c1",
+        "byteLength": 6659,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "68df5cdb-c310-4730-9a13-70560467ca1c",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/export.kane.stderr.log",
+        "sha256": "6ffcd801f77147fe87900450590b467b51fc4b951dae20686e3c00612fd0229d",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "525373a6-85a0-49d0-92a1-f8318995c810",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/export.evidence.zip",
+        "sha256": "ec5444cd023c6e3af4a7938afbdc127aae7e23f34096550cd4343b7c6d5df1dd",
+        "byteLength": 1083359,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "ef3d4512-d895-4a61-95bd-79bf5dabaf1f",
+        "attempt": 1,
+        "kind": "archive",
+        "path": "a1/export.zip",
+        "sha256": "991150d29d7fb16d0e9bc8a1891232ba6e151dd5d4b855dd19b3c44296390f82",
+        "byteLength": 93753,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "e30e67b5-713b-4c1e-bb8b-c66bfd9ec4e3",
+        "attempt": 1,
+        "kind": "export",
+        "path": "a1/export.csv",
+        "sha256": "6abe60f02aca53186a698bb4c508d032ad8156b480ab480854a654650c063ccf",
+        "byteLength": 19097,
+        "mediaType": "text/csv"
+      },
+      {
+        "id": "ada6feb8-72c3-403c-9bb7-48aaa16fc065",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/create-destination.kane.ndjson",
+        "sha256": "d2fa0af4dda16e223dbc6ee78cad4ae166e91a113686273a28b42bdfef04a419",
+        "byteLength": 6709,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "d8965822-6a39-4c57-9f85-c522786eaf7f",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/create-destination.kane.stderr.log",
+        "sha256": "22f6c23cc00802c8ff9284ad3fc720f7cca77f2be9a356603e89e29f045f3e45",
+        "byteLength": 213,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "c224c453-ea0b-4398-af7b-b358694de319",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/create-destination.evidence.zip",
+        "sha256": "b6dbdaaf05130be6a57cbff0cbb2f40feeb3d4f3d8bf5d5c0baa824a28ecff5d",
+        "byteLength": 560327,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "46a506cc-05f1-475b-bf73-ded19a137223",
+        "attempt": 1,
+        "kind": "kane-stdout",
+        "path": "a1/restore.kane.ndjson",
+        "sha256": "d574766b99b23b55a970c507d1ad9d521b74188a1200ddb04e7a6d7f8abf9cbc",
+        "byteLength": 6731,
+        "mediaType": "application/x-ndjson"
+      },
+      {
+        "id": "69d4e7df-9002-4fa2-8d00-f0ce5f7970d0",
+        "attempt": 1,
+        "kind": "kane-stderr",
+        "path": "a1/restore.kane.stderr.log",
+        "sha256": "4e1aa7c824689a202c83f5fca29204cabe27b4fb67960a14e3e5ef66f88abd31",
+        "byteLength": 304,
+        "mediaType": "text/plain"
+      },
+      {
+        "id": "0cee3e68-b229-4f51-aa22-36ae824873c7",
+        "attempt": 1,
+        "kind": "evidence-pack",
+        "path": "a1/restore.evidence.zip",
+        "sha256": "ae7c1464c68f139210df63d639d0a4cd4f36c5674efe31e23d6a3f16f496cb15",
+        "byteLength": 417895,
+        "mediaType": "application/zip"
+      },
+      {
+        "id": "d8021414-c063-45b1-944f-33d52887e365",
+        "attempt": 1,
+        "kind": "proxy-log",
+        "path": "a1/proxy-requests.json",
+        "sha256": "d08d052e8ed31c0f9f52a906152b4043963b9c3752b20e132ae2c647f4f6cf6d",
+        "byteLength": 152282,
+        "mediaType": "application/json"
+      }
+    ]
+  },
+  "differences": {
+    "1": {}
+  },
+  "files": [
+    {
+      "kind": "source",
+      "attempt": 0,
+      "file": "files/a0-source.csv",
+      "sha256": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4",
+      "byteLength": 18373
+    },
+    {
+      "kind": "export",
+      "attempt": 1,
+      "file": "files/a1-export.csv",
+      "sha256": "6abe60f02aca53186a698bb4c508d032ad8156b480ab480854a654650c063ccf",
+      "byteLength": 19097
+    }
+  ],
+  "screenshots": [
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "8-1-4",
+      "file": "screens/a1-export-8.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "9-1-5",
+      "file": "screens/a1-export-9.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "10-1-6",
+      "file": "screens/a1-export-10.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "export",
+      "try": 0,
+      "step": "11-1-7",
+      "file": "screens/a1-export-11.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "8-0-8",
+      "file": "screens/a1-create-destination-8.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "9-0-9",
+      "file": "screens/a1-create-destination-9.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "10-0-10",
+      "file": "screens/a1-create-destination-10.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "create-destination",
+      "try": 0,
+      "step": "11-0-11",
+      "file": "screens/a1-create-destination-11.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "4-0-4",
+      "file": "screens/a1-restore-4.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "5-0-5",
+      "file": "screens/a1-restore-5.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "6-0-6",
+      "file": "screens/a1-restore-6.jpg"
+    },
+    {
+      "attempt": 1,
+      "stage": "restore",
+      "try": 0,
+      "step": "7-0-7",
+      "file": "screens/a1-restore-7.jpg"
+    }
+  ]
+}
