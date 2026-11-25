@@ -189,6 +189,58 @@ describe('executeRun with the Ledgerline demo app', { timeout: 120_000 }, () => 
     });
   });
 
+  it('retries a flaky create-destination step on a brand new workspace and still verifies', async () => {
+    // #given a browser whose create-destination check fails once
+    const engineDeps = deps({ browser: httpBrowser({ flaky: { 'create-destination': 1 } }) });
+
+    // #when
+    const finished = await run(HEALTHY, 'verify', engineDeps);
+    const stages = store.listStages(finished.id).map((stage) => `${stage.stage}:${stage.result.outcome}`);
+
+    // #then
+    expect({ outcome: finished.outcome, stages }).toEqual({
+      outcome: 'VERIFIED',
+      stages: [
+        'export:passed',
+        'create-destination:failed',
+        'create-destination:passed',
+        'restore:passed',
+        'reexport:passed',
+      ],
+    });
+  });
+
+  it('restarts the restore on a new empty workspace when the restore step flakes', async () => {
+    // #given a browser whose restore check fails once
+    const engineDeps = deps({ browser: httpBrowser({ flaky: { restore: 1 } }) });
+
+    // #when
+    const finished = await run(HEALTHY, 'verify', engineDeps);
+    const destinations = store
+      .listStages(finished.id)
+      .filter((stage) => stage.stage === 'create-destination');
+
+    // #then
+    expect({ outcome: finished.outcome, createdWorkspaces: destinations.length }).toEqual({
+      outcome: 'VERIFIED',
+      createdWorkspaces: 2,
+    });
+  });
+
+  it('gives up after the retry limit and reports an execution failure', async () => {
+    // #given a browser whose re-export fails twice, one more than the single allowed retry
+    const engineDeps = deps({ browser: httpBrowser({ flaky: { reexport: 2 } }) });
+
+    // #when
+    const finished = await run(HEALTHY, 'verify', engineDeps);
+
+    // #then
+    expect({ outcome: finished.outcome, code: finished.failureCode }).toEqual({
+      outcome: 'EXECUTION_FAILED',
+      code: 'BROWSER_REEXPORT',
+    });
+  });
+
   it('stops before a stage the credit budget cannot cover', async () => {
     // #given each stage costs more than the 600-credit cap allows for four stages
     const engineDeps = deps({ browser: httpBrowser({ creditsPerStage: 250 }) });

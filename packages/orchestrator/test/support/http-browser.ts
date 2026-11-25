@@ -11,7 +11,12 @@ import type { BrowserDriver, RepairDriver } from '../../src/index.ts';
  * live results; it lets the engine be tested end to end without spending credits.
  */
 export function httpBrowser(
-  options: { failStage?: BrowserStage; creditsPerStage?: number } = {},
+  options: {
+    failStage?: BrowserStage;
+    /** Fail this stage only the first N times it runs, like a flaky checker. */
+    flaky?: Partial<Record<BrowserStage, number>>;
+    creditsPerStage?: number;
+  } = {},
 ): BrowserDriver {
   const credits = options.creditsPerStage ?? 10;
   return {
@@ -22,7 +27,9 @@ export function httpBrowser(
       const startedAt = new Date().toISOString();
       const url = new URL(input.url);
       const origin = url.origin;
-      let ok = input.stage !== options.failStage;
+      const remaining = options.flaky?.[input.stage] ?? 0;
+      if (remaining > 0 && options.flaky) options.flaky[input.stage] = remaining - 1;
+      let ok = input.stage !== options.failStage && remaining === 0;
       if (ok) {
         if (input.stage === 'export' || input.stage === 'reexport') {
           const response = await fetch(`${input.url.replace(/\/$/, '')}/export.csv`);

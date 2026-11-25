@@ -40,97 +40,154 @@ const STAGE_MESSAGE: Readonly<Record<BrowserStage, string>> = {
 };
 
 /**
- * Runs one Kane objective, keeps its raw output and sealed evidence pack, and retries once for
- * infrastructure failures only. A browser that didn't finish never becomes a data verdict.
+ * Runs one Kane objective once, keeps its raw output and sealed evidence pack, and returns
+ * whatever Kane concluded. Retry policy lives with the caller, which knows whether a stage can be
+ * repeated safely.
  */
-async function runStage(
+async function runOnce(
   ctx: RunContext,
   stage: BrowserStage,
   objective: string,
   url: string,
+  tryIndex: number,
 ): Promise<BrowserResult> {
-  const retries = ctx.config.limits.maxInfraRetriesPerStage;
-  for (let attempt = 0; ; attempt += 1) {
-    ctx.throwIfCanceled();
-    ctx.reserveCredits(stage);
-    ctx.store.updateRun(ctx.runId, { phase: STAGE_PHASE[stage] });
-    ctx.emit('phase.changed', { phase: STAGE_PHASE[stage], message: STAGE_MESSAGE[stage] });
-    ctx.emit('browser.started', { stage, objective, url });
+  ctx.throwIfCanceled();
+  ctx.reserveCredits(stage);
+  ctx.store.updateRun(ctx.runId, { phase: STAGE_PHASE[stage] });
+  ctx.emit('phase.changed', { phase: STAGE_PHASE[stage], message: STAGE_MESSAGE[stage] });
+  ctx.emit('browser.started', { stage, objective, url });
 
-    const logDir = join(ctx.workDir, 'kane', `a${ctx.attempt}-${stage}-${attempt}`);
-    await mkdir(logDir, { recursive: true, mode: 0o700 });
-    const { result, stdoutPath, stderrPath } = await ctx.deps.browser.run({
-      stage,
-      objective,
-      url,
-      timeoutMs: ctx.config.limits.browserRunTimeoutMs,
-      cwd: logDir,
-      logDir,
-      signal: ctx.signal,
-      onProgress: (progress) => ctx.emit('browser.progress', { stage, ...progress }),
-    });
+  const logDir = join(ctx.workDir, 'kane', `a${ctx.attempt}-${stage}-${tryIndex}`);
+  await mkdir(logDir, { recursive: true, mode: 0o700 });
+  const { result, stdoutPath, stderrPath } = await ctx.deps.browser.run({
+    stage,
+    objective,
+    url,
+    timeoutMs: ctx.config.limits.browserRunTimeoutMs,
+    cwd: logDir,
+    logDir,
+    signal: ctx.signal,
+    onProgress: (progress) => ctx.emit('browser.progress', { stage, ...progress }),
+  });
 
-    ctx.chargeCredits(result.creditsUsed);
-    ctx.store.recordStage(ctx.runId, ctx.attempt, stage, result);
-    const prefix = `${stage}${attempt > 0 ? `-retry${attempt}` : ''}`;
-    const keep = async (
-      path: string | null,
-      kind: 'kane-stdout' | 'kane-stderr' | 'evidence-pack',
-      file: string,
-      mediaType: string,
-    ): Promise<void> => {
-      if (!path) return;
-      await ctx.store
-        .importArtifact({
-          runId: ctx.runId,
-          attempt: ctx.attempt,
-          kind,
-          fileName: file,
-          sourcePath: path,
-          mediaType,
-          provenance: {
-            stage,
-            vendor: result.vendor,
-            version: result.version,
-            session: result.vendorSessionId,
-          },
-        })
-        .catch((error: unknown) => {
-          ctx.emit('warning', {
-            code: 'EVIDENCE_COPY_FAILED',
-            message: `Could not keep ${file}: ${error instanceof Error ? error.message : String(error)}`,
-          });
+  ctx.chargeCredits(result.creditsUsed);
+  ctx.store.recordStage(ctx.runId, ctx.attempt, stage, result);
+  const prefix = `${stage}${tryIndex > 0 ? `-retry${tryIndex}` : ''}`;
+  const keep = async (
+    path: string | null,
+    kind: 'kane-stdout' | 'kane-stderr' | 'evidence-pack',
+    file: string,
+    mediaType: string,
+  ): Promise<void> => {
+    if (!path) return;
+    await ctx.store
+      .importArtifact({
+        runId: ctx.runId,
+        attempt: ctx.attempt,
+        kind,
+        fileName: file,
+        sourcePath: path,
+        mediaType,
+        provenance: {
+          stage,
+          vendor: result.vendor,
+          version: result.version,
+          session: result.vendorSessionId,
+        },
+      })
+      .catch((error: unknown) => {
+        ctx.emit('warning', {
+          code: 'EVIDENCE_COPY_FAILED',
+          message: `Could not keep ${file}: ${error instanceof Error ? error.message : String(error)}`,
         });
-    };
-    await keep(stdoutPath, 'kane-stdout', `${prefix}.kane.ndjson`, 'application/x-ndjson');
-    await keep(stderrPath, 'kane-stderr', `${prefix}.kane.stderr.log`, 'text/plain');
-    await keep(result.evidencePackPath, 'evidence-pack', `${prefix}.evidence.zip`, 'application/zip');
-
-    ctx.emit('browser.finished', {
-      stage,
-      outcome: result.outcome,
-      reasonCode: result.reasonCode,
-      oneLiner: result.oneLiner,
-      creditsUsed: result.creditsUsed,
-      durationMs: result.durationMs,
-    });
-
-    if (result.outcome === 'passed') return result;
-    if (result.outcome === 'canceled' || ctx.signal.aborted) ctx.throwIfCanceled();
-    const retryable = result.outcome === 'infra_error' || result.outcome === 'unknown';
-    if (retryable && attempt < retries) {
-      ctx.emit('warning', {
-        code: 'BROWSER_RETRY',
-        message: `Kane ${stage} hit an infrastructure error; retrying once.`,
       });
-      continue;
+  };
+  await keep(stdoutPath, 'kane-stdout', `${prefix}.kane.ndjson`, 'application/x-ndjson');
+  await keep(stderrPath, 'kane-stderr', `${prefix}.kane.stderr.log`, 'text/plain');
+  await keep(result.evidencePackPath, 'evidence-pack', `${prefix}.evidence.zip`, 'application/zip');
+
+  ctx.emit('browser.finished', {
+    stage,
+    outcome: result.outcome,
+    reasonCode: result.reasonCode,
+    oneLiner: result.oneLiner,
+    creditsUsed: result.creditsUsed,
+    durationMs: result.durationMs,
+  });
+  if (result.outcome === 'canceled' || ctx.signal.aborted) ctx.throwIfCanceled();
+  return result;
+}
+
+interface StepFailure {
+  readonly ok: false;
+  readonly stage: BrowserStage;
+  readonly reason: string;
+}
+
+type StepOutcome<T> = { readonly ok: true; readonly value: T } | StepFailure;
+
+function browserFailure(stage: BrowserStage, result: BrowserResult): StepFailure {
+  return { ok: false, stage, reason: result.oneLiner ?? result.reason ?? result.outcome };
+}
+
+/**
+ * Repeats a unit of browser work on fresh state when Kane fails it, up to the configured limit.
+ * Kane's checks can flake (its own triage calls some failures "test-state detection"), so one
+ * clean retry is allowed, but a browser that never finished still never becomes a data verdict.
+ */
+async function withRetries<T>(
+  ctx: RunContext,
+  label: string,
+  unit: (tryIndex: number) => Promise<StepOutcome<T>>,
+): Promise<T> {
+  const retries = ctx.config.limits.maxBrowserRetries;
+  for (let tryIndex = 0; ; tryIndex += 1) {
+    const outcome = await unit(tryIndex);
+    if (outcome.ok) return outcome.value;
+    if (tryIndex >= retries) {
+      throw new RunStop(
+        'EXECUTION_FAILED',
+        `BROWSER_${outcome.stage.toUpperCase().replace('-', '_')}`,
+        `Kane could not finish the ${outcome.stage} step: ${outcome.reason}`,
+      );
     }
-    const what = result.oneLiner ?? result.reason ?? result.outcome;
-    throw new RunStop(
-      'EXECUTION_FAILED',
-      `BROWSER_${stage.toUpperCase().replace('-', '_')}`,
-      `Kane could not finish the ${stage} step: ${what}`,
-    );
+    ctx.emit('warning', {
+      code: 'BROWSER_RETRY',
+      message: `Kane did not finish the ${outcome.stage} step (${outcome.reason}). Retrying the ${label} once on fresh state.`,
+    });
+  }
+}
+
+/** Runs an export-like stage and waits for the proxy to capture the file it triggers. */
+async function exportWithCapture(
+  ctx: RunContext,
+  target: TargetSession,
+  stage: 'export' | 'reexport',
+  workspace: string,
+  objective: string,
+  url: string,
+  tryIndex: number,
+): Promise<StepOutcome<{ result: BrowserResult; file: CapturedFile }>> {
+  const wait = target.capture.expectExport(stage, workspace);
+  let result: BrowserResult;
+  try {
+    result = await runOnce(ctx, stage, objective, url, tryIndex);
+  } catch (error) {
+    wait.cancel();
+    throw error;
+  }
+  if (result.outcome !== 'passed') {
+    wait.cancel();
+    return browserFailure(stage, result);
+  }
+  try {
+    return { ok: true, value: { result, file: await wait.wait(CAPTURE_SETTLE_MS) } };
+  } catch (error) {
+    return {
+      ok: false,
+      stage,
+      reason: `Kane finished but no complete file was captured (${error instanceof Error ? error.message : String(error)})`,
+    };
   }
 }
 
@@ -213,81 +270,105 @@ export async function runJourney(
       `The trusted source does not satisfy its own contract: ${sourceParsed.schemaErrors[0]?.message ?? 'invalid rows'}`,
     );
   }
-  const destination = `restore-${ctx.attempt}-${randomBytes(3).toString('hex')}`;
   const workspaceUrl = (workspace: string): string =>
     fillPlaceholders(journey.workspaceUrl, { origin: target.origin, workspace });
-  const values = {
+  const base = {
     origin: target.origin,
     sourceUrl: workspaceUrl(journey.sourceWorkspace),
-    destinationUrl: workspaceUrl(destination),
-    destinationName: destination,
     expectedRows: sourceParsed.rowCount,
     expectedRowsGrouped: groupedNumber(sourceParsed.rowCount),
   };
   const browser: Partial<Record<BrowserStage, BrowserResult>> = {};
 
-  const exportWait = target.capture.expectExport('export', journey.sourceWorkspace);
-  browser.export = await runStage(
-    ctx,
-    'export',
-    fillPlaceholders(journey.export, values),
-    values.sourceUrl,
-  ).catch((error: unknown) => {
-    exportWait.cancel();
-    throw error;
-  });
-  const exportArtifact = await keepCapture(
-    ctx,
-    await settle(exportWait.wait(CAPTURE_SETTLE_MS), 'export'),
-    'export',
-    journey.sourceWorkspace,
+  const exported = await withRetries(ctx, 'export', (tryIndex) =>
+    exportWithCapture(
+      ctx,
+      target,
+      'export',
+      journey.sourceWorkspace,
+      fillPlaceholders(journey.export, base),
+      base.sourceUrl,
+      tryIndex,
+    ),
   );
+  browser.export = exported.result;
+  const exportArtifact = await keepCapture(ctx, exported.file, 'export', journey.sourceWorkspace);
   ctx.store.updateRun(ctx.runId, { phase: 'EXPORT_CAPTURED' });
 
-  browser['create-destination'] = await runStage(
-    ctx,
-    'create-destination',
-    fillPlaceholders(journey.createDestination, values),
-    `${target.origin}/`,
-  );
-  ctx.store.setAttemptDestination(ctx.runId, ctx.attempt, destination);
-
+  // Creating the destination and restoring into it retry together: a retry always gets a brand
+  // new empty workspace, so a half-finished import can never be counted twice.
   const restoreFile = ctx.store.artifactPath(exportArtifact);
-  const restoreWait = ctx.config.capture.restoreRoute
-    ? target.capture.expectRestore('restore', destination)
-    : null;
-  browser.restore = await runStage(
+  const restored = await withRetries<{ destination: string; destinationUrl: string }>(
     ctx,
-    'restore',
-    fillPlaceholders(journey.restore, { ...values, restoreFile }),
-    values.destinationUrl,
-  ).catch((error: unknown) => {
-    restoreWait?.cancel();
-    throw error;
-  });
-  await verifyLineage(
-    ctx,
-    restoreWait ? await settle(restoreWait.wait(CAPTURE_SETTLE_MS), 'restore') : null,
-    exportArtifact,
+    'restore into a new empty workspace',
+    async (tryIndex) => {
+      const destination = `restore-${ctx.attempt}-${randomBytes(3).toString('hex')}`;
+      const values = {
+        ...base,
+        destinationName: destination,
+        destinationUrl: workspaceUrl(destination),
+        restoreFile,
+      };
+      const created = await runOnce(
+        ctx,
+        'create-destination',
+        fillPlaceholders(journey.createDestination, values),
+        `${target.origin}/`,
+        tryIndex,
+      );
+      browser['create-destination'] = created;
+      if (created.outcome !== 'passed') return browserFailure('create-destination', created);
+      ctx.store.setAttemptDestination(ctx.runId, ctx.attempt, destination);
+
+      const restoreWait = ctx.config.capture.restoreRoute
+        ? target.capture.expectRestore('restore', destination)
+        : null;
+      let result: BrowserResult;
+      try {
+        result = await runOnce(
+          ctx,
+          'restore',
+          fillPlaceholders(journey.restore, values),
+          values.destinationUrl,
+          tryIndex,
+        );
+      } catch (error) {
+        restoreWait?.cancel();
+        throw error;
+      }
+      browser.restore = result;
+      if (result.outcome !== 'passed') {
+        restoreWait?.cancel();
+        return browserFailure('restore', result);
+      }
+      await verifyLineage(
+        ctx,
+        restoreWait ? await settle(restoreWait.wait(CAPTURE_SETTLE_MS), 'restore') : null,
+        exportArtifact,
+      );
+      return { ok: true, value: { destination, destinationUrl: values.destinationUrl } };
+    },
   );
+  const destination = restored.destination;
   ctx.store.updateRun(ctx.runId, { phase: 'RESTORED' });
 
-  const reexportWait = target.capture.expectExport('reexport', destination);
-  browser.reexport = await runStage(
-    ctx,
-    'reexport',
-    fillPlaceholders(journey.reexport, values),
-    values.destinationUrl,
-  ).catch((error: unknown) => {
-    reexportWait.cancel();
-    throw error;
-  });
-  const reexportArtifact = await keepCapture(
-    ctx,
-    await settle(reexportWait.wait(CAPTURE_SETTLE_MS), 'reexport'),
-    'reexport',
-    destination,
+  const reexported = await withRetries(ctx, 're-export', (tryIndex) =>
+    exportWithCapture(
+      ctx,
+      target,
+      'reexport',
+      destination,
+      fillPlaceholders(journey.reexport, {
+        ...base,
+        destinationName: destination,
+        destinationUrl: restored.destinationUrl,
+      }),
+      restored.destinationUrl,
+      tryIndex,
+    ),
   );
+  browser.reexport = reexported.result;
+  const reexportArtifact = await keepCapture(ctx, reexported.file, 'reexport', destination);
   ctx.store.updateRun(ctx.runId, { phase: 'COMPARING' });
   ctx.emit('phase.changed', {
     phase: 'COMPARING',

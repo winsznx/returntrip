@@ -74,7 +74,7 @@ limits:
   browserRunTimeoutMs: 300000
   overallTimeoutMs: 3600000
   maxRepairAttempts: 3
-  maxInfraRetriesPerStage: 1
+  maxBrowserRetries: 1
   maxRows: 50000
   maxKaneCredits: 1500
 

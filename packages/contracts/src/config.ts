@@ -214,7 +214,7 @@ export const LimitsSchema = z.strictObject({
   browserRunTimeoutMs: z.number().int().min(10_000).max(1_800_000).default(240_000),
   overallTimeoutMs: z.number().int().min(60_000).max(14_400_000).default(3_600_000),
   maxRepairAttempts: z.number().int().min(1).max(5).default(3),
-  maxInfraRetriesPerStage: z.number().int().min(0).max(3).default(1),
+  maxBrowserRetries: z.number().int().min(0).max(3).default(1),
   maxRows: z.number().int().min(1).max(1_000_000).default(50_000),
   maxKaneCredits: z.number().positive().max(100_000),
 });
