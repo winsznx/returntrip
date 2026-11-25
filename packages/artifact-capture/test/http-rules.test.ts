@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  ANY_WORKSPACE,
   compileRoute,
   endToEndHeaders,
   mediaType,
@@ -45,13 +46,15 @@ describe('compileRoute', () => {
     expect(workspace).toBeNull();
   });
 
-  it('refuses a route without :workspace', () => {
-    // #given a route with no workspace segment
-    const compile = (): unknown => compileRoute('/export.csv');
+  it('matches any workspace when the route has no :workspace segment', () => {
+    // #given a route with no workspace segment, like Rails Active Storage downloads
+    const match = compileRoute('/rails/active_storage/disk/:key/:filename');
 
-    // #when it is compiled
-    // #then it is refused
-    expect(compile).toThrow(TypeError);
+    // #when a matching path is checked
+    const result = match('/rails/active_storage/disk/abc123/sure_export.zip');
+
+    // #then it matches without naming a workspace
+    expect(result).toBe(ANY_WORKSPACE);
   });
 });
 

@@ -20,6 +20,7 @@ export const CAPTURE: CaptureConfig = {
   restoreRoute: '/w/:workspace/import',
   restoreMethod: 'POST',
   restoreFileField: 'file',
+  duplicates: 'reject',
 };
 
 export interface ReceivedRequest {

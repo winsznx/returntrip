@@ -180,7 +180,17 @@ export const SourceSchema = z.strictObject({
  */
 export const JourneySchema = z.strictObject({
   sourceWorkspace: z.string().regex(/^[a-z0-9][a-z0-9-]{0,62}$/),
-  workspaceUrl: z.string().includes('{workspace}'),
+  /**
+   * A destination the seed prepared, for apps where Kane can't create one. Without it, each
+   * attempt gets a fresh generated workspace name.
+   */
+  destinationWorkspace: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9-]{0,62}$/)
+    .optional(),
+  workspaceUrl: z.string().min(1),
+  /** Kane variables file (relative to the config) for test credentials, passed as --variables-file. */
+  variablesFile: z.string().min(1).optional(),
   export: z.string().min(10).max(2_000),
   createDestination: z.string().min(10).max(2_000),
   restore: z.string().min(10).max(2_000),
@@ -190,8 +200,11 @@ export type JourneyConfig = z.output<typeof JourneySchema>;
 
 export const CaptureSchema = z.strictObject({
   mode: z.literal('responseProxy'),
-  /** Route pattern on the target, `:workspace` marks the workspace segment. */
-  route: z.string().startsWith('/').includes(':workspace'),
+  /**
+   * Route pattern on the target. `:workspace` marks the workspace segment; without one, any
+   * matching transfer inside a stage's window counts, so the stage window alone attributes it.
+   */
+  route: z.string().startsWith('/'),
   method: z.enum(['GET', 'POST']).default('GET'),
   contentTypes: z.array(z.string().min(1)).min(1).default(['text/csv']),
   maxBytes: z
@@ -204,9 +217,13 @@ export const CaptureSchema = z.strictObject({
    * Restore upload route. When set, the proxy hashes the uploaded file part so lineage is
    * proven from bytes: what the browser uploaded must equal what the export produced.
    */
-  restoreRoute: z.string().startsWith('/').includes(':workspace').optional(),
-  restoreMethod: z.enum(['POST', 'PUT']).default('POST'),
+  restoreRoute: z.string().startsWith('/').optional(),
+  restoreMethod: z.enum(['POST', 'PUT', 'PATCH']).default('POST'),
   restoreFileField: z.string().min(1).default('file'),
+  /** `identical` accepts a repeat of the same transfer (some apps download twice per click). */
+  duplicates: z.enum(['reject', 'identical']).default('reject'),
+  /** Pull one file out of a zip export; the archive is kept alongside as evidence. */
+  extract: z.strictObject({ format: z.literal('zip'), entry: z.string().min(1).max(256) }).optional(),
 });
 export type CaptureConfig = z.output<typeof CaptureSchema>;
 

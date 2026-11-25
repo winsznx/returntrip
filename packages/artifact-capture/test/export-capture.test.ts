@@ -39,11 +39,15 @@ afterEach(async () => {
   await rm(artifactDir, { recursive: true, force: true });
 });
 
-async function setup(handler: UpstreamHandler, maxBytes = CAPTURE.maxBytes): Promise<CaptureProxy> {
+async function setup(
+  handler: UpstreamHandler,
+  maxBytes = CAPTURE.maxBytes,
+  overrides: Partial<typeof CAPTURE> = {},
+): Promise<CaptureProxy> {
   upstream = await startUpstream(handler);
   proxy = await createCaptureProxy({
     upstream: upstream.origin,
-    capture: { ...CAPTURE, maxBytes },
+    capture: { ...CAPTURE, maxBytes, ...overrides },
     artifactDir,
   });
   return proxy;
@@ -293,6 +297,70 @@ describe('export capture', () => {
 
     // #then neither download is chosen
     expect(error.code).toBe('AMBIGUOUS');
+  });
+
+  it('accepts a byte-identical repeat download when duplicates are identical', async () => {
+    // #given an app that downloads the file twice per click
+    const capture = await setup(serveCsv, CAPTURE.maxBytes, { duplicates: 'identical' });
+    const expectation = capture.expectExport({ stage: 'export', workspace: 'source' });
+
+    // #when the same bytes arrive twice in one window
+    await send(capture.origin, '/w/source/export.csv');
+    await send(capture.origin, '/w/source/export.csv');
+    const artifact = await expectation.wait(2_000);
+
+    // #then one artifact with those bytes is kept
+    expect(artifact.sha256).toBe(sha256(CSV));
+  });
+
+  it('still fails as AMBIGUOUS when repeats differ, even with duplicates identical', async () => {
+    // #given an upstream whose second response differs
+    let calls = 0;
+    const capture = await setup(
+      (_req, res) => {
+        calls += 1;
+        res.writeHead(200, { 'content-type': 'text/csv' });
+        res.end(calls === 1 ? CSV : Buffer.from('id\r\n'));
+      },
+      CAPTURE.maxBytes,
+      { duplicates: 'identical' },
+    );
+    const expectation = capture.expectExport({ stage: 'export', workspace: 'source' });
+
+    // #when two different files arrive in one window
+    await send(capture.origin, '/w/source/export.csv');
+    await send(capture.origin, '/w/source/export.csv');
+    const error = await rejectionOf(expectation.wait(2_000));
+
+    // #then neither is chosen
+    expect(error.code).toBe('AMBIGUOUS');
+  });
+
+  it('never claims a browser prefetch', async () => {
+    // #given an open expectation
+    const capture = await setup(serveCsv);
+    const expectation = capture.expectExport({ stage: 'export', workspace: 'source' });
+
+    // #when a prefetch arrives before the real download
+    await send(capture.origin, '/w/source/export.csv', { headers: { 'sec-purpose': 'prefetch' } });
+    await send(capture.origin, '/w/source/export.csv');
+    const artifact = await expectation.wait(2_000);
+
+    // #then only the real download counts
+    expect(artifact.byteLength).toBe(CSV.length);
+  });
+
+  it('captures from a route without a workspace segment inside the stage window', async () => {
+    // #given a route like Active Storage's, with no workspace in the path
+    const capture = await setup(serveCsv, CAPTURE.maxBytes, { route: '/files/:key/:name' });
+    const expectation = capture.expectExport({ stage: 'export', workspace: 'source' });
+
+    // #when the file is downloaded
+    await send(capture.origin, '/files/abc/export.csv');
+    const artifact = await expectation.wait(2_000);
+
+    // #then it is attributed to the open stage
+    expect(artifact.sha256).toBe(sha256(CSV));
   });
 
   it('does not store a matching response when no expectation is open', async () => {

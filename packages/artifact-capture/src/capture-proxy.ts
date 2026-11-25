@@ -19,8 +19,10 @@ import type { CaptureConfig } from '@returntrip/contracts';
 import { CaptureError } from './capture-error.ts';
 import { Expectation } from './expectation.ts';
 import {
+  ANY_WORKSPACE,
   compileRoute,
   endToEndHeaders,
+  isPrefetch,
   mediaType,
   parseLoopbackOrigin,
   pathWithoutQuery,
@@ -60,6 +62,8 @@ interface RequestContext {
   readonly method: string;
   readonly path: string;
   readonly startedAt: number;
+  /** A speculative browser prefetch: relayed, but never claimed by an expectation. */
+  readonly prefetch: boolean;
   matched: 'export' | 'restore' | null;
   unexpected: boolean;
   bytesOut: number;
@@ -144,9 +148,14 @@ class LoopbackCaptureProxy implements CaptureProxy {
 
   expectExport(target: ExpectationTarget): CaptureExpectation {
     this.#assertCanArm(target, this.#export, 'export');
-    const expectation: Expectation<CapturedArtifact> = new Expectation(target.stage, target.workspace, () => {
-      if (this.#export === expectation) this.#export = null;
-    });
+    const expectation: Expectation<CapturedArtifact> = new Expectation(
+      target.stage,
+      target.workspace,
+      () => {
+        if (this.#export === expectation) this.#export = null;
+      },
+      this.#options.capture.duplicates === 'identical' ? (a, b) => a.sha256 === b.sha256 : undefined,
+    );
     this.#export = expectation;
     return expectation;
   }
@@ -160,6 +169,7 @@ class LoopbackCaptureProxy implements CaptureProxy {
       () => {
         if (this.#restore === expectation) this.#restore = null;
       },
+      this.#options.capture.duplicates === 'identical' ? (a, b) => a.sha256 === b.sha256 : undefined,
     );
     this.#restore = expectation;
     return expectation;
@@ -201,6 +211,7 @@ class LoopbackCaptureProxy implements CaptureProxy {
       method: req.method ?? 'GET',
       path: pathWithoutQuery(target),
       startedAt: Date.now(),
+      prefetch: isPrefetch(req.headers),
       matched: null,
       unexpected: false,
       bytesOut: 0,
@@ -301,8 +312,9 @@ class LoopbackCaptureProxy implements CaptureProxy {
     const expectation = this.#export;
     if (
       !expectation?.isOpen ||
-      expectation.workspace !== workspace ||
-      context.startedAt < expectation.armedAt
+      (workspace !== ANY_WORKSPACE && expectation.workspace !== workspace) ||
+      context.startedAt < expectation.armedAt ||
+      context.prefetch
     ) {
       context.unexpected = true;
       return null;
@@ -310,7 +322,8 @@ class LoopbackCaptureProxy implements CaptureProxy {
     context.matched = 'export';
 
     let recorder: ExportRecorder | null = null;
-    if (!expectation.claim(() => recorder?.abort())) return null;
+    const release = expectation.claim(() => recorder?.abort());
+    if (!release) return null;
     const encoding = headers['content-encoding']?.trim().toLowerCase();
     if (encoding && encoding !== 'identity') {
       expectation.fail(
@@ -318,6 +331,7 @@ class LoopbackCaptureProxy implements CaptureProxy {
           'ENCODED',
           `export for stage ${expectation.stage} arrived with Content-Encoding ${encoding}`,
         ),
+        release,
       );
       return null;
     }
@@ -331,6 +345,7 @@ class LoopbackCaptureProxy implements CaptureProxy {
       requestStartedAt: new Date(context.startedAt).toISOString(),
       contentLength: declaredLength === undefined ? null : Number(declaredLength),
     });
+    recorder.release = release;
     return recorder;
   }
 
@@ -343,8 +358,9 @@ class LoopbackCaptureProxy implements CaptureProxy {
     const expectation = this.#restore;
     if (
       !expectation?.isOpen ||
-      expectation.workspace !== workspace ||
-      context.startedAt < expectation.armedAt
+      (workspace !== ANY_WORKSPACE && expectation.workspace !== workspace) ||
+      context.startedAt < expectation.armedAt ||
+      context.prefetch
     ) {
       context.unexpected = true;
       return null;
@@ -352,12 +368,14 @@ class LoopbackCaptureProxy implements CaptureProxy {
     context.matched = 'restore';
 
     let recorder: RestoreRecorder | null = null;
-    if (!expectation.claim(() => recorder?.abort())) return null;
+    const release = expectation.claim(() => recorder?.abort());
+    if (!release) return null;
     recorder = new RestoreRecorder(expectation, capture.maxBytes, capture.restoreFileField, {
       method: context.method,
       routePath: context.path,
       contentType: req.headers['content-type'],
     });
+    recorder.release = release;
     return recorder;
   }
 
@@ -368,6 +386,7 @@ class LoopbackCaptureProxy implements CaptureProxy {
         method: req.method ?? 'GET',
         path: pathWithoutQuery(req.url ?? ''),
         startedAt: Date.now(),
+        prefetch: false,
         matched: null,
         unexpected: false,
         bytesOut: 0,

@@ -26,13 +26,27 @@ export function parseLoopbackOrigin(value: string): URL {
 export type RouteMatcher = (path: string) => string | null;
 
 /**
+ * Returned by a route without a `:workspace` segment. Such a route matches any workspace, so only
+ * the expectation window attributes the transfer to a stage.
+ */
+export const ANY_WORKSPACE = '*';
+
+/** Prefetches are speculative: the browser fetched it, the user didn't ask for it. */
+export function isPrefetch(headers: Readonly<Record<string, string | string[] | undefined>>): boolean {
+  return ['sec-purpose', 'x-sec-purpose', 'purpose', 'x-moz', 'x-purpose'].some((name) => {
+    const value = headers[name];
+    return typeof value === 'string' && value.toLowerCase().includes('prefetch');
+  });
+}
+
+/**
  * Compiles a route such as `/w/:workspace/export.csv` into a matcher that returns the decoded
- * workspace segment, or null. Other `:param` segments match any single segment.
+ * workspace segment, or null. Other `:param` segments match any single segment. A route with no
+ * `:workspace` segment returns ANY_WORKSPACE when it matches.
  */
 export function compileRoute(pattern: string): RouteMatcher {
   const expected = pattern.split('/');
   const workspaceIndex = expected.indexOf(':workspace');
-  if (workspaceIndex === -1) throw new TypeError(`route ${pattern} has no :workspace segment`);
 
   return (path) => {
     const actual = path.split('/');
@@ -46,6 +60,7 @@ export function compileRoute(pattern: string): RouteMatcher {
         return null;
       }
     }
+    if (workspaceIndex === -1) return ANY_WORKSPACE;
     try {
       return decodeURIComponent(actual[workspaceIndex] ?? '');
     } catch {

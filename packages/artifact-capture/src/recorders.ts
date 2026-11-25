@@ -25,6 +25,16 @@ export class ExportRecorder {
   readonly #maxBytes: number;
   readonly #meta: ExportResponseMeta;
   #active = true;
+  /** Set by the proxy right after the expectation accepted this transfer. */
+  release: (() => void) | undefined;
+
+  #succeed(value: CapturedArtifact): void {
+    this.#expectation.succeed(value, this.release);
+  }
+
+  #failWith(error: CaptureError): void {
+    this.#expectation.fail(error, this.release);
+  }
 
   constructor(
     expectation: Expectation<CapturedArtifact>,
@@ -44,7 +54,7 @@ export class ExportRecorder {
     if (!this.#active) return null;
     if (this.#tee.byteLength + chunk.length > this.#maxBytes) {
       this.#stop();
-      this.#expectation.fail(
+      this.#failWith(
         new CaptureError(
           'TOO_LARGE',
           `export for stage ${this.#expectation.stage} exceeds ${this.#maxBytes} bytes`,
@@ -68,7 +78,7 @@ export class ExportRecorder {
     if (transferError || !upstreamComplete || (declared !== null && declared !== received)) {
       this.#stop();
       const why = transferError?.message ?? `received ${received} of ${declared ?? 'unknown'} bytes`;
-      this.#expectation.fail(
+      this.#failWith(
         new CaptureError(
           'INCOMPLETE',
           `export for stage ${this.#expectation.stage} did not complete: ${why}`,
@@ -86,7 +96,7 @@ export class ExportRecorder {
       .then(
         (file) => {
           const { contentLength: _declared, ...meta } = this.#meta;
-          this.#expectation.succeed({
+          this.#succeed({
             stage,
             workspace,
             ...file,
@@ -95,7 +105,7 @@ export class ExportRecorder {
           });
         },
         (error: unknown) => {
-          this.#expectation.fail(
+          this.#failWith(
             new CaptureError('IO', `could not store export for stage ${stage}`, { cause: error }),
           );
         },
@@ -129,6 +139,16 @@ export class RestoreRecorder {
   #active = true;
   #bodyComplete = false;
   #responseStatus: number | null = null;
+  /** Set by the proxy right after the expectation accepted this transfer. */
+  release: (() => void) | undefined;
+
+  #succeed(value: RestoreObservation): void {
+    this.#expectation.succeed(value, this.release);
+  }
+
+  #failWith(error: CaptureError): void {
+    this.#expectation.fail(error, this.release);
+  }
 
   constructor(
     expectation: Expectation<RestoreObservation>,
@@ -193,7 +213,7 @@ export class RestoreRecorder {
     const { stage, workspace } = this.#expectation;
     inspectRestoreBody(body, this.#meta.contentType, this.#fileField).then(
       (payload) => {
-        this.#expectation.succeed({
+        this.#succeed({
           stage,
           workspace,
           ...payload,
@@ -204,7 +224,7 @@ export class RestoreRecorder {
         });
       },
       (error: unknown) => {
-        this.#expectation.fail(
+        this.#failWith(
           error instanceof CaptureError
             ? error
             : new CaptureError('MALFORMED', 'restore upload could not be read', { cause: error }),
@@ -216,6 +236,6 @@ export class RestoreRecorder {
   #fail(error: CaptureError): void {
     if (!this.#active) return;
     this.abort();
-    this.#expectation.fail(error);
+    this.#failWith(error);
   }
 }

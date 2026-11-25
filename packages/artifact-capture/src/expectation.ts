@@ -33,17 +33,24 @@ export class Expectation<T> implements PendingCapture<T> {
   readonly workspace: string;
   readonly armedAt: number;
   readonly #onClose: () => void;
+  readonly #sameTransfer: ((a: T, b: T) => boolean) | null;
   #open = true;
   #matches = 0;
-  #inFlight: (() => void) | null = null;
+  #inFlight = new Set<() => void>();
   #outcome: Settled<T> | null = null;
   #waiters: Waiter<T>[] = [];
 
-  constructor(stage: string, workspace: string, onClose: () => void) {
+  /**
+   * `sameTransfer`, when given, lets a repeat of the same transfer through: some apps download a
+   * file twice for one click (a fetch, then a navigation). Repeats must be byte-identical; any
+   * difference is still AMBIGUOUS.
+   */
+  constructor(stage: string, workspace: string, onClose: () => void, sameTransfer?: (a: T, b: T) => boolean) {
     this.stage = stage;
     this.workspace = workspace;
     this.armedAt = Date.now();
     this.#onClose = onClose;
+    this.#sameTransfer = sameTransfer ?? null;
   }
 
   get isOpen(): boolean {
@@ -54,27 +61,34 @@ export class Expectation<T> implements PendingCapture<T> {
    * Registers a matching transfer. Returns true when it should be recorded; false when it is
    * the second match, which fails the expectation as AMBIGUOUS and aborts the first recording.
    */
-  claim(abort: () => void): boolean {
+  claim(abort: () => void): (() => void) | null {
     this.#matches += 1;
-    if (this.#matches === 1) {
-      this.#inFlight = abort;
-      return true;
+    if (this.#matches > 1 && !this.#sameTransfer) {
+      this.#abortInFlight();
+      this.fail(new CaptureError('AMBIGUOUS', `more than one matching transfer for stage ${this.stage}`));
+      return null;
     }
-    this.#abortInFlight();
-    this.fail(new CaptureError('AMBIGUOUS', `more than one matching transfer for stage ${this.stage}`));
-    return false;
+    this.#inFlight.add(abort);
+    return () => this.#inFlight.delete(abort);
   }
 
-  succeed(value: T): void {
+  succeed(value: T, release?: () => void): void {
     if (!this.#open) return;
-    this.#inFlight = null;
-    this.#outcome ??= { ok: true, value };
+    release?.();
+    const previous = this.#outcome;
+    if (!previous) this.#outcome = { ok: true, value };
+    else if (previous.ok && this.#sameTransfer && !this.#sameTransfer(previous.value, value)) {
+      this.#outcome = {
+        ok: false,
+        error: new CaptureError('AMBIGUOUS', `two different matching transfers for stage ${this.stage}`),
+      };
+    }
     this.#flush();
   }
 
-  fail(error: CaptureError): void {
+  fail(error: CaptureError, release?: () => void): void {
     if (!this.#open) return;
-    this.#inFlight = null;
+    release?.();
     if (!this.#outcome || this.#outcome.ok) this.#outcome = { ok: false, error };
     this.#flush();
   }
@@ -104,13 +118,13 @@ export class Expectation<T> implements PendingCapture<T> {
   }
 
   #abortInFlight(): void {
-    const abort = this.#inFlight;
-    this.#inFlight = null;
-    abort?.();
+    const aborts = [...this.#inFlight];
+    this.#inFlight.clear();
+    for (const abort of aborts) abort();
   }
 
   #flush(): void {
-    if (this.#open && this.#outcome && !this.#inFlight && this.#waiters.length > 0) this.#close();
+    if (this.#open && this.#outcome && this.#inFlight.size === 0 && this.#waiters.length > 0) this.#close();
   }
 
   #close(): void {
