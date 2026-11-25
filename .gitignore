@@ -1,0 +1,10 @@
+internal/
+node_modules/
+dist/
+*.tsbuildinfo
+.returntrip/
+coverage/
+.env
+.env.*
+!.env.example
+.DS_Store
