@@ -1,0 +1,21 @@
+{
+  "dataset": "City of Chicago, Payments (s4vu-giwb)",
+  "datasetPage": "https://data.cityofchicago.org/Administration-Finance/Payments/s4vu-giwb",
+  "officialApi": "https://data.cityofchicago.org/resource/s4vu-giwb.json",
+  "archivedResponse": "https://web.archive.org/web/20261109180553/https://data.cityofchicago.org/resource/s4vu-giwb.json",
+  "archiveCapturedAt": "2026-11-09T18:05:53Z",
+  "retrievedFrom": "https://web.archive.org/web/20261109180553id_/https://data.cityofchicago.org/resource/s4vu-giwb.json",
+  "retrievedAt": "2026-11-25T17:48:04.395Z",
+  "selection": "Default first page of the official API (no filter, no ordering parameter), all 1,000 rows kept in order.",
+  "rawSha256": "c43f8dd574600e79883ad90486f9c467040af4787ee7ee0408055acd3ff587c5",
+  "transformation": "JSON records written as CSV in column order voucher_number, amount, check_date, department_name, contract_number, vendor_name. Values copied verbatim; absent keys written as empty cells. The cashed field is absent from every record and is dropped.",
+  "output": {
+    "file": "source.csv",
+    "rows": 1000,
+    "sha256": "106b90748646c3d666dc718f996d3559e0ccb4a683957fa06f4a560aee6fdd50",
+    "duplicateTupleGroups": 6
+  },
+  "identity": "No unique key: voucher_number is empty in some rows and repeats in others, and some rows are fully identical. Compared as a multiset.",
+  "terms": "https://www.chicago.gov/city/en/narr/foia/data_disclaimer.html",
+  "disclaimer": "This site provides applications using data that has been modified for use from its original source, www.cityofchicago.org, the official website of the City of Chicago. The City of Chicago makes no claims as to the content, accuracy, timeliness, or completeness of any of the data provided at this site. The data provided at this site is subject to change at any time. It is understood that the data provided at this site is being used at one’s own risk."
+}
