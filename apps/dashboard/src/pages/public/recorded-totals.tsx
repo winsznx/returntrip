@@ -16,6 +16,12 @@ export function RecordedTotalsLine({ totals }: { totals: RecordedTotals }) {
       label: `recreated defects caught, ${plural(totals.defects.missed, 'miss', 'misses')}`,
     });
   }
+  if (totals.realApp.attempted > 0) {
+    facts.push({
+      value: `${totals.realApp.caught} / ${totals.realApp.attempted}`,
+      label: 'real-app runs that caught the data changing',
+    });
+  }
   if (totals.repairs.attempted > 0) {
     facts.push({
       value: `${totals.repairs.verified} / ${totals.repairs.attempted}`,

@@ -157,6 +157,8 @@ describe('recorded bundles', () => {
       outcome,
       headline: null,
       scenario,
+      project: 'demo',
+      targetMode: 'managed',
       kaneCreditsUsed: 10,
       durationMs: 1000,
     });
@@ -173,6 +175,31 @@ describe('recorded bundles', () => {
     expect(totals.defects).toEqual({ attempted: 3, detected: 1, missed: 1 });
     expect(totals.repairs).toEqual({ attempted: 1, verified: 1 });
     expect(totals.kaneCredits).toBe(40);
+  });
+
+  it('counts a real attached app separately from the healthy demo baseline', () => {
+    // #given a healthy demo run and a real-app run that caught data changing
+    const base = {
+      recordedAt: '2026-11-25T18:00:00.000Z',
+      mode: 'verify',
+      headline: null,
+      scenario: null,
+      kaneCreditsUsed: 10,
+      durationMs: 1000,
+    };
+    const runs: PublicIndexEntry[] = [
+      { ...base, runId: 'demo', outcome: 'VERIFIED', project: 'chicago-payments', targetMode: 'managed' },
+      { ...base, runId: 'sure', outcome: 'DATA_MISMATCH', project: 'sure-pre-4754', targetMode: 'attached' },
+    ];
+
+    // #when
+    const totals = recordedTotals(runs);
+
+    // #then
+    expect({ healthy: totals.healthy, realApp: totals.realApp }).toEqual({
+      healthy: { attempted: 1, verified: 1 },
+      realApp: { attempted: 1, caught: 1 },
+    });
   });
 
   it('matches retried evidence packs to their stage and try', () => {

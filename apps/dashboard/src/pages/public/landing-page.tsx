@@ -32,22 +32,24 @@ interface LandingData {
   readonly runs: readonly PublicIndexEntry[];
   readonly healthy: PublicRun | null;
   readonly defect: PublicRun | null;
+  readonly realApp: PublicRun | null;
   readonly patch: string | null;
 }
 
 async function loadLanding(signal: AbortSignal): Promise<LandingData> {
   const index = await loadPublicIndex(signal);
   const picks = pickRecordedRuns(index.runs);
-  const [healthy, defect] = await Promise.all([
+  const [healthy, defect, realApp] = await Promise.all([
     picks.healthy ? loadPublicRun(picks.healthy.runId, signal) : Promise.resolve(null),
     picks.defect ? loadPublicRun(picks.defect.runId, signal) : Promise.resolve(null),
+    picks.realApp ? loadPublicRun(picks.realApp.runId, signal) : Promise.resolve(null),
   ]);
   const patchFile = defect?.files.find((file) => file.kind === 'patch');
   const patch =
     defect && patchFile
       ? await fetchText(evidenceUrl(`${defect.report.runId}/${patchFile.file}`), signal)
       : null;
-  return { runs: index.runs, healthy, defect, patch };
+  return { runs: index.runs, healthy, defect, realApp, patch };
 }
 
 const INSTALL_COMMANDS = [
@@ -88,6 +90,7 @@ export function LandingPage() {
       <Problem />
       <HowItWorks run={data.healthy} />
       <ClosedLoop run={data.defect} patch={data.patch} />
+      {data.realApp ? <RealApp run={data.realApp} /> : null}
       <RecordedRuns runs={data.runs} totals={recordedTotals(data.runs)} />
       <Install />
       <Limits limitations={data.healthy?.report.limitations ?? data.defect?.report.limitations ?? []} />
@@ -354,6 +357,63 @@ function AfterRepair({ run }: { run: PublicRun }) {
         identical.
       </span>
     </p>
+  );
+}
+
+/* ---------- real app ---------- */
+
+function RealApp({ run }: { run: PublicRun }) {
+  const shot = restoreShot(run);
+  const attempt = run.report.attempts[0];
+  const summary = comparisonFor(attempt, 'source_reexport');
+  const firstExport = comparisonFor(attempt, 'source_export');
+  const differences = run.differences['1']?.source_reexport;
+  return (
+    <section aria-labelledby="real-app-heading" className="shell pt-24 sm:pt-32">
+      <SectionHeading id="real-app-heading" title="Then we pointed it at the real app.">
+        <p>
+          Sure, the open-source finance app from the pull request above, running unmodified from its own
+          published image at the commit before the fix. Kane logged in, exported the family data, imported{' '}
+          <span className="mono text-text">transactions.csv</span> into an empty family through Sure's
+          five-step wizard, kept the default settings, and exported again.
+        </p>
+      </SectionHeading>
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        {shot ? (
+          <figure className="panel overflow-hidden">
+            <img
+              src={shot.src}
+              alt="Kane's screenshot of Sure after the import: Import successful"
+              className="w-full"
+            />
+            <figcaption className="border-t border-line px-5 py-3 text-[14px] text-muted">
+              Kane's own screenshot of Sure after the import.
+            </figcaption>
+          </figure>
+        ) : null}
+        <div className="panel flex flex-col gap-5 p-6">
+          <OutcomeBadge outcome={run.report.outcome ?? 'INCONCLUSIVE'} />
+          {summary ? (
+            <p className="font-display text-[44px] leading-none font-extrabold text-bad">
+              {formatRatio(summary.matchedIdenticalOccurrences, summary.expectedRows)}
+              <span className="mt-2 block font-sans text-[17px] font-normal text-muted">
+                transactions came back identical. The first export was{' '}
+                {firstExport?.isEquivalent ? 'clean' : 'already different'}, so the change happened on the way
+                back in.
+              </span>
+            </p>
+          ) : null}
+          {differences ? <HeroDifferences items={differences.items} total={differences.total} /> : null}
+          <p className="text-[15px] text-muted">
+            This is the bug Sure fixed in pull request #4754, caught from the outside, with no access to
+            Sure's code.
+          </p>
+          <Link className="text-link text-[15px]" to={`/runs/${run.report.runId}`}>
+            Open the recorded Sure run
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
