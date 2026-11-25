@@ -1,0 +1,44 @@
+name: verify (live, Kane CLI)
+
+# Spends Kane credits, so it only runs when started by hand. Never runs on pull requests,
+# and repair is not offered here: CI verifies, people repair.
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: Config to verify
+        default: examples/payment-roundtrip/returntrip.yaml
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: npm install -g @testmuai/kane-cli@0.10.9
+      - name: Sign in to Kane CLI
+        run: kane-cli login --username "$KANE_USERNAME" --access-key "$KANE_ACCESS_KEY"
+        env:
+          KANE_USERNAME: ${{ secrets.KANE_USERNAME }}
+          KANE_ACCESS_KEY: ${{ secrets.KANE_ACCESS_KEY }}
+      - name: Verify
+        run: node apps/cli/bin/returntrip.js verify --config "${{ inputs.config }}" --headless --json > result.json
+      - if: always()
+        run: cat result.json
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: returntrip-report
+          path: .returntrip/runs/*/a0/report.*
+          if-no-files-found: warn

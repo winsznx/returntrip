@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "typecheck": "tsc -b --noEmit && tsc -p apps/demo-app/tsconfig.json",
+    "typecheck": "tsc -b && tsc -p apps/demo-app/tsconfig.json && tsc -p tsconfig.tests.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check .",
