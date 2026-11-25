@@ -21,7 +21,7 @@ async function start(): Promise<void> {
   if (!root) throw new Error('index.html has no #root element');
   createRoot(root).render(
     <StrictMode>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
         <App sessionError={sessionError} />
       </BrowserRouter>
     </StrictMode>,

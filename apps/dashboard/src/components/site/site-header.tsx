@@ -25,13 +25,13 @@ function PublicNav() {
   return (
     <nav aria-label="Main" className="flex items-center gap-4 sm:gap-7">
       <a
-        href="/#how"
+        href={`${import.meta.env.BASE_URL}#how`}
         className="hidden min-h-11 items-center text-[15px] text-muted hover:text-text md:inline-flex"
       >
         How it works
       </a>
       <a
-        href="/#install"
+        href={`${import.meta.env.BASE_URL}#install`}
         className="hidden min-h-11 items-center text-[15px] text-muted hover:text-text md:inline-flex"
       >
         Install

@@ -46,6 +46,8 @@ function recordedEvidence(): Plugin {
 export default defineConfig(() => {
   const isPublic = process.env.VITE_RT_MODE === 'public';
   return {
+    // A GitHub Pages project site lives under /<repo>/; everything else is served at the root.
+    base: process.env.RETURNTRIP_BASE ?? '/',
     plugins: [react(), tailwindcss(), ...(isPublic ? [recordedEvidence()] : [])],
     build: {
       outDir: isPublic ? 'dist-public' : 'dist',
