@@ -1,7 +1,16 @@
 # Loads ReturnTrip's trusted source into a running Sure instance without using Sure's importer,
 # so the importer under test never touches the reference data.
-# Usage (inside the web container): bin/rails runner /returntrip/seed_sure.rb /returntrip/source.csv
+# Usage (inside the web container):
+#   bin/rails runner /returntrip/seed_sure.rb /returntrip/source.csv <expected commit sha prefix>
 require "csv"
+
+# Each config names the Sure commit it tests. Refuse to seed a different one, so a run can never be
+# reported against the wrong version of the app.
+expected_commit = ARGV.fetch(1)
+running_commit = ENV.fetch("BUILD_COMMIT_SHA", "unknown")
+unless running_commit.start_with?(expected_commit)
+  abort "this Sure container is commit #{running_commit}, but the config expects #{expected_commit}"
+end
 
 PASSWORD = ENV.fetch("RT_SURE_PASSWORD", "returntrip-local-1")
 SOURCE_EMAIL = "sure-source@returntrip.test"

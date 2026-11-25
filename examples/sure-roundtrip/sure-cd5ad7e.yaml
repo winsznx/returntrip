@@ -1,16 +1,17 @@
-# ReturnTrip config for Sure (https://github.com/we-promise/sure) at commit 44aad3a, the parent of
-# PR #4754. Sure is unmodified and runs from its own published image (scripts/sure-stack.sh).
+# ReturnTrip config for Sure (https://github.com/we-promise/sure) at commit cd5ad7e, PR #4754 itself,
+# which fixed the sign flip. The negative control for sure-44aad3a.yaml: same journey, same data.
+# Sure is unmodified and runs from its own published image (scripts/sure-stack.sh).
 # Kane logs in, exports the family data zip, imports transactions.csv into an empty family through
 # Sure's import wizard with its default settings, and exports again.
 schemaVersion: 1
-project: sure-pre-4754
+project: sure-cd5ad7e
 
 application:
   mode: attached
   origin: http://127.0.0.1:3300
   lifecycle:
     healthPath: /up
-    seed: [docker, exec, sure-rt-web-1, bin/rails, runner, /returntrip/seed_sure.rb, /returntrip/source.csv]
+    seed: [docker, exec, sure-rt-web-1, bin/rails, runner, /returntrip/seed_sure.rb, /returntrip/source.csv, cd5ad7e]
 
 source:
   kind: manifestCsv
