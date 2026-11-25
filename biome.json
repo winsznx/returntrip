@@ -10,7 +10,8 @@
       "!**/*.tsbuildinfo",
       "!examples/**/*.yaml",
       "!evidence",
-      "!**/test/fixtures"
+      "!**/test/fixtures",
+      "!tests/kane/.testmuai"
     ]
   },
   "formatter": {
