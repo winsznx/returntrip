@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-11-25T18:33:28.052Z",
-  "commit": "f126cdaa696eab58c9c4bf16af32db8b368c4887",
+  "commit": "e3a61d78ef99c1362d2afd372beeb4fd517d41c5",
   "report": {
     "schemaVersion": 1,
     "runId": "964cd087-8fb1-44f4-b6e9-ed3dba76124d",
@@ -96,7 +96,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "create-destination",
@@ -142,7 +143,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "restore",
@@ -200,7 +202,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "reexport",
@@ -241,7 +244,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           }
         ],
         "comparisons": [
@@ -607,126 +611,147 @@
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-export-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-export-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-export-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-export-4.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-export-5.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a1-export-6.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-create-destination-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-create-destination-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-create-destination-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-create-destination-4.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-create-destination-5.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-restore-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-restore-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-restore-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-restore-4.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-restore-5.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a1-restore-6.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-reexport-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-reexport-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-reexport-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-reexport-4.jpg"
     }

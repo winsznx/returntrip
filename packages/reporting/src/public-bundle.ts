@@ -20,6 +20,8 @@ const PUBLIC_KINDS = new Set<ArtifactRecord['kind']>([
 export interface PublicScreenshot {
   readonly attempt: number;
   readonly stage: string;
+  /** 0 for the first try of a stage, 1 for its retry. */
+  readonly try: number;
   readonly step: string;
   readonly file: string;
 }
@@ -109,15 +111,18 @@ export async function exportPublicBundle(input: {
       });
     } else if (artifact.kind === 'evidence-pack') {
       const stage = (artifact.provenance.stage as string | undefined) ?? 'browser';
+      const base = artifact.relativePath.split(/[\\/]/).at(-1) ?? stage;
+      const tryIndex = Number(/-retry(\d+)\./.exec(base)?.[1] ?? 0);
+      const label = tryIndex > 0 ? `${stage}-retry${tryIndex}` : stage;
       const pack = await readEvidencePack(store.artifactPath(artifact));
       const summary = summarizeEvidence(pack);
       const picks = summary.steps.filter((step) => step.screenshots.length > 0);
       for (const [index, step] of picks.entries()) {
         const shot = step.screenshots.at(-1);
         if (!shot) continue;
-        const file = `screens/a${artifact.attempt}-${stage}-${index + 1}.jpg`;
+        const file = `screens/a${artifact.attempt}-${label}-${index + 1}.jpg`;
         await writeFile(join(dir, file), pack.read(shot));
-        screenshots.push({ attempt: artifact.attempt, stage, step: step.step, file });
+        screenshots.push({ attempt: artifact.attempt, stage, try: tryIndex, step: step.step, file });
       }
     }
   }

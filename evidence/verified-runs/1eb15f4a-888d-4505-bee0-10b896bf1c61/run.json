@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-11-25T18:53:03.549Z",
-  "commit": "cb23b969dff43e925a54f301334ae9d906880bd4",
+  "commit": "e3a61d78ef99c1362d2afd372beeb4fd517d41c5",
   "report": {
     "schemaVersion": 1,
     "runId": "1eb15f4a-888d-4505-bee0-10b896bf1c61",
@@ -104,7 +104,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "create-destination",
@@ -160,7 +161,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "restore",
@@ -218,7 +220,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "reexport",
@@ -259,7 +262,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           }
         ],
         "comparisons": [
@@ -394,7 +398,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "create-destination",
@@ -445,7 +450,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "restore",
@@ -508,7 +514,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           },
           {
             "stage": "reexport",
@@ -549,7 +556,8 @@
                 "observed": "true",
                 "operator": "equals"
               }
-            ]
+            ],
+            "evidenceVerdict": null
           }
         ],
         "comparisons": [
@@ -8031,276 +8039,322 @@
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-export-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-export-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-export-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-export-4.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-export-5.jpg"
     },
     {
       "attempt": 1,
       "stage": "export",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a1-export-6.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-create-destination-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-create-destination-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-create-destination-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-create-destination-4.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-create-destination-5.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a1-create-destination-6.jpg"
     },
     {
       "attempt": 1,
       "stage": "create-destination",
+      "try": 0,
       "step": "7-0-7",
       "file": "screens/a1-create-destination-7.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-restore-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-restore-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-restore-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-restore-4.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a1-restore-5.jpg"
     },
     {
       "attempt": 1,
       "stage": "restore",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a1-restore-6.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a1-reexport-1.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a1-reexport-2.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a1-reexport-3.jpg"
     },
     {
       "attempt": 1,
       "stage": "reexport",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a1-reexport-4.jpg"
     },
     {
       "attempt": 2,
       "stage": "export",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a2-export-1.jpg"
     },
     {
       "attempt": 2,
       "stage": "export",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a2-export-2.jpg"
     },
     {
       "attempt": 2,
       "stage": "export",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a2-export-3.jpg"
     },
     {
       "attempt": 2,
       "stage": "export",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a2-export-4.jpg"
     },
     {
       "attempt": 2,
       "stage": "export",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a2-export-5.jpg"
     },
     {
       "attempt": 2,
       "stage": "export",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a2-export-6.jpg"
     },
     {
       "attempt": 2,
       "stage": "create-destination",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a2-create-destination-1.jpg"
     },
     {
       "attempt": 2,
       "stage": "create-destination",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a2-create-destination-2.jpg"
     },
     {
       "attempt": 2,
       "stage": "create-destination",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a2-create-destination-3.jpg"
     },
     {
       "attempt": 2,
       "stage": "create-destination",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a2-create-destination-4.jpg"
     },
     {
       "attempt": 2,
       "stage": "create-destination",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a2-create-destination-5.jpg"
     },
     {
       "attempt": 2,
       "stage": "create-destination",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a2-create-destination-6.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a2-restore-1.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a2-restore-2.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a2-restore-3.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a2-restore-4.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "5-0-5",
       "file": "screens/a2-restore-5.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "6-0-6",
       "file": "screens/a2-restore-6.jpg"
     },
     {
       "attempt": 2,
       "stage": "restore",
+      "try": 0,
       "step": "7-0-7",
       "file": "screens/a2-restore-7.jpg"
     },
     {
       "attempt": 2,
       "stage": "reexport",
+      "try": 0,
       "step": "1-0-1",
       "file": "screens/a2-reexport-1.jpg"
     },
     {
       "attempt": 2,
       "stage": "reexport",
+      "try": 0,
       "step": "2-0-2",
       "file": "screens/a2-reexport-2.jpg"
     },
     {
       "attempt": 2,
       "stage": "reexport",
+      "try": 0,
       "step": "3-0-3",
       "file": "screens/a2-reexport-3.jpg"
     },
     {
       "attempt": 2,
       "stage": "reexport",
+      "try": 0,
       "step": "4-0-4",
       "file": "screens/a2-reexport-4.jpg"
     }
