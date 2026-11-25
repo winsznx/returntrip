@@ -1,0 +1,22 @@
+{
+  "name": "@returntrip/reporting",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Builds report.json, report.md and sanitized public evidence bundles from stored runs.",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@returntrip/contracts": "workspace:*",
+    "@returntrip/kane-adapter": "workspace:*",
+    "@returntrip/storage": "workspace:*"
+  }
+}
