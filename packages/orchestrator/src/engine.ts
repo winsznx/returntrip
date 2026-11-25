@@ -82,6 +82,11 @@ async function preflight(ctx: RunContext, mode: RunMode): Promise<Buffer> {
   return source;
 }
 
+/** Ends a headline with a period so headlines can be joined into one paragraph. */
+function sentence(text: string): string {
+  return /[.!?]$/.test(text) ? text : `${text}.`;
+}
+
 function verdictFor(
   mode: RunMode,
   initial: JourneyResult,
@@ -97,13 +102,13 @@ function verdictFor(
   if (repaired.fixed && repaired.final) {
     return {
       outcome: 'REPAIRED_VERIFIED',
-      headline: `Fixed. First run: ${initial.headline} After the patch: ${repaired.final.headline}`,
+      headline: `Fixed. First run: ${sentence(initial.headline)} After the patch: ${sentence(repaired.final.headline)}`,
       failureCode: null,
     };
   }
   return {
     outcome: 'REPAIR_UNRESOLVED',
-    headline: `${initial.headline} The agent's patches did not fix it.`,
+    headline: `${sentence(initial.headline)} The agent's patches did not fix it.`,
     failureCode: 'NOT_FIXED',
   };
 }
