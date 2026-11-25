@@ -124,6 +124,22 @@ describe('local API', { timeout: 120_000 }, () => {
     expect(response.statusCode).toBe(401);
   });
 
+  it('accepts the bootstrap token only once', async () => {
+    // #given the link was already used
+    await session();
+
+    // #when it is presented again
+    const again = await app.inject({
+      method: 'POST',
+      url: '/api/v1/session',
+      headers: HOST,
+      payload: { token },
+    });
+
+    // #then
+    expect(again.statusCode).toBe(401);
+  });
+
   it('requires the CSRF token on mutations', async () => {
     // #given
     const { cookie } = await session();

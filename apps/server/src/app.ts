@@ -3,7 +3,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
 
 import { COMPARISON_EDGES, DIFFERENCE_KINDS, type RunEvent } from '@returntrip/contracts';
-import { OUTCOME_TEXT, reportContextOf, scenarioOf } from '@returntrip/orchestrator';
+import { OUTCOME_TEXT, reportContextFor, reportContextOf, scenarioOf } from '@returntrip/orchestrator';
 import { buildRunReport, NO_CONTEXT, renderMarkdown } from '@returntrip/reporting';
 import type { RunStore } from '@returntrip/storage';
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
@@ -105,7 +105,13 @@ export async function buildServer(
     const body = parseOr400(z.object({ token: z.string().min(10).max(200) }), request.body, reply);
     if (!body) return reply;
     const session = auth.exchange(body.token, reply);
-    if (!session) return fail(reply, 401, 'UNAUTHORIZED', 'That link has expired. Run returntrip ui again.');
+    if (!session)
+      return fail(
+        reply,
+        401,
+        'UNAUTHORIZED',
+        'That link was already used or has expired. Run returntrip ui again.',
+      );
     return session;
   });
 
@@ -255,7 +261,13 @@ export async function buildServer(
     const id = runOr404(request, reply);
     if (!id) return reply;
     const format = (request.query as { format?: string }).format;
-    const report = buildRunReport(store, id);
+    const configPath = store.getRun(id)?.configPath ?? '';
+    const project = runs.projects().find((p) => p.loaded.configPath === configPath);
+    const report = buildRunReport(
+      store,
+      id,
+      project ? reportContextOf(project.loaded) : await reportContextFor(configPath),
+    );
     if (format === 'markdown')
       return reply.header('content-type', 'text/markdown; charset=utf-8').send(renderMarkdown(report));
     return report;
@@ -339,7 +351,12 @@ export async function buildServer(
   if (options.staticDir) {
     const root = options.staticDir;
     app.get('/*', async (request, reply) => {
-      const pathname = decodeURIComponent(new URL(request.url, 'http://local').pathname);
+      let pathname: string;
+      try {
+        pathname = decodeURIComponent(new URL(request.url, 'http://local').pathname);
+      } catch {
+        pathname = '/';
+      }
       const candidate = normalize(join(root, pathname));
       const inside = candidate === root || candidate.startsWith(`${root}${sep}`);
       const file =

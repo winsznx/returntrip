@@ -16,13 +16,18 @@ interface Session {
   readonly expiresAt: number;
 }
 
+const BOOTSTRAP_TTL_MS = 15 * 60 * 1000;
+
 /**
- * Local access control for the dashboard. The CLI prints a one-time bootstrap token in a URL
- * fragment (never sent to the server in a URL or logged); the page exchanges it for an HttpOnly,
- * SameSite=Strict session cookie plus a CSRF token required on every mutation.
+ * Local access control for the dashboard. The CLI prints a bootstrap token in a URL fragment
+ * (never sent to the server in a URL or logged). It works once, within 15 minutes: the page
+ * exchanges it for an HttpOnly, SameSite=Strict session cookie plus a CSRF token required on every
+ * mutation.
  */
 export class LocalAuth {
   readonly bootstrapToken = randomBytes(24).toString('base64url');
+  readonly #bootstrapExpiresAt = Date.now() + BOOTSTRAP_TTL_MS;
+  #bootstrapUsed = false;
   readonly #sessions = new Map<string, Session>();
   readonly #allowedHosts: ReadonlySet<string>;
 
@@ -40,7 +45,10 @@ export class LocalAuth {
   }
 
   exchange(token: string, reply: FastifyReply): { csrf: string } | null {
+    if (this.#bootstrapUsed || Date.now() > this.#bootstrapExpiresAt) return null;
     if (!sameSecret(token, this.bootstrapToken)) return null;
+    this.#bootstrapUsed = true;
+    this.#pruneExpired();
     const id = randomBytes(32).toString('base64url');
     const csrf = randomBytes(24).toString('base64url');
     this.#sessions.set(id, { csrf, expiresAt: Date.now() + SESSION_TTL_MS });
@@ -49,6 +57,11 @@ export class LocalAuth {
       `${SESSION_COOKIE}=${id}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL_MS / 1000}`,
     );
     return { csrf };
+  }
+
+  #pruneExpired(): void {
+    const now = Date.now();
+    for (const [id, session] of this.#sessions) if (session.expiresAt < now) this.#sessions.delete(id);
   }
 
   #session(request: FastifyRequest): Session | null {

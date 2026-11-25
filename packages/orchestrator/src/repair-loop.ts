@@ -12,6 +12,7 @@ import { type JourneyResult, runJourney } from './journey.ts';
 import { bootTarget } from './target.ts';
 
 const SAMPLE_PER_SHAPE = 3;
+const MIN_AGENT_ATTEMPT_USD = 0.25;
 const MAX_SAMPLE = 60;
 
 /** Keeps a few examples of every (edge, kind, field) shape so the agent sees each distinct failure. */
@@ -92,7 +93,9 @@ export async function repairLoop(
 
   for (let repairAttempt = 1; repairAttempt <= maxAttempts; repairAttempt += 1) {
     ctx.throwIfCanceled();
-    if (ctx.agentUsd >= ctx.config.repair.maxAgentBudgetUsd) {
+    const remainingUsd = ctx.config.repair.maxAgentBudgetUsd - ctx.agentUsd;
+    // Below this an attempt can't do useful work, and Claude Code's own cap could overshoot.
+    if (remainingUsd < MIN_AGENT_ATTEMPT_USD) {
       throw new RunStop(
         'BUDGET_EXCEEDED',
         'AGENT_BUDGET',
@@ -135,7 +138,7 @@ export async function repairLoop(
       dir: copy.dir,
       prompt: buildRepairPrompt(request),
       timeoutMs: ctx.config.repair.agentTimeoutMs,
-      maxBudgetUsd: Math.max(0.5, ctx.config.repair.maxAgentBudgetUsd - ctx.agentUsd),
+      maxBudgetUsd: remainingUsd,
       logDir,
       signal: ctx.signal,
     });

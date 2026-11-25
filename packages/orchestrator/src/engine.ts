@@ -183,8 +183,37 @@ async function cleanup(ctx: RunContext, what: string, work: () => Promise<void>)
  * Every path ends in a recorded outcome; nothing defaults to VERIFIED.
  */
 export async function executeRun(input: StartRunInput): Promise<RunRecord> {
+  const release = await acquireProjectLock(input.store.root, input.loaded.config.project);
+  let runId: string | null = null;
+  try {
+    return await runLocked({
+      ...input,
+      onCreated: (run) => {
+        runId = run.id;
+        input.onCreated?.(run);
+      },
+    });
+  } catch (error) {
+    // Something failed outside the run's own error handling. Never leave the row looking active.
+    const created = runId ? input.store.getRun(runId) : null;
+    if (created?.status === 'active') {
+      input.store.updateRun(created.id, {
+        status: 'finished',
+        phase: 'FINISHED',
+        outcome: 'EXECUTION_FAILED',
+        failureCode: 'INTERNAL',
+        headline: `ReturnTrip hit an internal error: ${error instanceof Error ? error.message : String(error)}`,
+        finishedAt: new Date().toISOString(),
+      });
+    }
+    throw error;
+  } finally {
+    await release();
+  }
+}
+
+async function runLocked(input: StartRunInput): Promise<RunRecord> {
   const { store, loaded, mode } = input;
-  const release = await acquireProjectLock(store.root, loaded.config.project);
   const sourceHash = loaded.config.source.sha256;
   const run = store.createRun({
     project: loaded.config.project,
@@ -300,6 +329,5 @@ export async function executeRun(input: StartRunInput): Promise<RunRecord> {
   });
   await cleanup(ctx, 'report', () => writeReports(ctx));
   await cleanup(ctx, 'work directory', () => rm(workDir, { recursive: true, force: true }));
-  await release();
   return store.getRun(run.id) ?? finished;
 }

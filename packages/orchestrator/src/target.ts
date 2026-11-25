@@ -42,6 +42,7 @@ export async function prepareCopy(ctx: RunContext): Promise<TargetCopy> {
  * capture proxy in front of it.
  */
 export async function bootTarget(ctx: RunContext, copy: TargetCopy | null): Promise<TargetSession> {
+  ctx.throwIfCanceled();
   const app = ctx.config.application;
   const logDir = ctx.store.runDir(ctx.runId);
   const values: Record<string, string | number> = {

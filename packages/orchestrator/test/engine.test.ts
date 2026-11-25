@@ -6,6 +6,7 @@ import { RunStore } from '@returntrip/storage';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { type EngineDeps, executeRun, loadConfig, proxyCaptureDriver } from '../src/index.ts';
+import { acquireProjectLock } from '../src/lock.ts';
 import { httpBrowser, scriptedRepair } from './support/http-browser.ts';
 
 const EXAMPLES = join(import.meta.dirname, '..', '..', '..', 'examples', 'payment-roundtrip');
@@ -336,6 +337,42 @@ describe('executeRun with the Ledgerline demo app', { timeout: 120_000 }, () => 
 
     // #then
     expect(finished.outcome).toBe('CANCELED');
+  });
+
+  it('refuses a second run while a live process holds the project lock, and frees it after', async () => {
+    // #given this process holds the lock
+    const release = await acquireProjectLock(root, 'chicago-payments');
+
+    // #when another run starts, then the lock is released
+    const blocked = executeRun({
+      store,
+      loaded: await loadConfig(HEALTHY),
+      mode: 'verify',
+      deps: deps(),
+      options: { headless: true },
+      signal: new AbortController().signal,
+    });
+    await expect(blocked).rejects.toThrow(/already has an active run/);
+    await release();
+    const second = await acquireProjectLock(root, 'chicago-payments');
+
+    // #then the lock can be taken again
+    expect(typeof second).toBe('function');
+    await second();
+  });
+
+  it('takes over a lock file left by a process that no longer exists', async () => {
+    // #given a lock from a dead pid
+    const { mkdir: mk, writeFile: wf } = await import('node:fs/promises');
+    await mk(join(root, 'locks'), { recursive: true });
+    await wf(join(root, 'locks', 'chicago-payments.lock'), JSON.stringify({ pid: 2 ** 22 + 7 }));
+
+    // #when
+    const release = await acquireProjectLock(root, 'chicago-payments');
+
+    // #then
+    expect(typeof release).toBe('function');
+    await release();
   });
 
   it('writes report.json and report.md for every finished run', async () => {

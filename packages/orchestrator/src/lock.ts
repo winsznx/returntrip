@@ -1,4 +1,5 @@
-import { mkdir, open, readFile, rm } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { link, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 function alive(pid: number): boolean {
@@ -10,6 +11,16 @@ function alive(pid: number): boolean {
   }
 }
 
+/** The pid in a lock file, or null when the file is unreadable (treated as stale). */
+function parseHolder(text: string): number | null {
+  try {
+    const parsed = JSON.parse(text) as { pid?: unknown };
+    return typeof parsed.pid === 'number' ? parsed.pid : null;
+  } catch {
+    return null;
+  }
+}
+
 /** One active run per project. A lock left by a dead process is taken over, never a live one. */
 export async function acquireProjectLock(root: string, project: string): Promise<() => Promise<void>> {
   const dir = join(root, 'locks');
@@ -17,18 +28,30 @@ export async function acquireProjectLock(root: string, project: string): Promise
   const path = join(dir, `${project}.lock`);
   for (let tries = 0; tries < 2; tries += 1) {
     try {
-      const handle = await open(path, 'wx', 0o600);
-      await handle.writeFile(JSON.stringify({ pid: process.pid, at: new Date().toISOString() }));
-      await handle.close();
+      // Write the pid first, then link the file into place: the lock appears atomically and is
+      // never seen empty.
+      const temp = `${path}.${process.pid}.${randomUUID()}.tmp`;
+      await writeFile(temp, JSON.stringify({ pid: process.pid, at: new Date().toISOString() }), {
+        mode: 0o600,
+      });
+      try {
+        await link(temp, path);
+      } finally {
+        await rm(temp, { force: true });
+      }
       return async () => {
         await rm(path, { force: true });
       };
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-      const holder = JSON.parse(await readFile(path, 'utf8').catch(() => '{}')) as { pid?: number };
-      if (typeof holder.pid === 'number' && alive(holder.pid)) {
-        throw new Error(`project ${project} already has an active run (pid ${holder.pid})`);
+      const text = await readFile(path, 'utf8').catch(() => '');
+      const holder = parseHolder(text);
+      if (holder !== null && alive(holder)) {
+        throw new Error(`project ${project} already has an active run (pid ${holder})`);
       }
+      // Take over only the exact stale file we read, so two processes can't both clear it.
+      const current = await readFile(path, 'utf8').catch(() => null);
+      if (current !== text) continue;
       await rm(path, { force: true });
     }
   }

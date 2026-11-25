@@ -104,6 +104,8 @@ export async function execArgv(argv: readonly string[], options: ExecOptions): P
     void killTree(child);
   };
   options.signal?.addEventListener('abort', onAbort, { once: true });
+  // An already-aborted signal never fires 'abort', so check it once the child exists.
+  if (options.signal?.aborted) onAbort();
 
   try {
     const [exitCode, signal] = (await Promise.race([

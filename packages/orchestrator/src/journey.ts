@@ -145,7 +145,14 @@ async function judgeStage(
   stage: BrowserStage,
   result: BrowserResult,
 ): Promise<BrowserResult> {
-  if (result.outcome !== 'passed' || !result.evidencePackPath || !ctx.deps.browser.judge) return result;
+  if (result.outcome !== 'passed' || !ctx.deps.browser.judge) return result;
+  if (!result.evidencePackPath) {
+    ctx.emit('warning', {
+      code: 'STAGE_EVIDENCE_MISSING',
+      message: `Kane reported the ${stage} step passed but left no sealed evidence pack, so the stage policy could not run.`,
+    });
+    return result;
+  }
   const verdict = await ctx.deps.browser.judge(result.evidencePackPath);
   if (verdict.result === 'pass') return { ...result, evidenceVerdict: verdict };
   if (verdict.result === 'errored') {

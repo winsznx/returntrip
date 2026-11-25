@@ -15,7 +15,12 @@ export interface Project {
 async function lockHeldByLiveProcess(root: string, project: string): Promise<boolean> {
   const text = await readFile(join(root, 'locks', `${project}.lock`), 'utf8').catch(() => null);
   if (!text) return false;
-  const { pid } = JSON.parse(text) as { pid?: unknown };
+  let pid: unknown;
+  try {
+    pid = (JSON.parse(text) as { pid?: unknown }).pid;
+  } catch {
+    return false;
+  }
   if (typeof pid !== 'number') return false;
   try {
     process.kill(pid, 0);
@@ -144,6 +149,7 @@ export class RunManager {
     }
 
     const controller = new AbortController();
+    let startedId: string | null = null;
     const created = new Promise<RunRecord>((resolve, reject) => {
       executeRun({
         store: this.#store,
@@ -154,17 +160,18 @@ export class RunManager {
         signal: controller.signal,
         ...(input.fromRunId ? { fromRunId: input.fromRunId } : {}),
         onCreated: (run) => {
+          startedId = run.id;
           this.#active.set(run.id, controller);
           if (input.idempotencyKey)
             this.#idempotency.set(input.idempotencyKey, { runId: run.id, fingerprint });
           resolve(run);
         },
       })
-        .then((run) => {
-          this.#active.delete(run.id);
-        })
         .catch((error: unknown) => {
           reject(error instanceof Error ? error : new Error(String(error)));
+        })
+        .finally(() => {
+          if (startedId) this.#active.delete(startedId);
         });
     });
     try {
