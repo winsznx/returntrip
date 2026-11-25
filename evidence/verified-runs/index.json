@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "runs": [
     {
+      "runId": "7ff52884-d44c-4aeb-b4d0-87168de1601a",
+      "recordedAt": "2026-11-25T20:09:27.961Z",
+      "mode": "repair",
+      "outcome": "REPAIRED_VERIFIED",
+      "headline": "Fixed. First run: 1,000 of 1,000 rows came back, but department_name changed in 1,000 rows and vendor_name in 1,000 rows. After the patch: 1,000 of 1,000 records came back identical after export, restore and re-export.",
+      "scenario": "column-order",
+      "project": "chicago-column-order",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 186.51142749999997,
+      "durationMs": 995864
+    },
+    {
+      "runId": "ae614b55-7409-4bcb-85c2-46813bfb7e3a",
+      "recordedAt": "2026-11-25T20:09:27.961Z",
+      "mode": "repair",
+      "outcome": "REPAIRED_VERIFIED",
+      "headline": "Fixed. First run: 1,000 of 1,000 rows came back, but amount changed in 600 rows. After the patch: 1,000 of 1,000 records came back identical after export, restore and re-export.",
+      "scenario": "cents-truncation",
+      "project": "chicago-cents-truncation",
+      "targetMode": "managed",
+      "kaneCreditsUsed": 154.464875,
+      "durationMs": 828356
+    },
+    {
       "runId": "12c63506-f4e6-452f-ada3-a4fd808314fe",
       "recordedAt": "2026-11-25T19:59:47.652Z",
       "mode": "verify",
