@@ -216,6 +216,9 @@ importers:
       '@returntrip/contracts':
         specifier: workspace:*
         version: link:../contracts
+      '@returntrip/target-runtime':
+        specifier: workspace:*
+        version: link:../target-runtime
 
   packages/storage:
     dependencies:

@@ -1,0 +1,21 @@
+{
+  "name": "@returntrip/repair-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runs Claude Code in a restricted, disposable copy of the target and validates the patch it leaves.",
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@returntrip/contracts": "workspace:*",
+    "@returntrip/target-runtime": "workspace:*"
+  }
+}

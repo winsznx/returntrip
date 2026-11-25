@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/contracts" },
     { "path": "packages/storage" },
-    { "path": "packages/target-runtime" }
+    { "path": "packages/target-runtime" },
+    { "path": "packages/repair-agent" }
   ]
 }
