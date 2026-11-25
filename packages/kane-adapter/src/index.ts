@@ -26,6 +26,7 @@ export {
   type EvidencePack,
   EvidencePackError,
   type EvidencePackErrorCode,
+  parseZip,
   readEvidencePack,
   type ZipEntry,
   type ZipLimits,

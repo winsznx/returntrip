@@ -4,6 +4,7 @@ import { join } from 'node:path';
 
 import type { BrowserResult, BrowserStage, EdgeComparison } from '@returntrip/contracts';
 import { compareRoundTrip, headline, type ParsedArtifact, parseArtifact } from '@returntrip/csv-comparator';
+import { DEFAULT_ZIP_LIMITS, parseZip } from '@returntrip/kane-adapter';
 import type { ArtifactRecord } from '@returntrip/storage';
 import { fillPlaceholders } from '@returntrip/target-runtime';
 
@@ -68,6 +69,7 @@ async function runOnce(
     logDir,
     signal: ctx.signal,
     onProgress: (progress) => ctx.emit('browser.progress', { stage, ...progress }),
+    ...(ctx.loaded.paths.variablesFile ? { variablesFile: ctx.loaded.paths.variablesFile } : {}),
   });
 
   ctx.chargeCredits(result.creditsUsed);
@@ -139,8 +141,8 @@ async function withRetries<T>(
   ctx: RunContext,
   label: string,
   unit: (tryIndex: number) => Promise<StepOutcome<T>>,
+  retries = ctx.config.limits.maxBrowserRetries,
 ): Promise<T> {
-  const retries = ctx.config.limits.maxBrowserRetries;
   for (let tryIndex = 0; ; tryIndex += 1) {
     const outcome = await unit(tryIndex);
     if (outcome.ok) return outcome.value;
@@ -209,6 +211,8 @@ async function keepCapture(
   kind: 'export' | 'reexport',
   workspace: string,
 ): Promise<ArtifactRecord> {
+  const extract = ctx.config.capture.extract;
+  if (extract) return keepExtracted(ctx, file, kind, workspace, extract.entry);
   const artifact = await ctx.store.importArtifact({
     runId: ctx.runId,
     attempt: ctx.attempt,
@@ -225,6 +229,57 @@ async function keepCapture(
       contentDisposition: file.contentDisposition,
       capturedAt: file.capturedAt,
     },
+  });
+  ctx.emit('artifact.captured', {
+    kind,
+    artifactId: artifact.id,
+    sha256: artifact.sha256,
+    byteLength: artifact.byteLength,
+    rows: null,
+  });
+  return artifact;
+}
+
+/**
+ * For apps that export a zip: keep the archive exactly as downloaded, then pull out the one CSV
+ * the contract describes. The extracted file is what gets compared and restored, and its
+ * provenance names the archive hash it came from.
+ */
+async function keepExtracted(
+  ctx: RunContext,
+  file: CapturedFile,
+  kind: 'export' | 'reexport',
+  workspace: string,
+  entry: string,
+): Promise<ArtifactRecord> {
+  const archive = await ctx.store.importArtifact({
+    runId: ctx.runId,
+    attempt: ctx.attempt,
+    kind: 'archive',
+    fileName: `${kind}.zip`,
+    sourcePath: file.path,
+    mediaType: 'application/zip',
+    expectedSha256: file.sha256,
+    provenance: { capturedBy: 'returntrip-proxy', workspace, capturedAt: file.capturedAt },
+  });
+  let bytes: Buffer;
+  try {
+    bytes = parseZip(await ctx.store.readArtifact(archive), DEFAULT_ZIP_LIMITS).read(entry);
+  } catch (error) {
+    throw new RunStop(
+      'EXECUTION_FAILED',
+      'ARCHIVE_UNREADABLE',
+      `The ${kind} archive did not contain a readable ${entry}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  const artifact = await ctx.store.writeArtifact({
+    runId: ctx.runId,
+    attempt: ctx.attempt,
+    kind,
+    fileName: `${kind}.csv`,
+    data: bytes,
+    mediaType: 'text/csv',
+    provenance: { extractedFrom: archive.id, archiveSha256: archive.sha256, entry, workspace },
   });
   ctx.emit('artifact.captured', {
     kind,
@@ -348,6 +403,9 @@ export async function runJourney(
       );
       return { ok: true, value: { destination, destinationUrl: values.destinationUrl } };
     },
+    // A seeded destination can't be swapped for a fresh one, so a half-finished restore there
+    // must not be retried.
+    journey.destinationWorkspace ? 0 : ctx.config.limits.maxBrowserRetries,
   );
   const destination = restored.destination;
   ctx.store.updateRun(ctx.runId, { phase: 'RESTORED' });

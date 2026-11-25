@@ -37,6 +37,13 @@ export interface KaneRunOptions {
   readonly signal?: AbortSignal;
   readonly onProgress?: (progress: KaneProgress) => void;
   /**
+   * Chrome user-data-dir for this run. A fresh directory per run keeps runs isolated from each
+   * other and from the user's own browser profile (cookies, extensions, logged-in sessions).
+   */
+  readonly chromeProfile?: string;
+  /** Kane variables file, for test credentials referenced as {{name}} in the objective. */
+  readonly variablesFile?: string;
+  /**
    * Kane gets `--timeout` and should stop itself. Past `timeoutMs` plus this grace, ReturnTrip
    * kills the process group and reports infra_error. Kane's post-run upload can take minutes.
    */
@@ -140,7 +147,10 @@ export async function runKaneObjective(options: KaneRunOptions): Promise<KaneRun
 }
 
 export function kaneArgs(
-  options: Pick<KaneRunOptions, 'objective' | 'url' | 'timeoutMs' | 'headless'>,
+  options: Pick<
+    KaneRunOptions,
+    'objective' | 'url' | 'timeoutMs' | 'headless' | 'chromeProfile' | 'variablesFile'
+  >,
 ): string[] {
   const args = [
     'run',
@@ -152,6 +162,8 @@ export function kaneArgs(
     String(Math.ceil(options.timeoutMs / 1000)),
   ];
   if (options.headless) args.push('--headless');
+  if (options.chromeProfile) args.push('--chrome-profile', options.chromeProfile);
+  if (options.variablesFile) args.push('--variables-file', options.variablesFile);
   return args;
 }
 

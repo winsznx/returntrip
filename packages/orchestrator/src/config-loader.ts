@@ -37,6 +37,7 @@ export interface LoadedConfig {
     readonly provenance: string;
     readonly appDir: string | null;
     readonly scenarioPatch: string | null;
+    readonly variablesFile: string | null;
   };
 }
 
@@ -143,6 +144,9 @@ export async function loadConfig(configPath: string): Promise<LoadedConfig> {
       provenance: await insideRoot(projectRoot, configDir, config.source.provenance, 'source.provenance'),
       appDir,
       scenarioPatch,
+      variablesFile: config.journey.variablesFile
+        ? await insideRoot(projectRoot, configDir, config.journey.variablesFile, 'journey.variablesFile')
+        : null,
     },
   };
 }

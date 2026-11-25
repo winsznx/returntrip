@@ -1,3 +1,5 @@
+import { join } from 'node:path';
+
 import { createCaptureProxy } from '@returntrip/artifact-capture';
 import { getKaneBalance, getKaneVersion, runKaneObjective } from '@returntrip/kane-adapter';
 import { getClaudeVersion, runClaudeRepair } from '@returntrip/repair-agent';
@@ -20,6 +22,8 @@ export function kaneDriver(options: { headless: boolean; kaneBin?: string }): Br
         logDir: input.logDir,
         signal: input.signal,
         onProgress: input.onProgress,
+        chromeProfile: join(input.logDir, 'chrome-profile'),
+        ...(input.variablesFile ? { variablesFile: input.variablesFile } : {}),
         ...(bin ? { kaneBin: bin } : {}),
       });
       return { result: outcome.result, stdoutPath: outcome.stdoutPath, stderrPath: outcome.stderrPath };

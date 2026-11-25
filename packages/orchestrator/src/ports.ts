@@ -14,6 +14,7 @@ export interface BrowserDriver {
     readonly logDir: string;
     readonly signal: AbortSignal;
     readonly onProgress: (progress: { step: number; status: string; remark: string }) => void;
+    readonly variablesFile?: string;
   }): Promise<{
     readonly result: BrowserResult;
     readonly stdoutPath: string | null;

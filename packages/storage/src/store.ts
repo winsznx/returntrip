@@ -83,6 +83,7 @@ export type ArtifactKind =
   | 'source'
   | 'export'
   | 'reexport'
+  | 'archive'
   | 'restore-upload'
   | 'kane-stdout'
   | 'kane-stderr'
