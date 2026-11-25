@@ -1,0 +1,32 @@
+{
+  "name": "@returntrip/dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ReturnTrip web dashboard: operates local runs over the loopback API, or builds a static viewer for recorded runs.",
+  "scripts": {
+    "dev": "vite",
+    "dev:public": "VITE_RT_MODE=public vite",
+    "build": "vite build",
+    "build:public": "VITE_RT_MODE=public vite build && cp dist-public/index.html dist-public/404.html",
+    "preview": "vite preview",
+    "preview:public": "VITE_RT_MODE=public vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json"
+  },
+  "dependencies": {
+    "react": "19.2.9",
+    "react-dom": "19.2.9",
+    "react-router": "7.18.5"
+  },
+  "devDependencies": {
+    "@returntrip/contracts": "workspace:*",
+    "@returntrip/reporting": "workspace:*",
+    "@tailwindcss/vite": "4.3.5",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.3.0",
+    "tailwindcss": "4.3.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.8"
+  }
+}

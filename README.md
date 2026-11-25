@@ -12,7 +12,7 @@ On 6 November 2026 the open-source finance app Sure merged [PR #4754](https://gi
 
 > Re-importing Sure's own `transactions.csv` export flips every amount, so expenses come back as income and both legs of a transfer change direction.
 
-Every step of that round trip looked fine. The export downloaded and the import said it worked. The data was wrong. Browser tests that check for a success message pass right through this kind of bug, and Kane's own triage can't settle it either. In our preflight, Kane labelled a real data mismatch as a `test_data_issue` with 0.96 confidence. Someone has to read the bytes.
+Every step of that round trip looked fine. The export downloaded and the import said it worked. The data was wrong. Browser tests that check for a success message pass right through this kind of bug. A browser tester can judge whether its own check was right, but it can't know which data is right: in our preflight, when a page showed 3 records where the check expected 5, Kane's triage reasonably called it a `test_data_issue`. The data verdict has to come from a trusted source. Someone has to read the bytes.
 
 ## What happens in a run
 
