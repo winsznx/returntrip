@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-11-25T19:19:52.455Z",
-  "commit": "afa30b951559fd319d382f83fe8cf562007f2723",
+  "commit": "9d479c17944d75585012261ed9e422ec214f9b75",
   "report": {
     "schemaVersion": 1,
     "runId": "97207718-c99c-4b37-a221-2d8a2549b100",
@@ -19,7 +19,10 @@
       "source": "660f3855445ce354e36862b5763c51a3b902c445d0ba383099fc42279d615bb4"
     },
     "baseRevision": null,
-    "target": null,
+    "target": {
+      "mode": "attached",
+      "origin": "http://127.0.0.1:3300"
+    },
     "scenario": null,
     "kane": {
       "version": "0.10.9",

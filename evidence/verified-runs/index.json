@@ -57,7 +57,7 @@
       "headline": "250 of 250 records came back identical after export, restore and re-export.",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": null,
+      "targetMode": "attached",
       "kaneCreditsUsed": 111.0271975,
       "durationMs": 533881
     },
@@ -69,7 +69,7 @@
       "headline": "Kane could not finish the restore step: Login succeeded, but the test then checked for an email field that only exists on the sign-in page.",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": null,
+      "targetMode": "attached",
       "kaneCreditsUsed": 75.9138775,
       "durationMs": 322055
     },
@@ -93,7 +93,7 @@
       "headline": "250 of 250 rows came back, but amount changed in 250 rows",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": null,
+      "targetMode": "attached",
       "kaneCreditsUsed": 119.40247,
       "durationMs": 585176
     },
@@ -105,7 +105,7 @@
       "headline": "Kane could not finish the create-destination step: The supplied account password was rejected, so the run could not reach Transactions.",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": null,
+      "targetMode": "attached",
       "kaneCreditsUsed": 48.685365000000004,
       "durationMs": 220029
     },
@@ -117,7 +117,7 @@
       "headline": "The export archive did not contain a readable transactions.csv: entry \"version.txt\" expands to 4294967295 bytes, limit 20971520",
       "scenario": null,
       "project": "sure-pre-4754",
-      "targetMode": null,
+      "targetMode": "attached",
       "kaneCreditsUsed": 28.0899625,
       "durationMs": 116265
     },
