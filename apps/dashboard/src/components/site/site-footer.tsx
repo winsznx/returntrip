@@ -32,7 +32,7 @@ export function SiteFooter() {
             <a className="text-link" href={SITE.datasetUrl} rel="noreferrer" target="_blank">
               City of Chicago Payments (s4vu-giwb)
             </a>
-            , the City&rsquo;s official dataset.
+            , the City&rsquo;s official dataset. Every row is verified against its official export.
           </p>
           <p className="text-faint">{disclaimer}</p>
         </div>

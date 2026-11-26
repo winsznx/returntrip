@@ -17,5 +17,11 @@
   },
   "identity": "No unique key: voucher_number is empty in some rows and repeats in others, and some rows are fully identical. Compared as a multiset.",
   "terms": "https://www.chicago.gov/city/en/narr/foia/data_disclaimer.html",
-  "disclaimer": "This site provides applications using data that has been modified for use from its original source, www.cityofchicago.org, the official website of the City of Chicago. The City of Chicago makes no claims as to the content, accuracy, timeliness, or completeness of any of the data provided at this site. The data provided at this site is subject to change at any time. It is understood that the data provided at this site is being used at one’s own risk."
+  "disclaimer": "This site provides applications using data that has been modified for use from its original source, www.cityofchicago.org, the official website of the City of Chicago. The City of Chicago makes no claims as to the content, accuracy, timeliness, or completeness of any of the data provided at this site. The data provided at this site is subject to change at any time. It is understood that the data provided at this site is being used at one\u2019s own risk.",
+  "officialExportVerification": {
+    "file": "Payments_20261126.csv, exported from https://data.cityofchicago.org/Administration-Finance/Payments/s4vu-giwb on 2026-11-26",
+    "rows": 490604,
+    "sha256": "0b492b5a83126724dc5d21e3fd83a51163125210d48e9aa6943231ab7361c600",
+    "result": "All 1,000 source rows are present in the official export with at least the same multiplicity, after normalising the export's currency formatting ($17,104.23 to 17104.23)."
+  }
 }

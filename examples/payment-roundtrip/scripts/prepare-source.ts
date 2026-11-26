@@ -1,4 +1,4 @@
-// Builds source.csv and provenance.json from the archived City of Chicago Payments API response.
+// Builds source.csv and provenance.json from the City of Chicago Payments API response of 2026-11-09.
 // Usage: node examples/payment-roundtrip/scripts/prepare-source.ts [--from <local json>]
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
